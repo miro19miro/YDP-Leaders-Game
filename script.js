@@ -822,7 +822,120 @@ function renderQuestionEditor(level) {
         }
     );
 
+
+    /*
+       Make the currently selected correct
+       answer visually green.
+    */
+
+    updateCorrectAnswerStyles();
+
 }
+
+
+/* =========================================
+   CORRECT ANSWER VISUAL SELECTION
+========================================= */
+
+function updateCorrectAnswerStyles() {
+
+    const cards =
+        document.querySelectorAll(
+            ".question-edit-card"
+        );
+
+
+    cards.forEach(card => {
+
+        const answerRows =
+            card.querySelectorAll(
+                ".answer-edit"
+            );
+
+
+        answerRows.forEach(row => {
+
+            const radio =
+                row.querySelector(
+                    'input[type="radio"]'
+                );
+
+
+            if (radio.checked) {
+
+                row.classList.add(
+                    "correct-selected"
+                );
+
+            } else {
+
+                row.classList.remove(
+                    "correct-selected"
+                );
+
+            }
+
+        });
+
+    });
+
+}
+
+
+/*
+   When the admin chooses another answer,
+   immediately move the green highlight to it.
+*/
+
+document.addEventListener(
+    "change",
+    event => {
+
+        if (
+            event.target.matches(
+                '.question-edit-card input[type="radio"]'
+            )
+        ) {
+
+            const card =
+                event.target.closest(
+                    ".question-edit-card"
+                );
+
+
+            const answerRows =
+                card.querySelectorAll(
+                    ".answer-edit"
+                );
+
+
+            answerRows.forEach(row => {
+
+                row.classList.remove(
+                    "correct-selected"
+                );
+
+            });
+
+
+            const selectedRow =
+                event.target.closest(
+                    ".answer-edit"
+                );
+
+
+            if (selectedRow) {
+
+                selectedRow.classList.add(
+                    "correct-selected"
+                );
+
+            }
+
+        }
+
+    }
+);
 
 
 /* =========================================
