@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#214fbd">
+
+    <title>YDP Leaders Game</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         SPLASH SCREEN
+    ========================== -->
+    <section id="splashScreen" class="screen splash-screen">
+
+        <div class="splash-content">
+
+            <img
+                src="images/logo.png"
+                alt="YDP Logo"
+                id="splashLogo"
+                class="splash-logo"
+            >
+
+            <img
+                src="images/dora map.png"
+                alt="Game Map"
+                id="doraMap"
+                class="dora-map"
+            >
+
+            <div id="readyText" class="ready-text">
+                Are you ready?
+            </div>
+
+            <button
+                id="startBtn"
+                class="start-btn"
+                type="button"
+            >
+                Start
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         CODE LOGIN
+    ========================== -->
+    <section id="loginScreen" class="screen hidden">
+
+        <div class="login-card">
+
+            <img
+                src="images/logo.png"
+                class="small-logo"
+                alt="YDP"
+            >
+
+            <h1>Welcome to the Game</h1>
+
+            <p class="login-subtitle">
+                Enter your access code
+            </p>
+
+            <input
+                id="accessCode"
+                type="text"
+                placeholder="Enter Code"
+                autocomplete="off"
+                maxlength="20"
+            >
+
+            <button
+                id="loginBtn"
+                class="primary-btn"
+                type="button"
+            >
+                Continue
+            </button>
+
+            <p id="loginError" class="error-message"></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         GAME MAP
+    ========================== -->
+    <section id="mapScreen" class="screen map-screen hidden">
+
+        <div class="map-wrapper">
+
+            <img
+                src="images/map.jpg"
+                alt="Game Map"
+                class="game-map"
+            >
+
+            <!-- Level stones -->
+            <div id="levelsContainer"></div>
+
+            <!-- Penguin -->
+            <img
+                src="images/penguin.png"
+                alt="Penguin"
+                id="penguin"
+                class="penguin"
+            >
+
+            <!-- Map overlay -->
+            <div id="mapMessage" class="map-message hidden"></div>
+
+            <!-- Control button -->
+            <button
+                id="controlBtn"
+                class="control-btn hidden"
+                type="button"
+            >
+                Control
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         CONTROL PANEL
+    ========================== -->
+    <section id="controlScreen" class="screen control-screen hidden">
+
+        <div class="control-card">
+
+            <button
+                id="controlBackBtn"
+                class="back-btn"
+                type="button"
+            >
+                ←
+            </button>
+
+            <h1>The Game Control</h1>
+
+            <div class="control-form">
+
+                <label for="levelNumber">
+                    Which level?
+                </label>
+
+                <input
+                    id="levelNumber"
+                    type="number"
+                    min="1"
+                    max="10"
+                    placeholder="1 - 10"
+                >
+
+                <label for="questionCount">
+                    How many Questions?
+                </label>
+
+                <input
+                    id="questionCount"
+                    type="number"
+                    min="1"
+                    max="50"
+                    placeholder="Number of questions"
+                >
+
+                <button
+                    id="openEditorBtn"
+                    class="primary-btn"
+                    type="button"
+                >
+                    Open Level Editor
+                </button>
+
+            </div>
+
+
+            <!-- Levels control -->
+            <div class="levels-control">
+
+                <h2>Which level is open?</h2>
+
+                <div id="levelControls"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         QUESTION EDITOR
+    ========================== -->
+    <section id="editorScreen" class="screen editor-screen hidden">
+
+        <div class="editor-card">
+
+            <div class="editor-header">
+
+                <button
+                    id="editorBackBtn"
+                    class="back-btn"
+                    type="button"
+                >
+                    ←
+                </button>
+
+                <div>
+                    <h1>The Game</h1>
+                    <p id="editorLevelTitle">
+                        Level 1
+                    </p>
+                </div>
+
+                <button
+                    id="saveQuestionsBtn"
+                    class="save-btn"
+                    type="button"
+                >
+                    Save
+                </button>
+
+            </div>
+
+
+            <div
+                id="questionsEditor"
+                class="questions-editor"
+            ></div>
+
+
+            <button
+                id="doneEditorBtn"
+                class="done-btn"
+                type="button"
+            >
+                I'm Done
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         PLAYER NAME
+    ========================== -->
+    <section id="nameScreen" class="screen name-screen hidden">
+
+        <div class="name-paper">
+
+            <img
+                src="images/penguin.png"
+                alt="Penguin"
+                class="name-penguin"
+            >
+
+            <h1>What's your name?</h1>
+
+            <p>
+                Please enter your full name
+            </p>
+
+            <input
+                id="playerName"
+                type="text"
+                placeholder="My name is..."
+                autocomplete="name"
+                maxlength="60"
+            >
+
+            <button
+                id="nameContinueBtn"
+                class="primary-btn"
+                type="button"
+            >
+                Continue →
+            </button>
+
+            <p id="nameError" class="error-message"></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         QUESTIONS
+    ========================== -->
+    <section id="questionScreen" class="screen question-screen hidden">
+
+        <div class="question-page">
+
+            <div class="question-top">
+
+                <div>
+                    <span id="questionNumber">
+                        1
+                    </span>
+                    /
+                    <span id="totalQuestions">
+                        1
+                    </span>
+                </div>
+
+                <div class="score-display">
+                    Score:
+                    <span id="currentScore">
+                        0
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="question-progress">
+                <div
+                    id="progressBar"
+                    class="progress-bar"
+                ></div>
+            </div>
+
+
+            <div class="question-card">
+
+                <h2 id="questionText">
+                    Question
+                </h2>
+
+                <div
+                    id="answersContainer"
+                    class="answers-container"
+                ></div>
+
+            </div>
+
+
+            <button
+                id="nextQuestionBtn"
+                class="next-btn"
+                type="button"
+            >
+                →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FINAL SCORE
+    ========================== -->
+    <section id="resultScreen" class="screen result-screen hidden">
+
+        <div class="result-card">
+
+            <div class="result-icon">
+                🏆
+            </div>
+
+            <h1>
+                Thank you for your participation
+            </h1>
+
+            <p class="result-label">
+                Your Score:
+            </p>
+
+            <div
+                id="finalScore"
+                class="final-score"
+            >
+                0
+            </div>
+
+            <p id="resultLevel">
+                Level 1
+            </p>
+
+            <button
+                id="resultMapBtn"
+                class="primary-btn"
+                type="button"
+            >
+                Back to Map
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         LOCKED LEVEL
+    ========================== -->
+    <div
+        id="lockedModal"
+        class="modal hidden"
+    >
+
+        <div class="locked-modal-content">
+
+            <button
+                id="closeLockedBtn"
+                class="modal-close"
+                type="button"
+            >
+                ×
+            </button>
+
+            <div class="big-x">
+                ×
+            </div>
+
+            <h2>Level Locked</h2>
+
+            <p>
+                This level is not open yet.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         TOAST
+    ========================== -->
+    <div
+        id="toast"
+        class="toast"
+    ></div>
+
+
+    <script src="script.js"></script>
+
+</body>
+  </html>
