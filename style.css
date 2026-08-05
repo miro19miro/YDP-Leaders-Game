@@ -1483,3 +1483,20 @@ button {
         transition-duration: .01ms !important;
     }
 }
+/* =========================================
+   CORRECT ANSWER SELECTION IN EDITOR
+========================================= */
+
+.answer-edit.correct-selected {
+    background: #d4edda !important;
+    border: 2px solid #28a745 !important;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.25);
+}
+
+.answer-edit.correct-selected input[type="text"] {
+    border-color: #28a745 !important;
+}
+
+.answer-edit.correct-selected input[type="radio"] {
+    accent-color: #28a745;
+}
