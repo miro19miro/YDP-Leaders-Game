@@ -747,90 +747,45 @@ function openLevelEditor(level) {
 
 }
 
-
 function renderQuestionEditor(level) {
-
-    const container =
-        document.getElementById(
-            "questionsEditor"
-        );
-
-
+    const container = document.getElementById("questionsEditor");
     container.innerHTML = "";
 
+    const questions = questionsData[level] || [];
 
-    const questions =
-        questionsData[level] || [];
+    questions.forEach((question, qIndex) => {
+        const card = document.createElement("div");
+        card.className = "question-edit-card";
 
+        card.innerHTML = `
+            <h3>Question ${qIndex + 1}</h3>
+            <textarea class="edit-question" placeholder="Write the question...">${escapeHTML(question.question)}</textarea>
 
-    questions.forEach(
-        (question, index) => {
+            ${question.answers.map((answer, aIndex) => `
+                <div class="answer-edit ${question.correct === aIndex ? 'correct-selected' : ''}">
+                    <input
+                        type="radio"
+                        name="correct-${qIndex}"
+                        value="${aIndex}"
+                        ${question.correct === aIndex ? "checked" : ""}
+                    >
+                    <input
+                        type="text"
+                        class="edit-answer"
+                        data-answer="${aIndex}"
+                        placeholder="Answer ${aIndex + 1}"
+                        value="${escapeAttribute(answer)}"
+                    >
+                </div>
+            `).join("")}
+        `;
 
-            const card =
-                document.createElement("div");
-
-
-            card.className =
-                "question-edit-card";
-
-
-            card.innerHTML = `
-
-                <h3>
-                    Question ${index + 1}
-                </h3>
-
-                <textarea
-                    class="edit-question"
-                    placeholder="Write the question..."
-                >${escapeHTML(question.question)}</textarea>
-
-
-                ${question.answers.map(
-                    (answer, answerIndex) => `
-
-                    <div class="answer-edit">
-
-                        <input
-                            type="radio"
-                            name="correct-${index}"
-                            value="${answerIndex}"
-                            ${
-                                question.correct === answerIndex
-                                ? "checked"
-                                : ""
-                            }
-                        >
-
-                        <input
-                            type="text"
-                            class="edit-answer"
-                            data-answer="${answerIndex}"
-                            placeholder="Answer ${answerIndex + 1}"
-                            value="${escapeAttribute(answer)}"
-                        >
-
-                    </div>
-
-                `).join("")}
-
-            `;
-
-
-            container.appendChild(card);
-
-        }
-    );
-
-
-    /*
-       Make the currently selected correct
-       answer visually green.
-    */
+        container.appendChild(card);
+    });
 
     updateCorrectAnswerStyles();
-
 }
+
 
 
 /* =========================================
