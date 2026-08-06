@@ -92,18 +92,31 @@ button {
 
 .ready-text {
     position: absolute;
-    top: 67%;
+    top: 65%;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
     font-family: "Brush Script MT", "Segoe Script", cursive;
-    font-size: clamp(42px, 9vw, 78px);
+    font-size: clamp(36px, 8vw, 65px);
     color: #000;
-    white-space: nowrap;
+    width: 100%; /* ضمان العرض الكامل للتوسيط */
+    max-width: 90vw;
+    margin: 0 auto;
     opacity: 0;
-    overflow: hidden;
-    animation: readyTyping 3s steps(14, end) 3s forwards;
+    animation: readyFadeIn 1.5s ease-in-out 1s forwards;
 }
+
+@keyframes readyFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
  
 
 .start-btn {
@@ -416,50 +429,42 @@ button {
 
 .level-stone {
     position: absolute;
-    width: clamp(85px, 18vw, 130px); /* تم تكبير الحجم */
-    aspect-ratio: 1;
-    background-color: transparent; /* إزالة الرمادي */
+    width: clamp(70px, 16vw, 110px) !important;
+    height: clamp(70px, 16vw, 110px) !important;
+    background-color: transparent !important; /* إزالة الرمادي والأبيض */
     background-image: url("images/stone.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: none;
-    outline: none;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: clamp(20px, 4.5vw, 32px);
+    color: #ffffff;
+    font-size: clamp(22px, 5vw, 36px);
     font-weight: 900;
-    text-shadow: 2px 2px 3px #000, -1px -1px 2px #000;
-    transition: transform .25s ease, filter .25s ease;
+    text-shadow: 2px 2px 4px #000, -2px -2px 4px #000, 2px -2px 4px #000, -2px 2px 4px #000;
+    cursor: pointer;
     z-index: 5;
+    -webkit-tap-highlight-color: transparent;
 }
 
-
-.level-stone:hover {
-    transform: scale(1.12);
-    filter: brightness(1.15);
-}
-
+/* في حالة المستوى المغلق أو المفتوح لضمان عدم ظهور ألوان خلفية */
+.level-stone.locked,
 .level-stone.open {
-    animation: stoneFloat 2s ease-in-out infinite;
+    background-color: transparent !important;
 }
 
 .level-stone.locked {
-    filter: grayscale(.4) brightness(.7);
+    filter: opacity(0.7) grayscale(0.5);
 }
 
-@keyframes stoneFloat {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-5px);
-    }
+.level-stone.open {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
 }
+ 
 
 
 /* =========================================
