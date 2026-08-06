@@ -416,35 +416,26 @@ button {
 
 .level-stone {
     position: absolute;
-
-    width: clamp(65px, 15vw, 105px);
+    width: clamp(85px, 18vw, 130px); /* تم تكبير الحجم */
     aspect-ratio: 1;
-
+    background-color: transparent; /* إزالة الرمادي */
     background-image: url("images/stone.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-
+    border: none;
+    outline: none;
     display: flex;
     align-items: center;
     justify-content: center;
-
     color: white;
-
-    font-size: clamp(18px, 4vw, 28px);
-
+    font-size: clamp(20px, 4.5vw, 32px);
     font-weight: 900;
-
-    text-shadow:
-        2px 2px 3px #000,
-        -1px -1px 2px #000;
-
-    transition:
-        transform .25s ease,
-        filter .25s ease;
-
+    text-shadow: 2px 2px 3px #000, -1px -1px 2px #000;
+    transition: transform .25s ease, filter .25s ease;
     z-index: 5;
 }
+
 
 .level-stone:hover {
     transform: scale(1.12);
