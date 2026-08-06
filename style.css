@@ -92,26 +92,19 @@ button {
 
 .ready-text {
     position: absolute;
-
     top: 67%;
-
-    font-family: "Brush Script MT",
-                 "Segoe Script",
-                 cursive;
-
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-family: "Brush Script MT", "Segoe Script", cursive;
     font-size: clamp(42px, 9vw, 78px);
-
     color: #000;
-
     white-space: nowrap;
-
     opacity: 0;
-    width: 0;
     overflow: hidden;
-
-    animation:
-        readyTyping 3s steps(14, end) 3s forwards;
+    animation: readyTyping 3s steps(14, end) 3s forwards;
 }
+ 
 
 .start-btn {
     position: absolute;
