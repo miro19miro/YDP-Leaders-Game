@@ -730,22 +730,15 @@ function prepareQuestions(level, count) {
 ========================================= */
 
 function openLevelEditor(level) {
-
     selectedLevel = level;
 
-
-    document.getElementById(
-        "editorLevelTitle"
-    ).textContent =
-        `Level ${level}`;
-
+    document.getElementById("editorLevelTitle").textContent = `Level ${level}`;
 
     renderQuestionEditor(level);
 
-
     showScreen(screens.editor);
-
 }
+
 
 function renderQuestionEditor(level) {
     const container = document.getElementById("questionsEditor");
@@ -753,27 +746,32 @@ function renderQuestionEditor(level) {
 
     const questions = questionsData[level] || [];
 
-    questions.forEach((question, qIndex) => {
+    questions.forEach((question, index) => {
         const card = document.createElement("div");
         card.className = "question-edit-card";
 
+        // نضمن إعطاء name فريد لكل مجموعة Radio بناءً على رقم السؤال (index)
         card.innerHTML = `
-            <h3>Question ${qIndex + 1}</h3>
-            <textarea class="edit-question" placeholder="Write the question...">${escapeHTML(question.question)}</textarea>
+            <h3>Question ${index + 1}</h3>
 
-            ${question.answers.map((answer, aIndex) => `
-                <div class="answer-edit ${question.correct === aIndex ? 'correct-selected' : ''}">
+            <textarea
+                class="edit-question"
+                placeholder="Write the question..."
+            >${escapeHTML(question.question)}</textarea>
+
+            ${question.answers.map((answer, answerIndex) => `
+                <div class="answer-edit ${question.correct === answerIndex ? 'correct-selected' : ''}">
                     <input
                         type="radio"
-                        name="correct-${qIndex}"
-                        value="${aIndex}"
-                        ${question.correct === aIndex ? "checked" : ""}
+                        name="correct-q-${index}"
+                        value="${answerIndex}"
+                        ${question.correct === answerIndex ? "checked" : ""}
                     >
                     <input
                         type="text"
                         class="edit-answer"
-                        data-answer="${aIndex}"
-                        placeholder="Answer ${aIndex + 1}"
+                        data-answer="${answerIndex}"
+                        placeholder="Answer ${answerIndex + 1}"
                         value="${escapeAttribute(answer)}"
                     >
                 </div>
@@ -785,7 +783,6 @@ function renderQuestionEditor(level) {
 
     updateCorrectAnswerStyles();
 }
-
 
 
 /* =========================================
@@ -897,93 +894,42 @@ document.addEventListener(
    SAVE QUESTIONS
 ========================================= */
 
-const saveQuestionsBtn =
-    document.getElementById(
-        "saveQuestionsBtn"
-    );
+const saveQuestionsBtn = document.getElementById("saveQuestionsBtn");
 
-
-saveQuestionsBtn.addEventListener(
-    "click",
-    saveEditedQuestions
-);
+saveQuestionsBtn.addEventListener("click", saveEditedQuestions);
 
 
 function saveEditedQuestions() {
-
-    const level =
-        selectedLevel;
-
-
-    const cards =
-        document.querySelectorAll(
-            ".question-edit-card"
-        );
-
-
+    const level = selectedLevel;
+    const cards = document.querySelectorAll(".question-edit-card");
     const questions = [];
 
+    cards.forEach((card, index) => {
+        const question = card.querySelector(".edit-question").value.trim();
 
-    cards.forEach(
-        (card, index) => {
+        const answerInputs = card.querySelectorAll(".edit-answer");
+        const answers = Array.from(answerInputs).map(input => input.value.trim());
 
-            const question =
-                card.querySelector(
-                    ".edit-question"
-                ).value.trim();
+        // نحدد زر الـ Radio المحدد بناءً على اسم المجموعة الخاص بالبطاقة الحالية
+        const correctInput = card.querySelector(`input[name="correct-q-${index}"]:checked`);
 
+        // إذا تم تحديد زر، نأخذ قيمته الرقمية (0 لـ A، 1 لـ B، 2 لـ C، 3 لـ D)
+        const correct = correctInput ? Number(correctInput.value) : 0;
 
-            const answerInputs =
-                card.querySelectorAll(
-                    ".edit-answer"
-                );
+        questions.push({
+            question,
+            answers,
+            correct
+        });
+    });
 
-
-            const answers =
-                Array.from(
-                    answerInputs
-                ).map(
-                    input =>
-                        input.value.trim()
-                );
-
-
-            const correctInput =
-                card.querySelector(
-                    `input[name="correct-${index}"]:checked`
-                );
-
-
-            const correct =
-                correctInput
-                    ? Number(correctInput.value)
-                    : 0;
-
-
-            questions.push({
-
-                question,
-                answers,
-                correct
-
-            });
-
-        }
-    );
-
-
-    questionsData[level] =
-        questions;
-
+    questionsData[level] = questions;
 
     saveQuestions();
 
-
-    showToast(
-        `Level ${level} questions saved!`
-    );
-
+    showToast(`Level ${level} questions saved!`);
 }
+
 
 
 /* =========================================
