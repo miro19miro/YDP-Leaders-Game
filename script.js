@@ -164,10 +164,78 @@ const startBtn =
 
 startBtn.addEventListener("click", () => {
 
+    startBackgroundMusic();
+
     showScreen(screens.login);
 
 });
 
+
+/* =========================================
+   BACKGROUND MUSIC
+========================================= */
+
+const backgroundMusic =
+    document.getElementById("backgroundMusic");
+
+const musicBtn =
+    document.getElementById("musicBtn");
+
+let musicEnabled = true;
+
+
+function startBackgroundMusic() {
+
+    if (!musicEnabled) return;
+
+    backgroundMusic.volume = 0.5;
+
+    backgroundMusic.play()
+        .then(() => {
+
+            musicBtn.textContent = "🔊";
+
+        })
+        .catch(error => {
+
+            console.log(
+                "Music could not start:",
+                error
+            );
+
+        });
+
+}
+
+
+musicBtn.addEventListener(
+    "click",
+    () => {
+
+        if (backgroundMusic.paused) {
+
+            musicEnabled = true;
+
+            backgroundMusic.play();
+
+            musicBtn.textContent = "🔊";
+
+            musicBtn.classList.remove("muted");
+
+        } else {
+
+            musicEnabled = false;
+
+            backgroundMusic.pause();
+
+            musicBtn.textContent = "🔇";
+
+            musicBtn.classList.add("muted");
+
+        }
+
+    }
+);
 
 /* =========================================
    LOGIN
