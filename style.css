@@ -1489,3 +1489,48 @@ button {
 .answer-edit.correct-selected input[type="radio"] {
     accent-color: #28a745;
 }
+
+/* =========================================
+   MUSIC BUTTON
+========================================= */
+
+.music-btn {
+    position: fixed;
+
+    top: 15px;
+    right: 15px;
+
+    width: 52px;
+    height: 52px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.9);
+
+    border: 3px solid #3158dc;
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.25);
+
+    font-size: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 99999;
+
+    transition: .2s;
+}
+
+.music-btn:hover {
+    transform: scale(1.08);
+}
+
+.music-btn:active {
+    transform: scale(.92);
+}
+
+.music-btn.muted {
+    opacity: .75;
+}
