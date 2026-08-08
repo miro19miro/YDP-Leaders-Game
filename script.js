@@ -67,15 +67,40 @@ let levelState =
 /*
    Questions saved by the control panel.
 */
-let questionsData =
-    JSON.parse(localStorage.getItem("ydp_questions")) || {};
+let questionsData = {};
+async function loadQuestionsFromFirebase() {
+    try {
+        const snapshot = await getDocs(collection(db, "questions"));
 
+        snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+
+            const levelNumber = Number(
+                docSnap.id.replace("level", "")
+            );
+
+            questionsData[levelNumber] = data.questions || [];
+        });
+
+        createDefaultQuestions();
+
+        console.log("Questions loaded from Firebase ✅");
+
+    } catch (error) {
+        console.error(
+            "Error loading questions:",
+            error
+        );
+    }
+}
 
 /* =========================================
    DEFAULT QUESTIONS
 ========================================= */
 
 function createDefaultQuestions() {
+
+    let changed = false;
 
     for (let level = 1; level <= 10; level++) {
 
@@ -94,13 +119,14 @@ function createDefaultQuestions() {
                 }
             ];
 
+            changed = true;
         }
-
     }
 
-    saveQuestions();
+    if (changed) {
+        saveQuestions();
+    }
 }
-
 
 /* =========================================
    SAVE DATA
@@ -115,14 +141,34 @@ function saveLevelState() {
 }
 
 
-function saveQuestions() {
+async function saveQuestions() {
 
-    localStorage.setItem(
-        "ydp_questions",
-        JSON.stringify(questionsData)
-    );
-}
+    try {
 
+        for (const level in questionsData) {
+
+            await setDoc(
+                doc(db, "questions", `level${level}`),
+                {
+                    questions: questionsData[level]
+                }
+            );
+
+        }
+
+        console.log("Questions saved to Firebase ✅");
+
+    } catch (error) {
+
+        console.error(
+            "Error saving questions:",
+            error
+        );
+
+        showToast("Error saving questions");
+
+    }
+    }
 
 /* =========================================
    SCREEN MANAGEMENT
@@ -1663,34 +1709,25 @@ document.addEventListener(
    INITIALIZATION
 ========================================= */
 
-createDefaultQuestions();
+async function initializeGame() {
 
+    await loadQuestionsFromFirebase();
 
-/*
-   Make sure Level 1 exists.
-*/
+    if (
+        typeof levelState[1] === "undefined"
+    ) {
 
-if (
-    typeof levelState[1] ===
-    "undefined"
-) {
+        levelState[1] = true;
 
-    levelState[1] = true;
+        saveLevelState();
 
-    saveLevelState();
+    }
 
+    showScreen(screens.splash);
+
+    console.log(
+        "YDP Leaders Game loaded successfully 🚀"
+    );
 }
 
-
-/*
-   Start at splash.
-*/
-
-showScreen(
-    screens.splash
-);
-
-
-console.log(
-    "YDP Leaders Game loaded successfully 🚀"
-);
+initializeGame();
