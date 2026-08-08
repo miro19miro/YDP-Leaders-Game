@@ -1,12 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
 import {
     getFirestore,
     doc,
     setDoc,
-    getDocs,
     collection,
-    onSnapshot
+    onSnapshot,
+    addDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
@@ -48,52 +47,80 @@ let selectedLevel = null;
 /*
    Default level state.
    Level 1 is open at the beginning.
-*/
-let levelState =
-    JSON.parse(localStorage.getItem("ydp_level_state")) || {
-        1: true,
-        2: false,
-        3: false,
-        4: false,
-        5: false,
-        6: false,
-        7: false,
-        8: false,
-        9: false,
-        10: false
-    };
-
+*/let levelState = {
+    1: true,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
+    6: false,
+    7: false,
+    8: false,
+    9: false,
+    10: false
+};
 
 /*
    Questions saved by the control panel.
 */
 let questionsData = {};
-async function loadQuestionsFromFirebase() {
-    try {
-        const snapshot = await getDocs(collection(db, "questions"));
+function listenToQuestions() {
 
-        snapshot.forEach((docSnap) => {
-            const data = docSnap.data();
+    const questionsRef =
+        collection(db, "questions");
 
-            const levelNumber = Number(
-                docSnap.id.replace("level", "")
+    onSnapshot(
+        questionsRef,
+        (snapshot) => {
+
+            snapshot.forEach((docSnap) => {
+
+                const data =
+                    docSnap.data();
+
+                const levelNumber =
+                    Number(
+                        docSnap.id.replace(
+                            "level",
+                            ""
+                        )
+                    );
+
+                if (
+                    !isNaN(levelNumber) &&
+                    levelNumber >= 1 &&
+                    levelNumber <= 10
+                ) {
+
+                    questionsData[levelNumber] =
+                        data.questions || [];
+
+                }
+
+            });
+
+            createDefaultQuestions();
+
+            console.log(
+                "Questions synced with Firebase ✅"
             );
 
-            questionsData[levelNumber] = data.questions || [];
-        });
+        },
+        (error) => {
 
-        createDefaultQuestions();
+            console.error(
+                "Error listening to questions:",
+                error
+            );
 
-        console.log("Questions loaded from Firebase ✅");
+            showToast(
+                "Error loading questions"
+            );
 
-    } catch (error) {
-        console.error(
-            "Error loading questions:",
-            error
-        );
-    }
+        }
+    );
+
 }
-
 /* =========================================
    DEFAULT QUESTIONS
 ========================================= */
@@ -132,12 +159,89 @@ function createDefaultQuestions() {
    SAVE DATA
 ========================================= */
 
-function saveLevelState() {
+async function saveLevelState() {
 
-    localStorage.setItem(
-        "ydp_level_state",
-        JSON.stringify(levelState)
+    try {
+
+        await setDoc(
+            doc(db, "game", "settings"),
+            {
+                levelState: levelState
+            },
+            {
+                merge: true
+            }
+        );
+
+        console.log("Level state saved to Firebase ✅");
+
+    } catch (error) {
+
+        console.error(
+            "Error saving level state:",
+            error
+        );
+
+        showToast("Error saving level state");
+
+    }
+
+}
+
+function listenToLevelState() {
+
+    const settingsRef =
+        doc(db, "game", "settings");
+
+    onSnapshot(
+        settingsRef,
+        async (snapshot) => {
+
+            if (snapshot.exists()) {
+
+                const data = snapshot.data();
+
+                if (data.levelState) {
+
+                    levelState = {
+                        ...levelState,
+                        ...data.levelState
+                    };
+
+                }
+
+            } else {
+
+                // أول مرة فقط
+                await saveLevelState();
+
+            }
+
+            console.log(
+                "Level state synced with Firebase ✅"
+            );
+
+            // لو اللاعب على الـMap نحدثها فورًا
+            if (
+                screens.map &&
+                !screens.map.classList.contains("hidden")
+            ) {
+
+                setupMap();
+
+            }
+
+        },
+        (error) => {
+
+            console.error(
+                "Error listening to level state:",
+                error
+            );
+
+        }
     );
+
 }
 
 
@@ -718,7 +822,7 @@ function setupLevelControls() {
 }
 
 
-function toggleLevel(level, button) {
+async function toggleLevel(level, button) {
 
     levelState[level] =
         !levelState[level];
@@ -743,7 +847,7 @@ function toggleLevel(level, button) {
     }
 
 
-    saveLevelState();
+    await saveLevelState();
 
 }
 
@@ -1557,44 +1661,55 @@ function finishLevel() {
    SAVE PLAYER RESULT
 ========================================= */
 
-function savePlayerResult() {
+async function savePlayerResult() {
 
     if (
         !currentUser ||
         currentUser.type !== "player"
     ) {
+
         return;
+
     }
 
 
-    const history =
-        JSON.parse(
-            localStorage.getItem(
-                "ydp_player_history"
-            )
-        ) || [];
+    try {
+
+        await addDoc(
+            collection(db, "results"),
+            {
+
+                name: currentUser.name,
+
+                code: currentUser.code,
+
+                level: currentLevel,
+
+                score: currentScore,
+
+                date: serverTimestamp()
+
+            }
+        );
 
 
-    history.push({
-
-        name: currentUser.name,
-
-        code: currentUser.code,
-
-        level: currentLevel,
-
-        score: currentScore,
-
-        date:
-            new Date().toISOString()
-
-    });
+        console.log(
+            "Player result saved to Firebase ✅"
+        );
 
 
-    localStorage.setItem(
-        "ydp_player_history",
-        JSON.stringify(history)
-    );
+    } catch (error) {
+
+        console.error(
+            "Error saving player result:",
+            error
+        );
+
+        showToast(
+            "Error saving result"
+        );
+
+    }
 
 }
 
@@ -1709,25 +1824,33 @@ document.addEventListener(
    INITIALIZATION
 ========================================= */
 
-async function initializeGame() {
+function initializeGame() {
 
-    await loadQuestionsFromFirebase();
+    // تشغيل المزامنة مع Firebase
+    listenToQuestions();
 
+    listenToLevelState();
+
+
+    // Level 1 مفتوح افتراضيًا
     if (
         typeof levelState[1] === "undefined"
     ) {
 
         levelState[1] = true;
 
-        saveLevelState();
-
     }
 
-    showScreen(screens.splash);
+
+    showScreen(
+        screens.splash
+    );
+
 
     console.log(
         "YDP Leaders Game loaded successfully 🚀"
     );
+
 }
 
 initializeGame();
