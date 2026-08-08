@@ -11,6 +11,16 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+const videoIntro = document.getElementById("videoIntro");
+const introVideo = document.getElementById("introVideo");
+
+introVideo.addEventListener("ended", () => {
+    videoIntro.style.opacity = "0";
+
+    setTimeout(() => {
+        videoIntro.style.display = "none";
+    }, 500);
+});
 
 /* =========================================
    FIREBASE CONFIG
