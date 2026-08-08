@@ -21,7 +21,6 @@ introVideo.addEventListener("ended", () => {
         videoIntro.style.display = "none";
     }, 500);
 });
-
 /* =========================================
    FIREBASE CONFIG
 ========================================= */
