@@ -11,24 +11,6 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-/* =========================================
-   FIREBASE CONFIG
-========================================= */
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDKmUOtIFdugOxRDj3P38ZDwHLaenoqgpU",
-    authDomain: "ydp-leaders-game.firebaseapp.com",
-    projectId: "ydp-leaders-game",
-    storageBucket: "ydp-leaders-game.firebasestorage.app",
-    messagingSenderId: "749753350941",
-    appId: "1:749753350941:web:fea92e74a209cd6f3d7ff4",
-    measurementId: "G-C7P01D4T99"
-};
-
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
 
 /* =========================================
    FIREBASE CONFIG
@@ -45,9 +27,6 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
 
 /* =========================================
    YDP LEADERS GAME
