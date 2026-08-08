@@ -27,6 +27,13 @@ const firebaseConfig = {
 };
 
 
+/* =========================================
+   FIREBASE INITIALIZATION
+========================================= */
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 
 /* =========================================
    YDP LEADERS GAME
