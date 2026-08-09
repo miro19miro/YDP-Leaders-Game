@@ -2908,6 +2908,85 @@ document.addEventListener(
     }
 );
 
+/* =========================================
+   FOREST FLYING BIRDS
+========================================= */
+
+function createFlyingBirds() {
+
+    const container = document.getElementById("birdsContainer");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const birdCount = 7;
+
+    for (let i = 0; i < birdCount; i++) {
+
+        const bird = document.createElement("div");
+
+        bird.className = "flying-bird";
+
+        const startY =
+            Math.random() * 65 + 5;
+
+        const endY =
+            Math.random() * 65 + 5;
+
+        const duration =
+            Math.random() * 12 + 15;
+
+        const delay =
+            Math.random() * 15 - 15;
+
+        const size =
+            Math.random() * 0.7 + 0.55;
+
+        const opacity =
+            Math.random() * 0.35 + 0.45;
+
+        const angle =
+            Math.random() * 8 - 4;
+
+        bird.style.setProperty(
+            "--start-y",
+            `${startY}%`
+        );
+
+        bird.style.setProperty(
+            "--end-y",
+            `${endY}%`
+        );
+
+        bird.style.setProperty(
+            "--fly-duration",
+            `${duration}s`
+        );
+
+        bird.style.setProperty(
+            "--fly-delay",
+            `${delay}s`
+        );
+
+        bird.style.setProperty(
+            "--bird-size",
+            size
+        );
+
+        bird.style.setProperty(
+            "--bird-opacity",
+            opacity
+        );
+
+        bird.style.setProperty(
+            "--bird-angle",
+            `${angle}deg`
+        );
+
+        container.appendChild(bird);
+    }
+}
 
 /* =========================================
    INITIALIZATION
