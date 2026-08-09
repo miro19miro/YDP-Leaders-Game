@@ -874,61 +874,64 @@ const penguin =
    LEVEL POSITIONS
 ========================================= */
 
+/* =========================================
+   LEVEL POSITIONS
+   New Jungle Map
+========================================= */
+
 const levelPositions = {
 
     1: {
-        left: 75,
-        top: 82
+        left: 45,
+        top: 86
     },
 
     2: {
-        left: 63,
-        top: 72
-    },
-
-    3: {
-        left: 48,
+        left: 67,
         top: 78
     },
 
+    3: {
+        left: 85,
+        top: 70
+    },
+
     4: {
-        left: 34,
-        top: 66
+        left: 25,
+        top: 61
     },
 
     5: {
         left: 47,
-        top: 53
+        top: 63
     },
 
     6: {
-        left: 62,
-        top: 45
+        left: 73,
+        top: 60
     },
 
     7: {
-        left: 48,
-        top: 35
+        left: 58,
+        top: 50
     },
 
     8: {
-        left: 34,
-        top: 28
+        left: 63,
+        top: 44
     },
 
     9: {
         left: 52,
-        top: 18
+        top: 39
     },
 
     10: {
-        left: 70,
-        top: 10
+        left: 35,
+        top: 53
     }
 
 };
-
-
 /* =========================================
    SETUP MAP
 ========================================= */
@@ -938,7 +941,6 @@ function setupMap() {
     if (!levelsContainer) {
         return;
     }
-
 
     levelsContainer.innerHTML = "";
 
@@ -950,9 +952,7 @@ function setupMap() {
     ) {
 
         const stone =
-            document.createElement(
-                "button"
-            );
+            document.createElement("button");
 
 
         stone.className =
@@ -967,6 +967,10 @@ function setupMap() {
             level;
 
 
+        /* =========================
+           POSITION
+        ========================== */
+
         stone.style.left =
             `${levelPositions[level].left}%`;
 
@@ -975,22 +979,24 @@ function setupMap() {
             `${levelPositions[level].top}%`;
 
 
-        if (
-            levelState[level]
-        ) {
+        /* =========================
+           OPEN / LOCKED
+        ========================== */
 
-            stone.classList.add(
-                "open"
-            );
+        if (levelState[level]) {
+
+            stone.classList.add("open");
 
         } else {
 
-            stone.classList.add(
-                "locked"
-            );
+            stone.classList.add("locked");
 
         }
 
+
+        /* =========================
+           CLICK
+        ========================== */
 
         stone.addEventListener(
             "click",
@@ -1009,42 +1015,11 @@ function setupMap() {
     }
 
 
-    /*
-       Penguin animation
-    */
+    /* =========================
+       PENGUIN POSITION
+    ========================== */
 
-    movePenguin(10);
-
-
-    const animationLevels = [
-        9,
-        8,
-        7,
-        6,
-        5,
-        4,
-        3,
-        2,
-        1
-    ];
-
-
-    animationLevels.forEach(
-        (level, index) => {
-
-            setTimeout(
-                () => {
-
-                    movePenguin(level);
-
-                },
-
-                400 * (index + 1)
-
-            );
-
-        }
-    );
+    restorePenguinPosition();
 
 }
 
@@ -1077,24 +1052,68 @@ function movePenguin(level) {
 
 }
 
+/* =========================================
+   SAVE PENGUIN POSITION
+========================================= */
+
+function savePenguinPosition(level) {
+
+    localStorage.setItem(
+        "penguinPosition",
+        String(level)
+    );
+
+}
+
+
+/* =========================================
+   RESTORE PENGUIN POSITION
+========================================= */
+
+function restorePenguinPosition() {
+
+    if (!penguin) {
+        return;
+    }
+
+
+    const savedLevel =
+        Number(
+            localStorage.getItem(
+                "penguinPosition"
+            )
+        );
+
+
+    /*
+       If there is no saved position,
+       start at Level 1.
+    */
+
+    const level =
+        levelPositions[savedLevel]
+            ? savedLevel
+            : 1;
+
+
+    movePenguin(level);
+
+}
 
 /* =========================================
    SELECT LEVEL
 ========================================= */
 
-function selectLevel(level) {
+async function selectLevel(level) {
 
-    selectedLevel =
-        level;
+    selectedLevel = level;
 
 
-    /*
-       Locked level
-    */
+    /* =========================
+       LOCKED LEVEL
+    ========================== */
 
-    if (
-        !levelState[level]
-    ) {
+    if (!levelState[level]) {
 
         showLockedModal();
 
@@ -1103,13 +1122,18 @@ function selectLevel(level) {
     }
 
 
-    /*
-       Admin
-    */
+    /* =========================
+       ADMIN
+    ========================== */
 
     if (
         currentUser === "admin"
     ) {
+
+        /*
+           Admin does NOT move the penguin.
+           Admin only manages the game.
+        */
 
         openLevelEditor(level);
 
@@ -1118,13 +1142,49 @@ function selectLevel(level) {
     }
 
 
-    /*
-       Player
-    */
+    /* =========================
+       PLAYER
+    ========================== */
 
     if (
         currentUser === "player"
     ) {
+
+        /*
+           Move penguin to selected level
+           BEFORE opening it.
+        */
+
+        movePenguin(level);
+
+
+        /*
+           Save the new position.
+        */
+
+        savePenguinPosition(level);
+
+
+        /*
+           Wait for the penguin animation
+           to finish.
+        */
+
+        await new Promise(
+            resolve => {
+
+                setTimeout(
+                    resolve,
+                    1200
+                );
+
+            }
+        );
+
+
+        /*
+           Now open the level.
+        */
 
         openNameScreen(level);
 
