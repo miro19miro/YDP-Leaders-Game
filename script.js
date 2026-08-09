@@ -2988,6 +2988,10 @@ function createFlyingBirds() {
     }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    createFlyingBirds();
+});
+
 /* =========================================
    INITIALIZATION
 ========================================= */
