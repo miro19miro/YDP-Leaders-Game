@@ -422,6 +422,168 @@ button {
     display: block;
 }
 
+/* =========================================
+   FLYING FOREST BIRDS
+========================================= */
+
+#birdsContainer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.flying-bird {
+    position: absolute;
+
+    width: 32px;
+    height: 18px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(2px 3px 2px rgba(0, 0, 0, .45));
+
+    animation:
+        birdFly var(--fly-duration) linear var(--fly-delay) infinite,
+        birdFade var(--fly-duration) ease-in-out var(--fly-delay) infinite;
+}
+
+/* جسم الطائر */
+.flying-bird::before,
+.flying-bird::after {
+    content: "";
+
+    position: absolute;
+
+    top: 7px;
+
+    width: 18px;
+    height: 7px;
+
+    background: #050505;
+
+    border-radius:
+        100% 0 100% 0;
+
+    transform-origin: bottom center;
+}
+
+/* الجناح الشمال */
+.flying-bird::before {
+    left: 0;
+
+    transform:
+        rotate(25deg);
+
+    animation:
+        wingLeft .45s ease-in-out infinite;
+}
+
+/* الجناح اليمين */
+.flying-bird::after {
+    right: 0;
+
+    transform:
+        scaleX(-1)
+        rotate(25deg);
+
+    animation:
+        wingRight .45s ease-in-out infinite;
+}
+
+
+/* حركة الجناحين */
+
+@keyframes wingLeft {
+
+    0%,
+    100% {
+        transform:
+            rotate(25deg)
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            rotate(-25deg)
+            translateY(-4px);
+    }
+}
+
+@keyframes wingRight {
+
+    0%,
+    100% {
+        transform:
+            scaleX(-1)
+            rotate(25deg)
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            scaleX(-1)
+            rotate(-25deg)
+            translateY(-4px);
+    }
+}
+
+
+/* الطيران عبر الخريطة */
+
+@keyframes birdFly {
+
+    0% {
+        left: -8%;
+        top: var(--start-y);
+        transform:
+            scale(var(--bird-size))
+            rotate(var(--bird-angle));
+    }
+
+    25% {
+        top: calc(var(--start-y) - 25px);
+    }
+
+    50% {
+        top: calc(var(--start-y) + 18px);
+    }
+
+    75% {
+        top: calc(var(--start-y) - 15px);
+    }
+
+    100% {
+        left: 108%;
+        top: var(--end-y);
+        transform:
+            scale(var(--bird-size))
+            rotate(var(--bird-angle));
+    }
+}
+
+
+@keyframes birdFade {
+
+    0%,
+    10% {
+        opacity: 0;
+    }
+
+    20%,
+    75% {
+        opacity: var(--bird-opacity);
+    }
+
+    90%,
+    100% {
+        opacity: 0;
+    }
+}
 
 /* =========================================
    LEVEL STONES
