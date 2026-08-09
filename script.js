@@ -6,6 +6,7 @@ import {
     doc,
     setDoc,
     getDoc,
+    updateDoc,
     deleteDoc,
     collection,
     onSnapshot,
@@ -13,7 +14,8 @@ import {
     serverTimestamp,
     query,
     where,
-    getDocs
+    getDocs,
+    increment
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";const videoIntro = document.getElementById("videoIntro");
 const introVideo = document.getElementById("introVideo");
 
@@ -67,6 +69,15 @@ let currentScore = 0;
 let selectedLevel = null;
 let questionAnswered = false;
 
+/* =========================================
+   PLAYER SYSTEM
+========================================= */
+
+let playersData = [];
+
+let selectedPlayerId = null;
+
+let levelStartTime = null;
 
 /* =========================================
    DEFAULT LEVEL STATE
@@ -98,15 +109,6 @@ let questionsData = {};
 */
 let questionsInitialized = false;
 
-/* =========================================
-   PLAYERS SYSTEM
-========================================= */
-
-let playersData = [];
-
-let selectedPlayerId = null;
-
-let levelStartTime = null;
 
 
 /* =========================================
@@ -226,6 +228,7 @@ onSnapshot(
         );
 
         populatePlayerSelect();
+        renderPlayersList();
 
     },
 
@@ -1378,46 +1381,85 @@ async function selectLevel(level) {
     ========================== */
 
     if (
-        currentUser === "player"
-    ) {
+    currentUser &&
+    currentUser.type === "player"
+) {
 
-        /*
-           Move penguin to selected level
-           BEFORE opening it.
-        */
-
-        movePenguin(level);
-
-
-        /*
-           Save the new position.
-        */
-
-        savePenguinPosition(level);
-
-
-        /*
-           Wait for the penguin animation
-           to finish.
-        */
-
-        await new Promise(
-            resolve => {
-
-                setTimeout(
-                    resolve,
-                    1200
-                );
-
-            }
+    const alreadyPlayed =
+        await hasPlayerPlayedLevel(
+            currentUser.id,
+            level
         );
 
+    if (alreadyPlayed) {
 
-        /*
-           Now open the level.
-        */
+        showToast(
+            `You already played Level ${level} ❌`
+        );
 
-        openNameScreen(level);
+        return;
+
+    }
+
+    movePenguin(level);
+
+    savePenguinPosition(level);
+
+    await new Promise(
+        resolve => {
+
+            setTimeout(
+                resolve,
+                1200
+            );
+
+        }
+    );
+
+    openNameScreen(level);
+
+}
+
+    /* =========================================
+   CHECK PLAYER LEVEL
+========================================= */
+
+async function hasPlayerPlayedLevel(
+    playerId,
+    level
+) {
+
+    try {
+
+        const resultId =
+            `${playerId}_level${level}`;
+
+        const resultRef =
+            doc(
+                db,
+                "results",
+                resultId
+            );
+
+        const resultSnap =
+            await getDoc(
+                resultRef
+            );
+
+        return resultSnap.exists();
+
+    } catch (error) {
+
+        console.error(
+            "Error checking player level:",
+            error
+        );
+
+        showToast(
+            "Error checking level data."
+        );
+
+        return true;
 
     }
 
@@ -1476,7 +1518,460 @@ if (closeLockedBtn) {
 
 }
 
+    /* =========================================
+   PLAYERS ADMIN
+========================================= */
 
+function renderPlayersList() {
+
+    const container =
+        document.getElementById(
+            "playersList"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    if (
+        playersData.length === 0
+    ) {
+
+        container.innerHTML = `
+            <p class="data-empty">
+                No players registered yet.
+            </p>
+        `;
+
+        return;
+
+    }
+
+    playersData.forEach(
+        player => {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+            row.className =
+                "player-admin-row";
+
+            row.innerHTML = `
+
+                <div class="player-admin-info">
+
+                    <strong>
+                        ${escapeHTML(
+                            player.name
+                        )}
+                    </strong>
+
+                    <span>
+                        Total Score:
+                        ${player.totalScore}
+                    </span>
+
+                </div>
+
+                <button
+                    class="delete-player-btn"
+                    type="button"
+                    data-player-id="${player.id}"
+                >
+                    Delete
+                </button>
+
+            `;
+
+            container.appendChild(
+                row
+            );
+
+        }
+    );
+
+    container
+        .querySelectorAll(
+            ".delete-player-btn"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    deletePlayer(
+                        button.dataset.playerId
+                    );
+
+                }
+            );
+
+        });
+loadTotalScores();
+}
+
+
+/* =========================================
+   ADD PLAYER BUTTON
+========================================= */
+
+const addPlayerBtn =
+    document.getElementById(
+        "addPlayerBtn"
+    );
+
+if (addPlayerBtn) {
+
+    addPlayerBtn.addEventListener(
+        "click",
+        async () => {
+
+            const input =
+                document.getElementById(
+                    "newPlayerName"
+                );
+
+            if (!input) {
+                return;
+            }
+
+            const name =
+                input.value.trim();
+
+            const saved =
+                await addPlayer(name);
+
+            if (saved) {
+
+                input.value = "";
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   DELETE PLAYER
+========================================= */
+
+async function deletePlayer(
+    playerId
+) {
+
+    const player =
+        playersData.find(
+            item => item.id === playerId
+        );
+
+    if (!player) {
+        return;
+    }
+
+    const confirmed =
+        confirm(
+            `Delete player "${player.name}"?`
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        await deleteDoc(
+            doc(
+                db,
+                "players",
+                playerId
+            )
+        );
+
+        showToast(
+            "Player deleted."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Error deleting player:",
+            error
+        );
+
+        showToast(
+            "Error deleting player."
+        );
+
+    }
+
+}
+
+    /* =========================================
+   OPEN DATA
+========================================= */
+
+const dataLevelSelect =
+    document.getElementById(
+        "dataLevelSelect"
+    );
+
+if (dataLevelSelect) {
+
+    dataLevelSelect.addEventListener(
+        "change",
+        () => {
+
+            const level =
+                Number(
+                    dataLevelSelect.value
+                );
+
+            if (!level) {
+
+                clearLevelData();
+
+                return;
+
+            }
+
+            loadLevelData(level);
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   LOAD LEVEL DATA
+========================================= */
+
+async function loadLevelData(
+    level
+) {
+
+    const container =
+        document.getElementById(
+            "levelDataContainer"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = `
+        <p class="data-empty">
+            Loading data...
+        </p>
+    `;
+
+    try {
+
+        const resultsRef =
+            collection(
+                db,
+                "results"
+            );
+
+        const q =
+            query(
+                resultsRef,
+                where(
+                    "level",
+                    "==",
+                    level
+                )
+            );
+
+        const snapshot =
+            await getDocs(q);
+
+        if (snapshot.empty) {
+
+            container.innerHTML = `
+                <p class="data-empty">
+                    No players have completed Level ${level} yet.
+                </p>
+            `;
+
+            return;
+
+        }
+
+        const results = [];
+
+        snapshot.forEach(
+            docSnap => {
+
+                results.push(
+                    docSnap.data()
+                );
+
+            }
+        );
+
+        results.sort(
+            (a, b) =>
+                a.name.localeCompare(
+                    b.name,
+                    "ar"
+                )
+        );
+
+        container.innerHTML = `
+            <h3>
+                Level ${level} Results
+            </h3>
+
+            <div class="data-table">
+
+                <div class="data-row data-header">
+
+                    <span>Player</span>
+
+                    <span>Start</span>
+
+                    <span>End</span>
+
+                    <span>Score</span>
+
+                </div>
+
+                ${results.map(
+                    result => `
+
+                    <div class="data-row">
+
+                        <span>
+                            ${escapeHTML(
+                                result.name || "-"
+                            )}
+                        </span>
+
+                        <span>
+                            ${formatFirebaseDate(
+                                result.startTime
+                            )}
+                        </span>
+
+                        <span>
+                            ${formatFirebaseDate(
+                                result.endTime
+                            )}
+                        </span>
+
+                        <span class="score-cell">
+                            ${Number(
+                                result.score || 0
+                            )}
+                        </span>
+
+                    </div>
+
+                    `
+                ).join("")}
+
+            </div>
+        `;
+
+    } catch (error) {
+
+        console.error(
+            "Error loading level data:",
+            error
+        );
+
+        container.innerHTML = `
+            <p class="data-empty">
+                Error loading data.
+            </p>
+        `;
+
+    }
+
+}
+
+
+/* =========================================
+   FORMAT FIREBASE DATE
+========================================= */
+
+function formatFirebaseDate(
+    timestamp
+) {
+
+    if (!timestamp) {
+        return "-";
+    }
+
+    let date;
+
+    if (
+        timestamp.toDate
+    ) {
+
+        date =
+            timestamp.toDate();
+
+    } else {
+
+        date =
+            new Date(timestamp);
+
+    }
+
+    return date.toLocaleString(
+        "en-EG",
+        {
+
+            day: "2-digit",
+
+            month: "2-digit",
+
+            year: "numeric",
+
+            hour: "2-digit",
+
+            minute: "2-digit",
+
+            second: "2-digit"
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   CLEAR LEVEL DATA
+========================================= */
+
+function clearLevelData() {
+
+    const container =
+        document.getElementById(
+            "levelDataContainer"
+        );
+
+    if (container) {
+
+        container.innerHTML = `
+            <p class="data-empty">
+                Select a level to view player data.
+            </p>
+        `;
+
+    }
+
+                              }
+    
 /* =========================================
    CONTROL PANEL
 ========================================= */
@@ -2348,72 +2843,80 @@ if (playerNameInput) {
 }
 
 
+/* =========================================
+   START PLAYER GAME
+========================================= */
+
 function startPlayerGame() {
 
-    const playerName =
+    const playerSelect =
         document.getElementById(
-            "playerName"
+            "playerSelect"
         );
-
 
     const error =
         document.getElementById(
             "nameError"
         );
 
-
     if (
-        !playerName ||
+        !playerSelect ||
         !error
     ) {
-
         return;
-
     }
 
+    const playerId =
+        playerSelect.value;
 
-    const name =
-        playerName.value.trim();
+    error.textContent = "";
 
-
-    const words =
-        name.split(/\s+/);
-
-
-    if (
-        !name ||
-        words.length < 3
-    ) {
+    if (!playerId) {
 
         error.textContent =
-            "Please enter your full name (3 names).";
+            "Please select your name.";
 
         return;
 
     }
 
+    const player =
+        playersData.find(
+            item => item.id === playerId
+        );
+
+    if (!player) {
+
+        error.textContent =
+            "Player not found.";
+
+        return;
+
+    }
+
+    selectedPlayerId =
+        player.id;
 
     currentUser = {
 
         type: "player",
 
-        name: name,
+        id: player.id,
+
+        name: player.name,
 
         code: PLAYER_CODE
 
     };
 
-
     currentLevel =
         selectedLevel;
-
 
     currentQuestionIndex = 0;
 
     currentScore = 0;
 
     questionAnswered = false;
-
 
     startQuestions();
 
@@ -2424,6 +2927,8 @@ function startPlayerGame() {
 ========================================= */
 
 function startQuestions() {
+
+    levelStartTime = new Date();
 
     let questions =
         questionsData[currentLevel];
@@ -2913,30 +3418,59 @@ async function savePlayerResult() {
 
     if (
         !currentUser ||
-        currentUser.type !== "player"
+        currentUser.type !== "player" ||
+        !currentUser.id ||
+        !currentLevel
     ) {
 
         return;
 
     }
 
-
     try {
 
-        await addDoc(
+        const resultId =
+            `${currentUser.id}_level${currentLevel}`;
 
-            collection(
+        const resultRef =
+            doc(
                 db,
-                "results"
-            ),
+                "results",
+                resultId
+            );
 
+        const existing =
+            await getDoc(
+                resultRef
+            );
+
+        /*
+           Safety check:
+           Don't save the same level twice.
+        */
+
+        if (existing.exists()) {
+
+            console.log(
+                "This level result already exists."
+            );
+
+            return;
+
+        }
+
+        const endTime =
+            new Date();
+
+        await setDoc(
+            resultRef,
             {
+
+                playerId:
+                    currentUser.id,
 
                 name:
                     currentUser.name,
-
-                code:
-                    currentUser.code,
 
                 level:
                     currentLevel,
@@ -2944,18 +3478,47 @@ async function savePlayerResult() {
                 score:
                     currentScore,
 
-                date:
-                    serverTimestamp()
+                startTime:
+                    levelStartTime
+                        ? levelStartTime
+                        : endTime,
+
+                endTime:
+                    endTime,
+
+                status:
+                    "completed",
+
+                code:
+                    PLAYER_CODE
 
             }
-
         );
 
+        /*
+           Update player's total score.
+        */
+
+        const playerRef =
+            doc(
+                db,
+                "players",
+                currentUser.id
+            );
+
+        await updateDoc(
+            playerRef,
+            {
+
+                totalScore:
+                    increment(currentScore)
+
+            }
+        );
 
         console.log(
-            "Player result saved to Firebase ✅"
+            "Player result saved successfully ✅"
         );
-
 
     } catch (error) {
 
@@ -2964,15 +3527,13 @@ async function savePlayerResult() {
             error
         );
 
-
         showToast(
-            "Error saving result"
+            "Error saving result."
         );
 
     }
 
 }
-
 
 /* =========================================
    BACK TO MAP
@@ -3216,39 +3777,15 @@ function createFlyingBirds() {
 
 function initializeGame() {
 
-    /*
-       Start Firebase listeners.
-    */
-listenToPlayers();
+    listenToPlayers();
 
     listenToQuestions();
 
     listenToLevelState();
 
-
-    /*
-       Level 1 is open by default
-       if there is no value yet.
-    */
-
-    if (
-        typeof levelState[1] ===
-        "undefined"
-    ) {
-
-        levelState[1] = true;
-
-    }
-
-
-    /*
-       Show splash screen.
-    */
-
     showScreen(
         screens.splash
     );
-
 
     console.log(
         "YDP Leaders Game loaded successfully 🚀"
