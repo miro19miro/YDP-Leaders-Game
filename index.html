@@ -225,6 +225,96 @@
 
             </div>
 
+            <!-- =========================
+     PLAYERS MANAGEMENT
+========================= -->
+
+<div class="admin-section">
+
+    <h2>Players</h2>
+
+    <div class="add-player-box">
+
+        <input
+            id="newPlayerName"
+            type="text"
+            placeholder="Enter full name (3 names)"
+            autocomplete="off"
+            maxlength="60"
+        >
+
+        <button
+            id="addPlayerBtn"
+            class="primary-btn"
+            type="button"
+        >
+            + Add Player
+        </button>
+
+    </div>
+
+    <div
+        id="playersList"
+        class="players-list"
+    ></div>
+
+</div>
+
+
+<!-- =========================
+     OPEN DATA
+========================= -->
+
+<div class="admin-section">
+
+    <h2>Open Data</h2>
+
+    <label for="dataLevelSelect">
+        Select Level
+    </label>
+
+    <select
+        id="dataLevelSelect"
+        class="admin-select"
+    >
+
+        <option value="">
+            Select Level
+        </option>
+
+        <option value="1">Level 1</option>
+        <option value="2">Level 2</option>
+        <option value="3">Level 3</option>
+        <option value="4">Level 4</option>
+        <option value="5">Level 5</option>
+        <option value="6">Level 6</option>
+        <option value="7">Level 7</option>
+        <option value="8">Level 8</option>
+        <option value="9">Level 9</option>
+        <option value="10">Level 10</option>
+
+    </select>
+
+
+    <div
+        id="levelDataContainer"
+        class="level-data-container"
+    >
+
+        <p class="data-empty">
+            Select a level to view player data.
+        </p>
+
+    </div>
+
+
+    <div
+        id="totalScoresContainer"
+        class="total-scores-container"
+    ></div>
+
+</div>
+            
         </div>
 
     </section>
