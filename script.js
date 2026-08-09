@@ -951,7 +951,8 @@ function setupMap() {
     if (!levelsContainer) {
         return;
     }
-
+createFlyingBirds();
+    
     levelsContainer.innerHTML = "";
 
 
@@ -2503,7 +2504,7 @@ function answerQuestion(
 
 
         showToast(
-            "+10 points! 🎉"
+            "+10 points! 🎉🐧"
         );
 
     } else {
@@ -2534,7 +2535,7 @@ function answerQuestion(
 
 
         showToast(
-            "-1 point"
+            "-10 point 💔🐧"
         );
 
     }
@@ -2988,9 +2989,6 @@ function createFlyingBirds() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    createFlyingBirds();
-});
 
 /* =========================================
    INITIALIZATION
