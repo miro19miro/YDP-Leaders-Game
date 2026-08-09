@@ -3595,7 +3595,6 @@ function finishLevel() {
 /* =========================================
    SAVE PLAYER RESULT
 ========================================= */
-
 async function savePlayerResult() {
 
     if (
@@ -3626,77 +3625,154 @@ async function savePlayerResult() {
                 resultRef
             );
 
-        /*
-           Safety check:
-           Don't save the same level twice.
-        */
-
-        if (existing.exists()) {
-
-            console.log(
-                "This level result already exists."
-            );
-
-            return;
-
-        }
-
         const endTime =
             new Date();
 
-        await setDoc(
-            resultRef,
-            {
-
-                playerId:
-                    currentUser.id,
-
-                name:
-                    currentUser.name,
-
-                level:
-                    currentLevel,
-
-                score:
-                    currentScore,
-
-                startTime:
-                    levelStartTime
-                        ? levelStartTime
-                        : endTime,
-
-                endTime:
-                    endTime,
-
-                status:
-                    "completed",
-
-                code:
-                    PLAYER_CODE
-
-            }
-        );
-
         /*
-           Update player's total score.
+           =========================
+           FIRST PLAY
+           =========================
         */
 
-        const playerRef =
-            doc(
-                db,
-                "players",
-                currentUser.id
+        if (!existing.exists()) {
+
+            await setDoc(
+                resultRef,
+                {
+
+                    playerId:
+                        currentUser.id,
+
+                    name:
+                        currentUser.name,
+
+                    level:
+                        currentLevel,
+
+                    score:
+                        currentScore,
+
+                    startTime:
+                        levelStartTime
+                            ? levelStartTime
+                            : endTime,
+
+                    endTime:
+                        endTime,
+
+                    status:
+                        "completed",
+
+                    code:
+                        PLAYER_CODE,
+
+                    replayAllowed:
+                        false
+
+                }
             );
 
-        await updateDoc(
-            playerRef,
-            {
+            /*
+               Add first score to total score
+            */
 
-                totalScore:
-                    increment(currentScore)
+            const playerRef =
+                doc(
+                    db,
+                    "players",
+                    currentUser.id
+                );
+
+            await updateDoc(
+                playerRef,
+                {
+
+                    totalScore:
+                        increment(currentScore)
+
+                }
+            );
+
+        }
+
+        /*
+           =========================
+           REPLAY
+           =========================
+        */
+
+        else {
+
+            const oldData =
+                existing.data();
+
+            const oldScore =
+                Number(
+                    oldData.score || 0
+                );
+
+            /*
+               Replace the old result
+               with the new replay result
+            */
+
+            await updateDoc(
+                resultRef,
+                {
+
+                    score:
+                        currentScore,
+
+                    startTime:
+                        levelStartTime
+                            ? levelStartTime
+                            : endTime,
+
+                    endTime:
+                        endTime,
+
+                    status:
+                        "completed",
+
+                    replayAllowed:
+                        false
+
+                }
+            );
+
+            /*
+               Update total score by
+               the difference between
+               old and new score
+            */
+
+            const scoreDifference =
+                currentScore - oldScore;
+
+            if (scoreDifference !== 0) {
+
+                const playerRef =
+                    doc(
+                        db,
+                        "players",
+                        currentUser.id
+                    );
+
+                await updateDoc(
+                    playerRef,
+                    {
+
+                        totalScore:
+                            increment(
+                                scoreDifference
+                            )
+
+                    }
+                );
 
             }
-        );
+
+        }
 
         console.log(
             "Player result saved successfully ✅"
