@@ -1793,14 +1793,22 @@ async function loadLevelData(
         const results = [];
 
         snapshot.forEach(
-            docSnap => {
+    docSnap => {
 
-                results.push(
-                    docSnap.data()
-                );
+        const data =
+            docSnap.data();
 
-            }
-        );
+        results.push({
+
+            ...data,
+
+            resultId:
+                docSnap.id
+
+        });
+
+    }
+);
 
         results.sort(
             (a, b) =>
