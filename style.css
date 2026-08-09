@@ -1900,3 +1900,36 @@ button {
     }
 
    }
+
+.data-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.replay-player-btn,
+.delete-result-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.replay-player-btn {
+    background: #2f80ed;
+    color: white;
+}
+
+.delete-result-btn {
+    background: #e53935;
+    color: white;
+}
+
+.replay-player-btn:active,
+.delete-result-btn:active {
+    transform: scale(0.95);
+} 
