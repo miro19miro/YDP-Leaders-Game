@@ -284,47 +284,40 @@
     </section>
 
 
-    <!-- =========================
-         PLAYER NAME
-    ========================== -->
-    <section id="nameScreen" class="screen name-screen hidden">
+<!-- =========================
+     PLAYER SELECTION
+========================= -->
+    <section id="nameScreen" class="screen name-screen hidden"><div class="name-paper">
 
-        <div class="name-paper">
+    <img
+        src="images/penguin.png"
+        alt="Penguin"
+        class="name-penguin"
+    >
 
-            <img
-                src="images/penguin.png"
-                alt="Penguin"
-                class="name-penguin"
-            >
+    <h1>Who's Playing?</h1>
 
-            <h1>What's your name?</h1>
+    <p>
+        Please select your name
+    </p>
 
-            <p>
-                Please enter your full name
-            </p>
+    <select id="playerSelect">
+        <option value="">Select your name</option>
+    </select>
 
-            <input
-                id="playerName"
-                type="text"
-                placeholder="My name is..."
-                autocomplete="name"
-                maxlength="60"
-            >
+    <button
+        id="nameContinueBtn"
+        class="primary-btn"
+        type="button"
+    >
+        Continue →
+    </button>
 
-            <button
-                id="nameContinueBtn"
-                class="primary-btn"
-                type="button"
-            >
-                Continue →
-            </button>
+    <p id="nameError" class="error-message"></p>
 
-            <p id="nameError" class="error-message"></p>
+</div>
 
-        </div>
-
-    </section>
-
+</section>
 
     <!-- =========================
          QUESTIONS
