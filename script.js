@@ -882,18 +882,18 @@ const levelPositions = {
     ========================== */
 
     1: {
-        left: 46,
+        left: 45,
         top: 78
     },
 
     2: {
-        left: 62,
-        top: 72
+        left: 61,
+        top: 73
     },
 
     3: {
-        left: 75,
-        top: 70
+        left: 76,
+        top: 69
     },
 
 
@@ -908,7 +908,7 @@ const levelPositions = {
 
     5: {
         left: 54,
-        top: 56
+        top: 57
     },
 
     6: {
@@ -922,13 +922,13 @@ const levelPositions = {
     ========================== */
 
     7: {
-        left: 28,
-        top: 47
+        left: 25,
+        top: 49
     },
 
     8: {
-        left: 48,
-        top: 44
+        left: 47,
+        top: 46
     },
 
     9: {
