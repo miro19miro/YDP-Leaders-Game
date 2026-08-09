@@ -1375,51 +1375,26 @@ async function selectLevel(level) {
 
     }
 
+/* =========================
+   PLAYER
+========================= */
 
-    /* =========================
-       PLAYER
-    ========================== */
-
-    if (
-    currentUser &&
-    currentUser.type === "player"
-) {
-
-    const alreadyPlayed =
-        await hasPlayerPlayedLevel(
-            currentUser.id,
-            level
-        );
-
-    if (alreadyPlayed) {
-
-        showToast(
-            `You already played Level ${level} ❌`
-        );
-
-        return;
-
-    }
+if (currentUser === "player") {
 
     movePenguin(level);
 
     savePenguinPosition(level);
 
-    await new Promise(
-        resolve => {
+    await new Promise(resolve => {
 
-            setTimeout(
-                resolve,
-                1200
-            );
+        setTimeout(resolve, 1200);
 
-        }
-    );
+    });
 
     openNameScreen(level);
 
+    return;
 }
-    } 
 
 /* =========================================
    CHECK PLAYER LEVEL
@@ -2841,7 +2816,7 @@ if (playerNameInput) {
    START PLAYER GAME
 ========================================= */
 
-function startPlayerGame() {
+async function startPlayerGame() {
 
     const playerSelect =
         document.getElementById(
@@ -2887,34 +2862,47 @@ function startPlayerGame() {
         return;
 
     }
+    
+selectedPlayerId =
+    player.id;
 
-    selectedPlayerId =
-        player.id;
+const alreadyPlayed =
+    await hasPlayerPlayedLevel(
+        player.id,
+        selectedLevel
+    );
 
-    currentUser = {
+if (alreadyPlayed) {
 
-        type: "player",
+    error.textContent =
+        `You already played Level ${selectedLevel}.`;
 
-        id: player.id,
-
-        name: player.name,
-
-        code: PLAYER_CODE
-
-    };
-
-    currentLevel =
-        selectedLevel;
-
-    currentQuestionIndex = 0;
-
-    currentScore = 0;
-
-    questionAnswered = false;
-
-    startQuestions();
+    return;
 
 }
+
+currentUser = {
+
+    type: "player",
+
+    id: player.id,
+
+    name: player.name,
+
+    code: PLAYER_CODE
+
+};
+
+currentLevel =
+    selectedLevel;
+
+currentQuestionIndex = 0;
+
+currentScore = 0;
+
+questionAnswered = false;
+
+startQuestions();
 
 /* =========================================
    START QUESTIONS
