@@ -1419,11 +1419,20 @@ async function hasPlayerPlayedLevel(
             );
 
         const resultSnap =
-            await getDoc(
-                resultRef
-            );
+            await getDoc(resultRef);
 
-        return resultSnap.exists();
+        if (!resultSnap.exists()) {
+            return false;
+        }
+
+        const data = resultSnap.data();
+
+        // Admin allowed this player to replay
+        if (data.replayAllowed === true) {
+            return false;
+        }
+
+        return true;
 
     } catch (error) {
 
@@ -1441,7 +1450,6 @@ async function hasPlayerPlayedLevel(
     }
 
 }
-
 /* =========================================
    LOCKED LEVEL MODAL
 ========================================= */
@@ -1875,7 +1883,164 @@ async function loadLevelData(
 
 }
 
+/* =========================================
+   ALLOW PLAYER TO REPLAY LEVEL
+========================================= */
 
+async function allowPlayerReplay(
+    resultId,
+    playerId,
+    level
+) {
+
+    try {
+
+        await updateDoc(
+            doc(
+                db,
+                "results",
+                resultId
+            ),
+            {
+                replayAllowed: true
+            }
+        );
+
+        showToast(
+            `Player can replay Level ${level} 🔄`
+        );
+
+        loadLevelData(level);
+
+    } catch (error) {
+
+        console.error(
+            "Error allowing replay:",
+            error
+        );
+
+        showToast(
+            "Error allowing replay."
+        );
+
+    }
+
+}
+
+/* =========================================
+   DELETE PLAYER RESULT
+========================================= */
+
+async function deletePlayerResult(
+    resultId,
+    level
+) {
+
+    const confirmed =
+        confirm(
+            `Delete this player's Level ${level} data?`
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        await deleteDoc(
+            doc(
+                db,
+                "results",
+                resultId
+            )
+        );
+
+        showToast(
+            "Player data deleted successfully 🗑️"
+        );
+
+        loadLevelData(level);
+
+    } catch (error) {
+
+        console.error(
+            "Error deleting player result:",
+            error
+        );
+
+        showToast(
+            "Error deleting player data."
+        );
+
+    }
+
+}
+
+/* =========================================
+   DATA ACTION BUTTONS
+========================================= */
+
+document.addEventListener(
+    "click",
+    event => {
+
+        const replayButton =
+            event.target.closest(
+                ".replay-player-btn"
+            );
+
+        if (replayButton) {
+
+            const resultId =
+                replayButton.dataset.resultId;
+
+            const playerId =
+                replayButton.dataset.playerId;
+
+            const level =
+                Number(
+                    replayButton.dataset.level
+                );
+
+            allowPlayerReplay(
+                resultId,
+                playerId,
+                level
+            );
+
+            return;
+        }
+
+
+        const deleteButton =
+            event.target.closest(
+                ".delete-result-btn"
+            );
+
+        if (deleteButton) {
+
+            const resultId =
+                deleteButton.dataset.resultId;
+
+            const row =
+                deleteButton.closest(
+                    ".data-row"
+                );
+
+            const level =
+                Number(
+                    dataLevelSelect?.value
+                );
+
+            deletePlayerResult(
+                resultId,
+                level
+            );
+
+        }
+
+    }
+);
 /* =========================================
    FORMAT FIREBASE DATE
 ========================================= */
