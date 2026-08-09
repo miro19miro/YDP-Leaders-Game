@@ -2753,50 +2753,43 @@ if (doneEditorBtn) {
 
 
 /* =========================================
-   PLAYER NAME
+   OPEN PLAYER SELECTION
 ========================================= */
 
-function openNameScreen(
-    level
-) {
+function openNameScreen(level) {
 
     selectedLevel =
         level;
 
-
-    const playerName =
+    const select =
         document.getElementById(
-            "playerName"
+            "playerSelect"
         );
 
-
-    const nameError =
+    const error =
         document.getElementById(
             "nameError"
         );
 
+    if (select) {
 
-    if (playerName) {
-
-        playerName.value = "";
-
-    }
-
-
-    if (nameError) {
-
-        nameError.textContent = "";
+        select.value = "";
 
     }
 
+    if (error) {
+
+        error.textContent = "";
+
+    }
+
+    populatePlayerSelect();
 
     showScreen(
         screens.name
     );
 
 }
-
-
 /* =========================================
    START PLAYER GAME
 ========================================= */
