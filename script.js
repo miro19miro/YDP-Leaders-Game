@@ -5,13 +5,16 @@ import {
     getFirestore,
     doc,
     setDoc,
+    getDoc,
+    deleteDoc,
     collection,
     onSnapshot,
     addDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-const videoIntro = document.getElementById("videoIntro");
+    serverTimestamp,
+    query,
+    where,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";const videoIntro = document.getElementById("videoIntro");
 const introVideo = document.getElementById("introVideo");
 
 introVideo.addEventListener("ended", () => {
@@ -95,6 +98,16 @@ let questionsData = {};
 */
 let questionsInitialized = false;
 
+/* =========================================
+   PLAYERS SYSTEM
+========================================= */
+
+let playersData = [];
+
+let selectedPlayerId = null;
+
+let levelStartTime = null;
+
 
 /* =========================================
    SCREEN MANAGEMENT
@@ -167,6 +180,213 @@ function showToast(
 
 }
 
+/* =========================================
+FIREBASE - PLAYERS
+========================================= */
+
+function listenToPlayers() {
+
+const playersRef =
+    collection(db, "players");
+
+onSnapshot(
+    playersRef,
+
+    snapshot => {
+
+        playersData = [];
+
+        snapshot.forEach(docSnap => {
+
+            const data = docSnap.data();
+
+            playersData.push({
+
+                id: docSnap.id,
+
+                name: data.name || "",
+
+                totalScore:
+                    Number(data.totalScore || 0)
+
+            });
+
+        });
+
+        playersData.sort((a, b) =>
+            a.name.localeCompare(
+                b.name,
+                "ar"
+            )
+        );
+
+        console.log(
+            "Players synced with Firebase ✅",
+            playersData
+        );
+
+        populatePlayerSelect();
+
+    },
+
+    error => {
+
+        console.error(
+            "Error listening to players:",
+            error
+        );
+
+        showToast(
+            "Error loading players"
+        );
+
+    }
+);
+
+}
+
+/* =========================================
+PLAYER SELECT
+========================================= */
+
+function populatePlayerSelect() {
+
+const select =
+    document.getElementById(
+        "playerSelect"
+    );
+
+if (!select) {
+    return;
+}
+
+select.innerHTML = "";
+
+const defaultOption =
+    document.createElement("option");
+
+defaultOption.value = "";
+
+defaultOption.textContent =
+    "Select your name";
+
+select.appendChild(
+    defaultOption
+);
+
+playersData.forEach(player => {
+
+    const option =
+        document.createElement("option");
+
+    option.value =
+        player.id;
+
+    option.textContent =
+        player.name;
+
+    select.appendChild(
+        option
+    );
+
+});
+
+}
+
+/* =========================================
+ADD PLAYER
+========================================= */
+
+async function addPlayer(playerName) {
+
+const name =
+    playerName.trim();
+
+if (!name) {
+
+    showToast(
+        "Please enter a player name."
+    );
+
+    return false;
+
+}
+
+const words =
+    name.split(/\s+/);
+
+if (words.length < 3) {
+
+    showToast(
+        "Please enter the full name (3 names)."
+    );
+
+    return false;
+
+}
+
+try {
+
+    const playersRef =
+        collection(db, "players");
+
+    const existingQuery =
+        query(
+            playersRef,
+            where("name", "==", name)
+        );
+
+    const existing =
+        await getDocs(
+            existingQuery
+        );
+
+    if (!existing.empty) {
+
+        showToast(
+            "This name already exists."
+        );
+
+        return false;
+
+    }
+
+    await addDoc(
+        playersRef,
+        {
+
+            name: name,
+
+            totalScore: 0,
+
+            createdAt:
+                serverTimestamp()
+
+        }
+    );
+
+    showToast(
+        "Player added successfully! ✅"
+    );
+
+    return true;
+
+} catch (error) {
+
+    console.error(
+        "Error adding player:",
+        error
+    );
+
+    showToast(
+        "Error adding player."
+    );
+
+    return false;
+
+}
+
+        }
 
 /* =========================================
    FIREBASE - QUESTIONS
@@ -2999,6 +3219,7 @@ function initializeGame() {
     /*
        Start Firebase listeners.
     */
+listenToPlayers();
 
     listenToQuestions();
 
