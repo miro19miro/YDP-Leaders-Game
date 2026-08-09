@@ -912,23 +912,23 @@ const levelPositions = {
     },
 
     7: {
+        left: 35,
+        top: 53
+    },
+
+    8: {
         left: 58,
         top: 50
     },
 
-    8: {
+    9: {
         left: 63,
         top: 44
     },
 
-    9: {
+    10: {
         left: 52,
         top: 39
-    },
-
-    10: {
-        left: 35,
-        top: 53
     }
 
 };
