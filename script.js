@@ -2513,7 +2513,7 @@ function answerQuestion(
         );
 
 
-        currentScore -= 1;
+        currentScore -= 10;
 
 
         /*
