@@ -1981,19 +1981,103 @@ async function deletePlayerResult(
 
     try {
 
-        await deleteDoc(
+        /* =========================
+           GET RESULT DATA FIRST
+        ========================= */
+
+        const resultRef =
             doc(
                 db,
                 "results",
                 resultId
-            )
+            );
+
+        const resultSnap =
+            await getDoc(
+                resultRef
+            );
+
+        if (!resultSnap.exists()) {
+
+            showToast(
+                "Result not found."
+            );
+
+            return;
+
+        }
+
+        const resultData =
+            resultSnap.data();
+
+        const playerId =
+            resultData.playerId;
+
+        const score =
+            Number(
+                resultData.score || 0
+            );
+
+
+        /* =========================
+           DELETE RESULT
+        ========================= */
+
+        await deleteDoc(
+            resultRef
         );
+
+
+        /* =========================
+           UPDATE PLAYER TOTAL SCORE
+        ========================= */
+
+        if (playerId) {
+
+            const playerRef =
+                doc(
+                    db,
+                    "players",
+                    playerId
+                );
+
+            const playerSnap =
+                await getDoc(
+                    playerRef
+                );
+
+            if (playerSnap.exists()) {
+
+                await updateDoc(
+                    playerRef,
+                    {
+
+                        totalScore:
+                            increment(-score)
+
+                    }
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           SUCCESS
+        ========================= */
 
         showToast(
             "Player data deleted successfully 🗑️"
         );
 
+
+        /*
+           Reload current level data
+        */
+
         loadLevelData(level);
+
 
     } catch (error) {
 
