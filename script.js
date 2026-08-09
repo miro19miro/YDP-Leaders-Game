@@ -1819,50 +1819,84 @@ async function loadLevelData(
 
                 <div class="data-row data-header">
 
-                    <span>Player</span>
+    <span>Player</span>
 
-                    <span>Start</span>
+    <span>Start</span>
 
-                    <span>End</span>
+    <span>End</span>
 
-                    <span>Score</span>
+    <span>Score</span>
 
-                </div>
+    <span>Actions</span>
+
+</div>
 
                 ${results.map(
-                    result => `
+    result => {
 
-                    <div class="data-row">
+        const playerId =
+            result.playerId || "";
 
-                        <span>
-                            ${escapeHTML(
-                                result.name || "-"
-                            )}
-                        </span>
+        const resultId =
+            result.resultId ||
+            `${playerId}_level${level}`;
 
-                        <span>
-                            ${formatFirebaseDate(
-                                result.startTime
-                            )}
-                        </span>
+        return `
 
-                        <span>
-                            ${formatFirebaseDate(
-                                result.endTime
-                            )}
-                        </span>
+        <div class="data-row">
 
-                        <span class="score-cell">
-                            ${Number(
-                                result.score || 0
-                            )}
-                        </span>
+            <span>
+                ${escapeHTML(
+                    result.name || "-"
+                )}
+            </span>
 
-                    </div>
+            <span>
+                ${formatFirebaseDate(
+                    result.startTime
+                )}
+            </span>
 
-                    `
-                ).join("")}
+            <span>
+                ${formatFirebaseDate(
+                    result.endTime
+                )}
+            </span>
 
+            <span class="score-cell">
+                ${Number(
+                    result.score || 0
+                )}
+            </span>
+
+            <span class="data-actions">
+
+                <button
+                    class="replay-player-btn"
+                    type="button"
+                    data-result-id="${resultId}"
+                    data-player-id="${playerId}"
+                    data-level="${level}"
+                >
+                    🔄 Replay
+                </button>
+
+                <button
+                    class="delete-result-btn"
+                    type="button"
+                    data-result-id="${resultId}"
+                >
+                    🗑️ Delete
+                </button>
+
+            </span>
+
+        </div>
+
+        `;
+
+    }
+).join("")}
             </div>
         `;
 
