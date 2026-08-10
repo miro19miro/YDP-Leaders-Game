@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,30 +15,25 @@
     <!-- =========================
      VIDEO INTRO
 ========================= -->
-<div id="videoIntro">
-    <video id="introVideo" autoplay muted playsinline>
-        <source src="intro.mp4" type="video/mp4">
-    </video>
-</div>
+    <div id="videoIntro">
+        <video id="introVideo" autoplay muted playsinline>
+            <source src="intro2.mp4" type="video/mp4">
+        </video>
+    </div>
 
-    
-<!-- =========================
+
+    <!-- =========================
      BACKGROUND MUSIC
 ========================== -->
-<audio id="backgroundMusic" loop>
-    <source src="Sound.mp3" type="audio/mpeg">
-</audio>
+    <audio id="backgroundMusic" loop>
+        <source src="Sound.mp3" type="audio/mpeg">
+    </audio>
 
-<button
-    id="musicBtn"
-    class="music-btn"
-    type="button"
-    aria-label="Toggle music"
->
-    🔊
-</button>
+    <button id="musicBtn" class="music-btn" type="button" aria-label="Toggle music">
+        🔊
+    </button>
 
-    
+
     <!-- =========================
          SPLASH SCREEN
     ========================== -->
@@ -45,29 +41,15 @@
 
         <div class="splash-content">
 
-            <img
-                src="images/logo.png"
-                alt="YDP Logo"
-                id="splashLogo"
-                class="splash-logo"
-            >
+            <img src="images/logo.png" alt="YDP Logo" id="splashLogo" class="splash-logo">
 
-            <img
-                src="images/dora map.png"
-                alt="Game Map"
-                id="doraMap"
-                class="dora-map"
-            >
+            <img src="images/dora map.png" alt="Game Map" id="doraMap" class="dora-map">
 
             <div id="readyText" class="ready-text">
                 Are you ready?
             </div>
 
-            <button
-                id="startBtn"
-                class="start-btn"
-                type="button"
-            >
+            <button id="startBtn" class="start-btn" type="button">
                 Start
             </button>
 
@@ -83,11 +65,7 @@
 
         <div class="login-card">
 
-            <img
-                src="images/logo.png"
-                class="small-logo"
-                alt="YDP"
-            >
+            <img src="images/logo.png" class="small-logo" alt="YDP">
 
             <h1>Welcome to the Game</h1>
 
@@ -95,19 +73,9 @@
                 Enter your access code
             </p>
 
-            <input
-                id="accessCode"
-                type="text"
-                placeholder="Enter Code"
-                autocomplete="off"
-                maxlength="20"
-            >
+            <input id="accessCode" type="text" placeholder="Enter Code" autocomplete="off" maxlength="20">
 
-            <button
-                id="loginBtn"
-                class="primary-btn"
-                type="button"
-            >
+            <button id="loginBtn" class="primary-btn" type="button">
                 Continue
             </button>
 
@@ -125,35 +93,22 @@
 
         <div class="map-wrapper">
 
-            <img
-                src="images/map.png"
-                alt="Game Map"
-                class="game-map"
-            >
-            
-<!-- Flying birds -->
-    <div id="birdsContainer"></div>
+            <img src="images/map.png" alt="Game Map" class="game-map">
+
+            <!-- Flying birds -->
+            <div id="birdsContainer"></div>
 
             <!-- Level stones -->
             <div id="levelsContainer"></div>
 
             <!-- Penguin -->
-            <img
-                src="images/penguin.png"
-                alt="Penguin"
-                id="penguin"
-                class="penguin"
-            >
+            <img src="images/penguin.png" alt="Penguin" id="penguin" class="penguin">
 
             <!-- Map overlay -->
             <div id="mapMessage" class="map-message hidden"></div>
 
             <!-- Control button -->
-            <button
-                id="controlBtn"
-                class="control-btn hidden"
-                type="button"
-            >
+            <button id="controlBtn" class="control-btn hidden" type="button">
                 Control
             </button>
 
@@ -169,11 +124,7 @@
 
         <div class="control-card">
 
-            <button
-                id="controlBackBtn"
-                class="back-btn"
-                type="button"
-            >
+            <button id="controlBackBtn" class="back-btn" type="button">
                 ←
             </button>
 
@@ -185,31 +136,15 @@
                     Which level?
                 </label>
 
-                <input
-                    id="levelNumber"
-                    type="number"
-                    min="1"
-                    max="10"
-                    placeholder="1 - 10"
-                >
+                <input id="levelNumber" type="number" min="1" max="10" placeholder="1 - 10">
 
                 <label for="questionCount">
                     How many Questions?
                 </label>
 
-                <input
-                    id="questionCount"
-                    type="number"
-                    min="1"
-                    max="50"
-                    placeholder="Number of questions"
-                >
+                <input id="questionCount" type="number" min="1" max="50" placeholder="Number of questions">
 
-                <button
-                    id="openEditorBtn"
-                    class="primary-btn"
-                    type="button"
-                >
+                <button id="openEditorBtn" class="primary-btn" type="button">
                     Open Level Editor
                 </button>
 
@@ -229,92 +164,71 @@
      PLAYERS MANAGEMENT
 ========================= -->
 
-<div class="admin-section">
+            <div class="admin-section">
 
-    <h2>Players</h2>
+                <h2>Players</h2>
 
-    <div class="add-player-box">
+                <div class="add-player-box">
 
-        <input
-            id="newPlayerName"
-            type="text"
-            placeholder="Enter full name (3 names)"
-            autocomplete="off"
-            maxlength="60"
-        >
+                    <input id="newPlayerName" type="text" placeholder="Enter full name (3 names)" autocomplete="off"
+                        maxlength="60">
 
-        <button
-            id="addPlayerBtn"
-            class="primary-btn"
-            type="button"
-        >
-            + Add Player
-        </button>
+                    <button id="addPlayerBtn" class="primary-btn" type="button">
+                        + Add Player
+                    </button>
 
-    </div>
+                </div>
 
-    <div
-        id="playersList"
-        class="players-list"
-    ></div>
+                <div id="playersList" class="players-list"></div>
 
-</div>
+            </div>
 
 
-<!-- =========================
+            <!-- =========================
      OPEN DATA
 ========================= -->
 
-<div class="admin-section">
+            <div class="admin-section">
 
-    <h2>Open Data</h2>
+                <h2>Open Data</h2>
 
-    <label for="dataLevelSelect">
-        Select Level
-    </label>
+                <label for="dataLevelSelect">
+                    Select Level
+                </label>
 
-    <select
-        id="dataLevelSelect"
-        class="admin-select"
-    >
+                <select id="dataLevelSelect" class="admin-select">
 
-        <option value="">
-            Select Level
-        </option>
+                    <option value="">
+                        Select Level
+                    </option>
 
-        <option value="1">Level 1</option>
-        <option value="2">Level 2</option>
-        <option value="3">Level 3</option>
-        <option value="4">Level 4</option>
-        <option value="5">Level 5</option>
-        <option value="6">Level 6</option>
-        <option value="7">Level 7</option>
-        <option value="8">Level 8</option>
-        <option value="9">Level 9</option>
-        <option value="10">Level 10</option>
+                    <option value="1">Level 1</option>
+                    <option value="2">Level 2</option>
+                    <option value="3">Level 3</option>
+                    <option value="4">Level 4</option>
+                    <option value="5">Level 5</option>
+                    <option value="6">Level 6</option>
+                    <option value="7">Level 7</option>
+                    <option value="8">Level 8</option>
+                    <option value="9">Level 9</option>
+                    <option value="10">Level 10</option>
 
-    </select>
+                </select>
 
 
-    <div
-        id="levelDataContainer"
-        class="level-data-container"
-    >
+                <div id="levelDataContainer" class="level-data-container">
 
-        <p class="data-empty">
-            Select a level to view player data.
-        </p>
+                    <p class="data-empty">
+                        Select a level to view player data.
+                    </p>
 
-    </div>
+                </div>
 
 
-    <div
-        id="totalScoresContainer"
-        class="total-scores-container"
-    ></div>
+                <div id="totalScoresContainer" class="total-scores-container"></div>
 
-</div>
-            
+            </div>
+
         </div>
 
     </section>
@@ -329,11 +243,7 @@
 
             <div class="editor-header">
 
-                <button
-                    id="editorBackBtn"
-                    class="back-btn"
-                    type="button"
-                >
+                <button id="editorBackBtn" class="back-btn" type="button">
                     ←
                 </button>
 
@@ -344,28 +254,17 @@
                     </p>
                 </div>
 
-                <button
-                    id="saveQuestionsBtn"
-                    class="save-btn"
-                    type="button"
-                >
+                <button id="saveQuestionsBtn" class="save-btn" type="button">
                     Save
                 </button>
 
             </div>
 
 
-            <div
-                id="questionsEditor"
-                class="questions-editor"
-            ></div>
+            <div id="questionsEditor" class="questions-editor"></div>
 
 
-            <button
-                id="doneEditorBtn"
-                class="done-btn"
-                type="button"
-            >
+            <button id="doneEditorBtn" class="done-btn" type="button">
                 I'm Done
             </button>
 
@@ -374,40 +273,33 @@
     </section>
 
 
-<!-- =========================
+    <!-- =========================
      PLAYER SELECTION
 ========================= -->
-    <section id="nameScreen" class="screen name-screen hidden"><div class="name-paper">
+    <section id="nameScreen" class="screen name-screen hidden">
+        <div class="name-paper">
 
-    <img
-        src="images/penguin.png"
-        alt="Penguin"
-        class="name-penguin"
-    >
+            <img src="images/penguin.png" alt="Penguin" class="name-penguin">
 
-    <h1>Who's Playing?</h1>
+            <h1>Who's Playing?</h1>
 
-    <p>
-        Please select your name
-    </p>
+            <p>
+                Please select your name
+            </p>
 
-    <select id="playerSelect">
-        <option value="">Select your name</option>
-    </select>
+            <select id="playerSelect">
+                <option value="">Select your name</option>
+            </select>
 
-    <button
-        id="nameContinueBtn"
-        class="primary-btn"
-        type="button"
-    >
-        Continue →
-    </button>
+            <button id="nameContinueBtn" class="primary-btn" type="button">
+                Continue →
+            </button>
 
-    <p id="nameError" class="error-message"></p>
+            <p id="nameError" class="error-message"></p>
 
-</div>
+        </div>
 
-</section>
+    </section>
 
     <!-- =========================
          QUESTIONS
@@ -439,10 +331,7 @@
 
 
             <div class="question-progress">
-                <div
-                    id="progressBar"
-                    class="progress-bar"
-                ></div>
+                <div id="progressBar" class="progress-bar"></div>
             </div>
 
 
@@ -452,19 +341,12 @@
                     Question
                 </h2>
 
-                <div
-                    id="answersContainer"
-                    class="answers-container"
-                ></div>
+                <div id="answersContainer" class="answers-container"></div>
 
             </div>
 
 
-            <button
-                id="nextQuestionBtn"
-                class="next-btn"
-                type="button"
-            >
+            <button id="nextQuestionBtn" class="next-btn" type="button">
                 →
             </button>
 
@@ -492,10 +374,7 @@
                 Your Score:
             </p>
 
-            <div
-                id="finalScore"
-                class="final-score"
-            >
+            <div id="finalScore" class="final-score">
                 0
             </div>
 
@@ -503,11 +382,7 @@
                 Level 1
             </p>
 
-            <button
-                id="resultMapBtn"
-                class="primary-btn"
-                type="button"
-            >
+            <button id="resultMapBtn" class="primary-btn" type="button">
                 Back to Map
             </button>
 
@@ -519,18 +394,11 @@
     <!-- =========================
          LOCKED LEVEL
     ========================== -->
-    <div
-        id="lockedModal"
-        class="modal hidden"
-    >
+    <div id="lockedModal" class="modal hidden">
 
         <div class="locked-modal-content">
 
-            <button
-                id="closeLockedBtn"
-                class="modal-close"
-                type="button"
-            >
+            <button id="closeLockedBtn" class="modal-close" type="button">
                 ×
             </button>
 
@@ -552,13 +420,11 @@
     <!-- =========================
          TOAST
     ========================== -->
-    <div
-        id="toast"
-        class="toast"
-    ></div>
+    <div id="toast" class="toast"></div>
 
 
     <script type="module" src="script.js"></script>
 
 </body>
-  </html>
+
+</html>

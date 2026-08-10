@@ -324,3 +324,22 @@ document.addEventListener("keydown", (event) => {
     }
 
 });
+
+/* =========================================
+   RESET PAGE WHEN RETURNING WITH BACK BUTTON
+========================================= */
+
+window.addEventListener("pageshow", () => {
+
+    enterGameBtn.disabled = false;
+    enterGameBtn.textContent = "ENTER GAME";
+
+    currentCommittee = null;
+
+    codeModal.classList.remove("active");
+
+    committeeCode.value = "";
+
+    errorMessage.textContent = "";
+
+});
