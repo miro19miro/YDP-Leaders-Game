@@ -1,0 +1,729 @@
+/* =========================================
+   GENERAL
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #000;
+}
+
+
+/* =========================================
+   SCREENS
+========================================= */
+
+.screen {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.8s ease,
+        visibility 0.8s ease;
+}
+
+.screen.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* =========================================
+   WELCOME SCREEN
+========================================= */
+
+.welcome-screen {
+    background: #ffffff;
+    z-index: 10;
+}
+
+.welcome-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    user-select: none;
+}
+
+.logo-wrapper {
+    position: relative;
+
+    width: 260px;
+    height: 260px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-wrapper img {
+    width: 210px;
+    height: 210px;
+
+    object-fit: contain;
+
+    transition:
+        transform 1.5s cubic-bezier(.68, -0.55, .27, 1.55),
+        opacity 0.7s ease;
+}
+
+.logo-wrapper.rotating img {
+    transform: rotate(720deg) scale(0.7);
+}
+
+#ydpText {
+    position: absolute;
+
+    font-size: 0;
+
+    font-weight: 900;
+
+    color: #000;
+
+    opacity: 0;
+
+    transition:
+        font-size 0.7s ease,
+        opacity 0.7s ease,
+        transform 0.7s ease;
+}
+
+.logo-wrapper.rotating #ydpText {
+    font-size: 64px;
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.logo-wrapper.hide-logo img {
+    opacity: 0;
+}
+
+.logo-wrapper.hide-logo #ydpText {
+    opacity: 0;
+    transform: scale(1.5);
+}
+
+.click-text {
+    margin-top: 20px;
+
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 4px;
+
+    color: #111;
+
+    animation: clickPulse 1.5s infinite;
+}
+
+@keyframes clickPulse {
+
+    0%,
+    100% {
+        opacity: 0.35;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+
+/* =========================================
+   INTRO VIDEO
+========================================= */
+
+.intro-screen {
+    background: #000;
+    z-index: 20;
+}
+
+.intro-video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    background: #000;
+}
+
+
+/* =========================================
+   COMMITTEE SCREEN
+========================================= */
+
+.committee-screen {
+    background: #000;
+
+    overflow: hidden;
+
+    z-index: 30;
+}
+
+
+/* =========================================
+   ELECTRIC EFFECT
+========================================= */
+
+.electric {
+    position: absolute;
+
+    height: 4px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            #176cff,
+            #ffffff,
+            #176cff,
+            transparent);
+
+    filter:
+        blur(1px) drop-shadow(0 0 8px #176cff) drop-shadow(0 0 20px #176cff);
+
+    opacity: 0.7;
+
+    transform-origin: left center;
+
+    pointer-events: none;
+}
+
+.electric::before,
+.electric::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: inherit;
+
+    transform-origin: left center;
+}
+
+
+/* Electric 1 */
+
+.electric-1 {
+    width: 900px;
+
+    top: 15%;
+    left: -5%;
+
+    transform: rotate(25deg);
+
+    animation:
+        electricMove1 3s infinite ease-in-out;
+}
+
+
+/* Electric 2 */
+
+.electric-2 {
+    width: 1000px;
+
+    top: 50%;
+    left: 20%;
+
+    transform: rotate(-28deg);
+
+    animation:
+        electricMove2 4s infinite ease-in-out;
+}
+
+
+/* Electric 3 */
+
+.electric-3 {
+    width: 850px;
+
+    bottom: 18%;
+    left: -10%;
+
+    transform: rotate(20deg);
+
+    animation:
+        electricMove3 3.5s infinite ease-in-out;
+}
+
+
+/* Electric 4 */
+
+.electric-4 {
+    width: 800px;
+
+    right: -10%;
+    top: 65%;
+
+    transform: rotate(-35deg);
+    animation:
+        electricMove4 4.5s infinite ease-in-out;
+}
+
+
+@keyframes electricMove1 {
+
+    0%,
+    100% {
+        opacity: 0.25;
+        transform: rotate(25deg) translateX(-40px);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: rotate(25deg) translateX(80px);
+    }
+}
+
+
+@keyframes electricMove2 {
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: rotate(-28deg) translateX(50px);
+    }
+
+    50% {
+        opacity: 0.75;
+        transform: rotate(-28deg) translateX(-80px);
+    }
+}
+
+
+@keyframes electricMove3 {
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: rotate(20deg) translateX(-30px);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: rotate(20deg) translateX(100px);
+    }
+}
+
+
+@keyframes electricMove4 {
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: rotate(-35deg) translateX(30px);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: rotate(-35deg) translateX(-100px);
+    }
+}
+
+
+/* =========================================
+   COMMITTEE CONTENT
+========================================= */
+
+.committee-content {
+    position: relative;
+
+    width: 100%;
+    max-width: 1100px;
+
+    z-index: 5;
+
+    text-align: center;
+}
+
+.committee-content h1 {
+    margin-bottom: 45px;
+
+    color: white;
+
+    font-size: clamp(38px, 6vw, 75px);
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    text-shadow:
+        0 0 10px rgba(255, 255, 255, 0.5),
+        0 0 25px rgba(23, 108, 255, 0.7);
+}
+
+
+/* =========================================
+   COMMITTEE GRID
+========================================= */
+
+.committee-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 28px 70px;
+
+    width: 100%;
+}
+
+
+/* =========================================
+   COMMITTEE BUTTON
+========================================= */
+
+.committee-btn {
+    position: relative;
+
+    height: 130px;
+
+    border: none;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 52px;
+    font-weight: 900;
+
+    color: #000;
+
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease;
+}
+
+.committee-btn span {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* Left Arrow */
+
+.committee-btn.left {
+    clip-path: polygon(0 0,
+            72% 0,
+            100% 50%,
+            72% 100%,
+            0 100%,
+            18% 50%);
+}
+
+
+/* Right Arrow */
+
+.committee-btn.right {
+    clip-path: polygon(28% 0,
+            100% 0,
+            82% 50%,
+            100% 100%,
+            28% 100%,
+            0 50%);
+}
+
+
+/* Colors */
+
+.committee-btn.pink {
+    background: #d000ff;
+
+    box-shadow:
+        0 0 15px #d000ff,
+        0 0 40px rgba(208, 0, 255, 0.5);
+}
+
+.committee-btn.cyan {
+    background: #5debd7;
+
+    box-shadow:
+        0 0 15px #5debd7,
+        0 0 40px rgba(93, 235, 215, 0.5);
+}
+
+
+/* Hover */
+
+.committee-btn:hover {
+    transform: scale(1.05);
+
+    filter:
+        brightness(1.25) drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
+}
+
+.committee-btn:active {
+    transform: scale(0.97);
+}
+
+
+/* =========================================
+   MODAL
+========================================= */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.82);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.35s ease,
+        visibility 0.35s ease;
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.modal-box {
+    position: relative;
+
+    width: min(90%, 460px);
+
+    padding: 45px 35px;
+
+    background: #0b0b0b;
+
+    border: 2px solid #176cff;
+
+    border-radius: 18px;
+
+    text-align: center;
+
+    box-shadow:
+        0 0 20px #176cff,
+        0 0 60px rgba(23, 108, 255, 0.35);
+}
+
+
+.selected-committee {
+    margin-bottom: 15px;
+
+    color: #5debd7;
+
+    font-size: 58px;
+
+    font-weight: 900;
+
+    text-shadow:
+        0 0 10px #5debd7;
+}
+
+
+.modal-box h2 {
+    color: white;
+
+    font-size: 27px;
+
+    margin-bottom: 10px;
+}
+
+
+.modal-box p {
+    color: #aaa;
+
+    margin-bottom: 25px;
+}
+
+#committeeCode {
+    width: 100%;
+
+    padding: 15px;
+
+    border: 2px solid #333;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #151515;
+
+    color: white;
+
+    font-size: 20px;
+
+    text-align: center;
+
+    letter-spacing: 3px;
+
+    margin-bottom: 18px;
+
+    transition: border 0.2s ease;
+}
+
+#committeeCode:focus {
+    border-color: #176cff;
+
+    box-shadow:
+        0 0 12px rgba(23, 108, 255, 0.5);
+}
+
+
+#enterGameBtn {
+    width: 100%;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #176cff;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+}
+
+#enterGameBtn:hover {
+    background: #3982ff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 0 20px rgba(23, 108, 255, 0.7);
+}
+
+
+.close-btn {
+    position: absolute;
+
+    top: 12px;
+    right: 17px;
+
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 32px;
+
+    cursor: pointer;
+
+    line-height: 1;
+}
+
+
+#errorMessage {
+    min-height: 22px;
+
+    margin-top: 15px;
+    margin-bottom: 0;
+
+    color: #ff4d4d;
+
+    font-weight: bold;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .logo-wrapper {
+        width: 210px;
+        height: 210px;
+    }
+
+    .logo-wrapper img {
+        width: 170px;
+        height: 170px;
+    }
+
+    #ydpText {
+        font-size: 0;
+    }
+
+    .committee-content {
+        padding: 20px;
+    }
+
+    .committee-content h1 {
+        margin-bottom: 30px;
+
+        font-size: 40px;
+    }
+
+    .committee-grid {
+        gap: 18px 15px;
+    }
+
+    .committee-btn {
+        height: 95px;
+
+        font-size: 35px;
+    }
+
+    .modal-box {
+        padding: 40px 25px;
+    }
+}
+
+
+@media (max-width: 450px) {
+
+    .committee-grid {
+        grid-template-columns: 1fr;
+
+        gap: 15px;
+    }
+
+    .committee-btn {
+        height: 80px;
+    }
+
+    .committee-content h1 {
+        font-size: 34px;
+    }
+}

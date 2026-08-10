@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>YDP Leaders Game</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         FIRST SCREEN
+    ========================== -->
+    <section id="welcomeScreen" class="screen welcome-screen">
+
+        <div class="welcome-content" id="welcomeButton">
+
+            <div class="logo-wrapper">
+                <img src="images/entity-logo.png" alt="Entity Logo" id="entityLogo">
+
+                <span id="ydpText">YDP</span>
+            </div>
+
+            <p class="click-text">CLICK TO START</p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         INTRO VIDEO
+    ========================== -->
+    <section id="introScreen" class="screen intro-screen">
+
+        <video id="introVideo" class="intro-video" playsinline preload="auto">
+            <source src="intro.mp4" type="video/mp4">
+            Your browser does not support video.
+        </video>
+
+    </section>
+
+
+    <!-- =========================
+         COMMITTEE SELECTION
+    ========================== -->
+    <section id="committeeScreen" class="screen committee-screen">
+
+        <div class="electric electric-1"></div>
+        <div class="electric electric-2"></div>
+        <div class="electric electric-3"></div>
+        <div class="electric electric-4"></div>
+
+        <div class="committee-content">
+
+            <h1>Who are you??</h1>
+
+            <div class="committee-grid">
+
+                <button class="committee-btn left pink" data-committee="HR">
+                    <span>HR</span>
+                </button>
+
+                <button class="committee-btn right cyan" data-committee="OR">
+                    <span>OR</span>
+                </button>
+
+                <button class="committee-btn left pink" data-committee="SM">
+                    <span>SM</span>
+                </button>
+
+                <button class="committee-btn right cyan" data-committee="PR">
+                    <span>PR</span>
+                </button>
+
+                <button class="committee-btn left pink" data-committee="PI">
+                    <span>PI</span>
+                </button>
+
+                <button class="committee-btn right cyan" data-committee="TR">
+                    <span>TR</span>
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         CODE MODAL
+    ========================== -->
+    <div id="codeModal" class="modal">
+
+        <div class="modal-box">
+
+            <button id="closeModal" class="close-btn">
+                ×
+            </button>
+
+            <div class="selected-committee" id="selectedCommittee">
+                PI
+            </div>
+
+            <h2>Enter Committee Code</h2>
+
+            <p>Please enter the code for your committee</p>
+
+            <input type="password" id="committeeCode" placeholder="Enter Code" autocomplete="off">
+
+            <button id="enterGameBtn">
+                ENTER GAME
+            </button>
+
+            <p id="errorMessage"></p>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
