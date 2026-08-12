@@ -1,0 +1,592 @@
+/* =========================================
+   GENERAL
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #000;
+}
+
+
+/* =========================================
+   SCREENS
+========================================= */
+
+.screen {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.7s ease,
+        visibility 0.7s ease;
+}
+
+.screen.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* =========================================
+   INTRO VIDEO
+========================================= */
+
+.intro-screen {
+    background: #000;
+
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#introVideo {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    background: #000;
+}
+
+
+/* =========================================
+   OFFICE SCENE
+========================================= */
+
+.office-screen {
+    background: #000;
+
+    z-index: 10;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   OFFICE BACKGROUND
+========================================= */
+
+.office-background {
+    position: absolute;
+    inset: 0;
+
+    background-image: url("images/Office.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    background-repeat: no-repeat;
+
+    z-index: 1;
+}
+
+
+/* =========================================
+   CHARACTERS
+========================================= */
+
+.character {
+    position: absolute;
+
+    z-index: 5;
+
+    user-select: none;
+    pointer-events: none;
+
+    object-fit: contain;
+
+    transform-origin: bottom center;
+
+    transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+}
+
+
+/* GIRL */
+
+.girl {
+    width: min(25vw, 330px);
+
+    left: 41%;
+    bottom: 0;
+}
+
+
+/* BOY */
+
+.boy {
+    width: min(25vw, 330px);
+
+    left: 60%;
+    bottom: 0;
+}
+
+
+/* =========================================
+   SPEECH BUBBLES
+========================================= */
+
+.speech-bubble {
+    position: absolute;
+
+    z-index: 20;
+
+    background: white;
+
+    border: 4px solid #000;
+
+    color: #d000ff;
+
+    font-family: "Comic Sans MS", "Segoe Print", cursive;
+
+    font-weight: 500;
+
+    text-align: center;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1.25;
+
+    padding: 30px 35px;
+
+    opacity: 1;
+
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
+}
+
+
+/* CLOUD SHAPE */
+
+.first-bubble {
+    width: min(370px, 32vw);
+    min-height: 190px;
+
+    left: 15%;
+    top: 30%;
+
+    border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
+
+    font-size: clamp(20px, 2vw, 31px);
+
+    transform: rotate(-2deg);
+}
+
+
+/* SECOND BUBBLE */
+
+.second-bubble {
+    width: min(420px, 38vw);
+    min-height: 180px;
+
+    right: 23%;
+    top: 24%;
+
+    border-radius: 50%;
+
+    font-size: clamp(19px, 2vw, 29px);
+
+    transform: rotate(1deg);
+}
+
+
+/* Small thought circles */
+
+.bubble-tail::before,
+.bubble-tail::after {
+    content: "";
+
+    position: absolute;
+
+    background: white;
+
+    border: 4px solid #000;
+
+    border-radius: 50%;
+}
+
+
+/* First bubble tail */
+
+.first-bubble .bubble-tail::before {
+    width: 34px;
+    height: 34px;
+
+    right: 5px;
+    bottom: -35px;
+}
+
+.first-bubble .bubble-tail::after {
+    width: 18px;
+    height: 18px;
+
+    right: -22px;
+    bottom: -52px;
+}
+
+
+/* Second bubble tail */
+
+.second-bubble .bubble-tail::before {
+    width: 30px;
+    height: 30px;
+
+    left: -5px;
+    bottom: -30px;
+}
+
+.second-bubble .bubble-tail::after {
+    width: 16px;
+    height: 16px;
+
+    left: -25px;
+    bottom: -48px;
+}
+
+
+/* =========================================
+   HIDDEN
+========================================= */
+
+.hidden {
+    opacity: 0 !important;
+
+    visibility: hidden !important;
+
+    pointer-events: none !important;
+}
+
+/* =========================================
+   YES BUTTON
+========================================= */
+
+.yes-button {
+    position: absolute;
+
+    z-index: 25;
+
+    left: 20%;
+    bottom: 17%;
+
+    width: 220px;
+    height: 85px;
+
+    border: none;
+
+    background: #050b18;
+
+    color: white;
+
+    font-family: Georgia, serif;
+
+    font-size: 38px;
+
+    letter-spacing: 4px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 0 #000,
+        0 0 10px rgba(0, 0, 0, 0.5);
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease,
+        opacity 0.4s ease;
+}
+
+.yes-button:hover {
+    transform: scale(1.06);
+
+    filter: brightness(1.3);
+}
+
+.yes-button:active {
+    transform: scale(0.96);
+}
+
+
+/* =========================================
+   GENDER SIGNS
+========================================= */
+
+.gender-sign {
+    position: absolute;
+
+    z-index: 30;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-family: Arial, sans-serif;
+
+    font-weight: bold;
+
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease,
+        opacity 0.5s ease;
+}
+
+
+/* FEMALE */
+
+.female-sign {
+    left: 49%;
+
+    top: 29%;
+
+    color: #ff69b4;
+
+    font-size: clamp(80px, 9vw, 135px);
+
+    text-shadow:
+        0 0 8px rgba(255, 105, 180, 0.5);
+}
+
+
+/* MALE */
+
+.male-sign {
+    left: 73%;
+
+    top: 27%;
+
+    color: #2488e8;
+
+    font-size: clamp(80px, 9vw, 135px);
+
+    text-shadow:
+        0 0 8px rgba(36, 136, 232, 0.5);
+}
+
+
+.gender-sign:hover {
+    transform: scale(1.12);
+
+    filter: brightness(1.2);
+}
+
+.gender-sign:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================================
+   TRANSITION SCREEN
+========================================= */
+
+.transition-screen {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 100;
+
+    background: #000;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition:
+        opacity 1s ease,
+        visibility 1s ease;
+}
+
+.transition-screen.show {
+    opacity: 1;
+
+    visibility: visible;
+}
+
+
+/* =========================================
+   FINAL MESSAGE
+========================================= */
+
+.loading-message {
+    color: white;
+
+    font-size: clamp(22px, 3vw, 42px);
+
+    font-weight: 600;
+
+    text-align: center;
+
+    padding: 20px;
+
+    opacity: 0;
+
+    transform: scale(0.9);
+
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
+}
+
+.transition-screen.show .loading-message {
+    opacity: 1;
+
+    transform: scale(1);
+}
+
+
+/* =========================================
+   FADE EFFECT
+========================================= */
+
+.office-screen.fade-out .office-background,
+.office-screen.fade-out .character,
+.office-screen.fade-out .speech-bubble,
+.office-screen.fade-out .gender-sign,
+.office-screen.fade-out .yes-button {
+    opacity: 0;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .girl {
+        width: 34vw;
+
+        left: 38%;
+    }
+
+    .boy {
+        width: 34vw;
+
+        left: 59%;
+    }
+
+
+    .first-bubble {
+        width: 42vw;
+
+        min-height: 150px;
+
+        left: 8%;
+        top: 27%;
+
+        padding: 20px;
+
+        border-width: 3px;
+    }
+
+
+    .second-bubble {
+        width: 47vw;
+
+        min-height: 140px;
+
+        right: 12%;
+        top: 22%;
+
+        padding: 20px;
+
+        border-width: 3px;
+    }
+
+
+    .yes-button {
+        width: 145px;
+        height: 60px;
+
+        left: 12%;
+        bottom: 15%;
+
+        font-size: 26px;
+    }
+
+
+    .female-sign {
+        left: 43%;
+        top: 27%;
+    }
+
+
+    .male-sign {
+        left: 69%;
+        top: 25%;
+    }
+}
+
+
+@media (max-width: 450px) {
+
+    .girl {
+        width: 39vw;
+
+        left: 34%;
+    }
+
+    .boy {
+        width: 39vw;
+
+        left: 57%;
+    }
+
+
+    .first-bubble {
+        width: 48vw;
+
+        left: 3%;
+        top: 25%;
+
+        font-size: 17px;
+    }
+
+
+    .second-bubble {
+        width: 53vw;
+
+        right: 7%;
+        top: 20%;
+        font-size: 17px;
+    }
+
+
+    .yes-button {
+        left: 7%;
+
+        width: 125px;
+        height: 55px;
+
+        font-size: 23px;
+    }
+}
