@@ -13,7 +13,9 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+
     font-family: Arial, Helvetica, sans-serif;
+
     background: #000;
 }
 
@@ -24,6 +26,7 @@ body {
 
 .screen {
     position: fixed;
+
     inset: 0;
 
     width: 100%;
@@ -53,6 +56,7 @@ body {
     z-index: 100;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 }
@@ -68,13 +72,48 @@ body {
 
 
 /* =========================================
-   OFFICE SCENE
+   OFFICE SCREEN
 ========================================= */
 
 .office-screen {
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
     background: #000;
 
     z-index: 10;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================================
+   OFFICE SCENE
+   ORIGINAL IMAGE: 1024 x 1536
+   RATIO: 2 : 3
+
+   Everything inside this scene scales
+   together on laptop and mobile.
+========================================= */
+
+.office-scene {
+    position: relative;
+
+    width: min(100vw, 66.6667vh);
+    height: min(150vw, 100vh);
+
+    aspect-ratio: 2 / 3;
+
+    flex-shrink: 0;
 
     overflow: hidden;
 }
@@ -86,11 +125,16 @@ body {
 
 .office-background {
     position: absolute;
+
     inset: 0;
+
+    width: 100%;
+    height: 100%;
 
     background-image: url("images/Office.jpg");
 
-    background-size: cover;
+    background-size: 100% 100%;
+
     background-position: center;
 
     background-repeat: no-repeat;
@@ -105,9 +149,11 @@ body {
 
 .character {
     position: absolute;
+
     z-index: 5;
 
     user-select: none;
+
     pointer-events: none;
 
     object-fit: contain;
@@ -120,24 +166,31 @@ body {
 }
 
 
-/* GIRL */
+/* =========================================
+   GIRL
+========================================= */
 
 .girl {
-    width: min(28vw, 390px);
+    width: 28%;
 
     left: 55%;
+
     bottom: 20%;
 }
 
 
-/* BOY */
+/* =========================================
+   BOY
+========================================= */
 
 .boy {
-    width: min(30vw, 390px);
+    width: 30%;
 
     left: 66%;
+
     bottom: 20%;
 }
+
 
 /* =========================================
    SPEECH BUBBLES
@@ -154,7 +207,10 @@ body {
 
     color: #000;
 
-    font-family: "Comic Sans MS", "Segoe Print", cursive;
+    font-family:
+        "Comic Sans MS",
+        "Segoe Print",
+        cursive;
 
     font-weight: 500;
 
@@ -177,40 +233,52 @@ body {
 }
 
 
-/* FIRST BUBBLE */
+/* =========================================
+   FIRST BUBBLE
+========================================= */
 
 .first-bubble {
-    width: min(390px, 34vw);
-    min-height: 190px;
+    width: 34%;
+
+    min-height: 12.4%;
 
     left: 30%;
+
     top: 7%;
 
-    border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
+    border-radius:
+        48% 52% 45% 55% / 55% 45% 55% 45%;
 
-    font-size: clamp(23px, 2.3vw, 34px);
+    font-size: clamp(17px, 2.3vw, 34px);
 
     transform: rotate(-2deg);
 }
 
 
-/* SECOND BUBBLE */
+/* =========================================
+   SECOND BUBBLE
+========================================= */
 
 .second-bubble {
-    width: min(440px, 40vw);
-    min-height: 190px;
+    width: 40%;
+
+    min-height: 12.4%;
 
     left: 35%;
+
     top: 1%;
 
-    border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
+    border-radius:
+        48% 52% 45% 55% / 55% 45% 55% 45%;
 
-    font-size: clamp(22px, 2.3vw, 33px);
-
+    font-size: clamp(17px, 2.3vw, 33px);
     transform: rotate(1deg);
 }
 
-/* Small thought circles */
+
+/* =========================================
+   BUBBLE TAIL
+========================================= */
 
 .bubble-tail::before,
 .bubble-tail::after {
@@ -226,13 +294,16 @@ body {
 }
 
 
-/* First bubble tail */
+/* =========================================
+   FIRST BUBBLE TAIL
+========================================= */
 
 .first-bubble .bubble-tail::before {
     width: 34px;
     height: 34px;
 
     right: 5px;
+
     bottom: -35px;
 }
 
@@ -241,17 +312,21 @@ body {
     height: 18px;
 
     right: -22px;
+
     bottom: -52px;
 }
 
 
-/* Second bubble tail */
+/* =========================================
+   SECOND BUBBLE TAIL
+========================================= */
 
 .second-bubble .bubble-tail::before {
     width: 34px;
     height: 34px;
 
     right: 5px;
+
     bottom: -35px;
 }
 
@@ -260,6 +335,7 @@ body {
     height: 18px;
 
     right: -22px;
+
     bottom: -52px;
 }
 
@@ -276,6 +352,7 @@ body {
     pointer-events: none !important;
 }
 
+
 /* =========================================
    YES BUTTON
 ========================================= */
@@ -286,9 +363,11 @@ body {
     z-index: 25;
 
     left: 20%;
+
     bottom: 17%;
 
     width: 220px;
+
     height: 85px;
 
     border: none;
@@ -315,11 +394,17 @@ body {
         opacity 0.4s ease;
 }
 
+
+/* YES HOVER */
+
 .yes-button:hover {
     transform: scale(1.06);
 
     filter: brightness(1.3);
 }
+
+
+/* YES CLICK */
 
 .yes-button:active {
     transform: scale(0.96);
@@ -352,7 +437,9 @@ body {
 }
 
 
-/* FEMALE */
+/* =========================================
+   FEMALE SIGN
+========================================= */
 
 .female-sign {
     left: 65%;
@@ -361,14 +448,21 @@ body {
 
     color: #ff69b4;
 
-    font-size: clamp(80px, 9vw, 135px);
+    /*
+       Using clamp keeps the sign visible
+       on both laptop and mobile.
+    */
+
+    font-size: clamp(60px, 9vw, 135px);
 
     text-shadow:
         0 0 8px rgba(255, 105, 180, 0.5);
 }
 
 
-/* MALE */
+/* =========================================
+   MALE SIGN
+========================================= */
 
 .male-sign {
     left: 77%;
@@ -377,12 +471,16 @@ body {
 
     color: #2488e8;
 
-    font-size: clamp(80px, 9vw, 135px);
+    font-size: clamp(60px, 9vw, 135px);
 
     text-shadow:
         0 0 8px rgba(36, 136, 232, 0.5);
 }
 
+
+/* =========================================
+   GENDER HOVER
+========================================= */
 
 .gender-sign:hover {
     transform: scale(1.12);
@@ -422,6 +520,11 @@ body {
         visibility 1s ease;
 }
 
+
+/* =========================================
+   TRANSITION SHOW
+========================================= */
+
 .transition-screen.show {
     opacity: 1;
 
@@ -430,7 +533,7 @@ body {
 
 
 /* =========================================
-   FINAL MESSAGE
+   FINAL LOADING MESSAGE
 ========================================= */
 
 .loading-message {
@@ -443,7 +546,6 @@ body {
     text-align: center;
 
     padding: 20px;
-
     opacity: 0;
 
     transform: scale(0.9);
@@ -452,6 +554,11 @@ body {
         opacity 0.8s ease,
         transform 0.8s ease;
 }
+
+
+/* =========================================
+   FINAL MESSAGE SHOW
+========================================= */
 
 .transition-screen.show .loading-message {
     opacity: 1;
@@ -470,120 +577,4 @@ body {
 .office-screen.fade-out .gender-sign,
 .office-screen.fade-out .yes-button {
     opacity: 0;
-}
-
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 700px) {
-
-    .girl {
-        width: 34vw;
-
-        left: 38%;
-    }
-
-    .boy {
-        width: 34vw;
-
-        left: 59%;
-    }
-
-
-    .first-bubble {
-        width: 42vw;
-
-        min-height: 150px;
-
-        left: 8%;
-        top: 27%;
-
-        padding: 20px;
-
-        border-width: 3px;
-    }
-
-
-    .second-bubble {
-        width: 47vw;
-
-        min-height: 140px;
-
-        right: 12%;
-        top: 22%;
-
-        padding: 20px;
-
-        border-width: 3px;
-    }
-
-
-    .yes-button {
-        width: 145px;
-        height: 60px;
-
-        left: 12%;
-        bottom: 15%;
-
-        font-size: 26px;
-    }
-
-
-    .female-sign {
-        left: 43%;
-        top: 27%;
-    }
-
-
-    .male-sign {
-        left: 69%;
-        top: 25%;
-    }
-}
-
-
-@media (max-width: 450px) {
-
-    .girl {
-        width: 39vw;
-
-        left: 34%;
-    }
-
-    .boy {
-        width: 39vw;
-
-        left: 57%;
-    }
-
-
-    .first-bubble {
-        width: 48vw;
-
-        left: 3%;
-        top: 25%;
-
-        font-size: 17px;
-    }
-
-
-    .second-bubble {
-        width: 53vw;
-
-        right: 7%;
-        top: 20%;
-        font-size: 17px;
-    }
-
-
-    .yes-button {
-        left: 7%;
-
-        width: 125px;
-        height: 55px;
-
-        font-size: 23px;
-    }
 }

@@ -32,74 +32,49 @@
 
     <section id="officeScreen" class="screen office-screen">
 
-        <div class="office-background"></div>
+        <div class="office-scene">
 
+            <div class="office-background"></div>
 
-        <!-- GIRL -->
+            <!-- GIRL -->
+            <img src="images/girl hr.png" class="character girl" id="girlCharacter" alt="Girl">
 
-        <img src="images/girl hr.png" class="character girl" id="girlCharacter" alt="Girl">
+            <!-- BOY -->
+            <img src="images/boy hr.png" class="character boy" id="boyCharacter" alt="Boy">
 
+            <!-- FIRST BUBBLE -->
+            <div id="firstBubble" class="speech-bubble first-bubble hidden">
+                <div id="firstText"></div>
+                <div class="bubble-tail"></div>
+            </div>
 
-        <!-- BOY -->
+            <!-- YES BUTTON -->
+            <button id="yesButton" class="yes-button hidden">
+                YES
+            </button>
 
-        <img src="images/boy hr.png" class="character boy" id="boyCharacter" alt="Boy">
+            <!-- SECOND BUBBLE -->
+            <div id="secondBubble" class="speech-bubble second-bubble hidden">
+                <div id="secondText"></div>
+                <div class="bubble-tail"></div>
+            </div>
 
+            <!-- GENDER SIGNS -->
+            <button id="femaleChoice" class="gender-sign female-sign hidden" aria-label="Choose Female">
+                ♀
+            </button>
 
-        <!-- =====================================
-             FIRST SPEECH BUBBLE
-        ====================================== -->
+            <button id="maleChoice" class="gender-sign male-sign hidden" aria-label="Choose Male">
+                ♂
+            </button>
 
-        <div id="firstBubble" class="speech-bubble first-bubble hidden">
-            <div id="firstText"></div>
-
-            <div class="bubble-tail"></div>
         </div>
 
-
-        <!-- =====================================
-             YES BUTTON
-        ====================================== -->
-
-        <button id="yesButton" class="yes-button hidden">
-            YES
-        </button>
-
-
-        <!-- =====================================
-             SECOND SPEECH BUBBLE
-        ====================================== -->
-
-        <div id="secondBubble" class="speech-bubble second-bubble hidden">
-            <div id="secondText"></div>
-
-            <div class="bubble-tail"></div>
-        </div>
-
-
-        <!-- =====================================
-             CHARACTER SIGNS
-        ====================================== -->
-
-        <button id="femaleChoice" class="gender-sign female-sign hidden" aria-label="Choose Female">
-            ♀
-        </button>
-
-
-        <button id="maleChoice" class="gender-sign male-sign hidden" aria-label="Choose Male">
-            ♂
-        </button>
-
-
-        <!-- =====================================
-             FINAL LOADING SCREEN
-        ====================================== -->
-
+        <!-- FINAL LOADING SCREEN -->
         <div id="transitionScreen" class="transition-screen">
-
             <div class="loading-message">
                 Work is underway on the game.
             </div>
-
         </div>
 
     </section>
