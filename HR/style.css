@@ -123,10 +123,10 @@ body {
 /* GIRL */
 
 .girl {
-    width: min(30vw, 390px);
+    width: min(28vw, 390px);
 
-    left: 40%;
-    bottom: 22%;
+    left: 55%;
+    bottom: 20%;
 }
 
 
@@ -135,8 +135,8 @@ body {
 .boy {
     width: min(30vw, 390px);
 
-    left: 61%;
-    bottom: 22%;
+    left: 66%;
+    bottom: 20%;
 }
 
 /* =========================================
@@ -183,8 +183,8 @@ body {
     width: min(390px, 34vw);
     min-height: 190px;
 
-    left: 15%;
-    top: 30%;
+    left: 30%;
+    top: 7%;
 
     border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
 
@@ -198,12 +198,12 @@ body {
 
 .second-bubble {
     width: min(440px, 40vw);
-    min-height: 180px;
+    min-height: 190px;
 
-    right: 23%;
-    top: 24%;
+    left: 35%;
+    top: 1%;
 
-    border-radius: 50%;
+    border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
 
     font-size: clamp(22px, 2.3vw, 33px);
 
@@ -248,19 +248,19 @@ body {
 /* Second bubble tail */
 
 .second-bubble .bubble-tail::before {
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
 
-    left: -5px;
-    bottom: -30px;
+    right: 5px;
+    bottom: -35px;
 }
 
 .second-bubble .bubble-tail::after {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
 
-    left: -25px;
-    bottom: -48px;
+    right: -22px;
+    bottom: -52px;
 }
 
 
@@ -355,9 +355,9 @@ body {
 /* FEMALE */
 
 .female-sign {
-    left: 49%;
+    left: 65%;
 
-    top: 29%;
+    top: 20%;
 
     color: #ff69b4;
 
@@ -371,9 +371,9 @@ body {
 /* MALE */
 
 .male-sign {
-    left: 73%;
+    left: 77%;
 
-    top: 27%;
+    top: 18%;
 
     color: #2488e8;
 
