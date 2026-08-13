@@ -8,30 +8,39 @@
     box-sizing: border-box;
 }
 
+
 html,
 body {
     width: 100%;
     height: 100%;
+
     overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 }
 
 
 /* =========================================
-   GENERAL SCREEN
+   GENERAL
 ========================================= */
 
 .screen {
     position: fixed;
+
     inset: 0;
 
     width: 100%;
     height: 100%;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 }
+
 
 .hidden {
     display: none !important;
@@ -45,6 +54,7 @@ body {
 .intro-screen {
     background: #000;
 }
+
 
 .intro-video {
     width: 100%;
@@ -61,35 +71,29 @@ body {
 ========================================= */
 
 .code-screen {
-    background:
-        linear-gradient(rgba(255, 255, 255, 0.94),
-            rgba(255, 255, 255, 0.94));
+    background: #ffffff;
 
-    animation: fadeIn 0.6s ease;
+    animation: fadeIn 0.5s ease;
 }
 
-
-/* =========================================
-   CODE CARD
-========================================= */
 
 .code-card {
     width: min(90%, 470px);
 
     padding: 42px 40px 45px;
 
-    background: rgba(255, 255, 255, 0.97);
+    background: rgba(255, 255, 255, 0.98);
 
     border-radius: 24px;
 
     text-align: center;
 
+    border: 2px solid rgba(30, 120, 110, 0.12);
+
     box-shadow:
         0 18px 50px rgba(0, 0, 0, 0.15);
 
-    border: 2px solid rgba(30, 120, 110, 0.15);
-
-    animation: cardAppear 0.7s ease;
+    animation: cardAppear 0.6s ease;
 }
 
 
@@ -108,18 +112,19 @@ body {
 
 
 /* =========================================
-   TITLE
+   CODE TITLE
 ========================================= */
 
 .code-card h1 {
     font-size: 42px;
 
-    font-weight: 800;
-
     color: #173f3b;
+
+    font-weight: 800;
 
     margin-bottom: 8px;
 }
+
 
 .code-title {
     font-size: 20px;
@@ -136,7 +141,6 @@ body {
 
 .code-input {
     width: 100%;
-
     height: 58px;
 
     border: 2px solid #cfd9d7;
@@ -157,10 +161,9 @@ body {
 
     background: #fafafa;
 
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: 0.2s ease;
 }
+
 
 .code-input:focus {
     border-color: #249f91;
@@ -171,12 +174,11 @@ body {
 
 
 /* =========================================
-   ENTER BUTTON
+   MAIN BUTTON
 ========================================= */
 
-.enter-btn {
+.main-btn {
     width: 100%;
-
     height: 58px;
 
     margin-top: 18px;
@@ -189,29 +191,42 @@ body {
 
     color: white;
 
-    font-size: 19px;
+    font-size: 18px;
 
     font-weight: 700;
 
     cursor: pointer;
 
     transition:
-        transform 0.15s ease,
+        transform 0.2s ease,
         background 0.2s ease,
         box-shadow 0.2s ease;
 }
 
-.enter-btn:hover {
+
+.main-btn:hover {
     background: #19786d;
 
     transform: translateY(-2px);
 
     box-shadow:
-        0 8px 20px rgba(31, 143, 130, 0.25);
+        0 8px 20px rgba(31, 143, 130, 0.22);
 }
 
-.enter-btn:active {
+
+.main-btn:active {
     transform: translateY(0);
+}
+
+
+.main-btn:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
 }
 
 
@@ -219,33 +234,353 @@ body {
    ERROR
 ========================================= */
 
-.code-error {
+.error-message {
     min-height: 24px;
 
-    margin-top: 15px;
-
-    font-size: 15px;
-
-    font-weight: 600;
+    margin-top: 14px;
 
     color: #d62828;
+
+    font-size: 14px;
+
+    font-weight: 600;
 }
 
 
 /* =========================================
-   TEMPORARY RESULT
+   GENDER SCREEN
 ========================================= */
 
-.result-screen {
+.gender-screen {
+    overflow: hidden;
+
+    background: #ddd;
+}
+
+
+.gender-background {
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+        url("images/Office.jpg");
+
+    background-size: cover;
+
+    background-position: center;
+
+    z-index: 0;
+}
+
+
+/* =========================================
+   GENDER TITLE
+========================================= */
+
+.gender-title {
+    position: absolute;
+
+    top: 7%;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 5;
+
+    font-size:
+        clamp(30px, 4vw, 58px);
+
+    font-weight: 800;
+
+    color: #111;
+
+    white-space: nowrap;
+    text-align: center;
+
+    text-shadow:
+        0 3px 8px rgba(255, 255, 255, 0.85);
+
+    animation:
+        titleAppear 0.7s ease;
+}
+
+
+/* =========================================
+   CHARACTERS
+========================================= */
+
+.gender-characters {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 3;
+
+    pointer-events: none;
+}
+
+
+.character-choice {
+    position: absolute;
+
+    bottom: 0;
+
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: center;
+
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease;
+}
+
+
+.character-choice img {
+    width: 100%;
+    height: auto;
+
+    display: block;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(0 15px 15px rgba(0, 0, 0, 0.25));
+}
+
+
+/* =========================================
+   GIRL
+========================================= */
+
+.girl-choice {
+    left: 7%;
+
+    width: min(32vw, 500px);
+
+    animation:
+        girlFloat 2.4s ease-in-out infinite;
+}
+
+
+/* =========================================
+   BOY
+========================================= */
+
+.boy-choice {
+    right: 7%;
+
+    width: min(32vw, 500px);
+
+    animation:
+        boyFloat 2.4s ease-in-out infinite;
+}
+
+
+/* =========================================
+   CHARACTER HOVER
+========================================= */
+
+.character-choice:hover {
+    filter: brightness(1.06);
+
+    transform:
+        translateY(-8px) scale(1.035);
+}
+
+
+.character-choice:active {
+    transform:
+        translateY(-3px) scale(0.98);
+}
+
+
+/* =========================================
+   NAME SCREEN
+========================================= */
+
+.name-screen {
+    overflow: hidden;
+
+    background: #ddd;
+}
+
+
+.name-background {
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.16),
+            rgba(255, 255, 255, 0.16)),
+        url("images/Office.jpg");
+
+    background-size: cover;
+
+    background-position: center;
+
+    z-index: 0;
+}
+
+
+/* =========================================
+   NAME CONTENT
+========================================= */
+
+.name-content {
+    position: relative;
+
+    z-index: 5;
+
+    width: min(90%, 600px);
+
+    max-height: 85vh;
+
+    padding: 35px;
+
+    overflow-y: auto;
+
+    background:
+        rgba(255, 255, 255, 0.96);
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.22);
+
+    animation:
+        cardAppear 0.6s ease;
+}
+
+
+.name-content h1 {
+    font-size:
+        clamp(28px, 4vw, 42px);
+
+    color: #173f3b;
+
+    margin-bottom: 10px;
+}
+
+
+.name-content>p {
+    color: #555;
+
+    font-size: 17px;
+
+    margin-bottom: 25px;
+}
+
+
+/* =========================================
+   MEMBERS LIST
+========================================= */
+
+.members-list {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    max-height: 42vh;
+
+    overflow-y: auto;
+
+    padding: 5px;
+}
+
+
+/* =========================================
+   MEMBER OPTION
+========================================= */
+
+.member-option {
+    width: 100%;
+
+    min-height: 58px;
+
+    padding: 12px 18px;
+
+    border-radius: 14px;
+
+    border: 2px solid #d4dddb;
+
+    background: #fafafa;
+
+    color: #222;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        0.2s ease;
+}
+
+
+.member-option:hover {
+    border-color: #249f91;
+
+    background: #f2fbf9;
+
+    transform: translateY(-2px);
+}
+
+
+.member-option.selected {
+    border-color: #1f8f82;
+
+    background: #e7f6f3;
+
+    box-shadow:
+        0 0 0 3px rgba(31, 143, 130, 0.12);
+}
+
+
+/* =========================================
+   CONTINUE
+========================================= */
+
+.name-continue-btn {
+    margin-top: 20px;
+}
+
+
+/* =========================================
+   READY SCREEN
+========================================= */
+
+.ready-screen {
     background: #f7f7f7;
 }
 
-.result-card {
-    width: min(90%, 500px);
 
+.ready-card {
+    width: min(90%, 500px);
     padding: 45px;
 
-    background: white;
+    background: #fff;
 
     border-radius: 24px;
 
@@ -253,33 +588,53 @@ body {
 
     box-shadow:
         0 18px 50px rgba(0, 0, 0, 0.12);
+
+    animation:
+        cardAppear 0.6s ease;
 }
 
-.result-logo {
+
+.ready-logo {
     width: 85px;
+    height: 85px;
+
+    object-fit: contain;
 
     margin-bottom: 20px;
 }
 
-.result-card h2 {
-    font-size: 30px;
 
+.ready-card h1 {
     color: #173f3b;
+
+    font-size: 32px;
 
     margin-bottom: 12px;
 }
 
-.result-card p {
-    font-size: 18px;
 
+.ready-card p {
     color: #555;
+
+    font-size: 18px;
 }
+
+
+.ready-card .small-text {
+    margin-top: 12px;
+
+    font-size: 14px;
+
+    color: #888;
+}
+
 
 /* =========================================
    ANIMATIONS
 ========================================= */
 
 @keyframes fadeIn {
+
     from {
         opacity: 0;
     }
@@ -287,46 +642,125 @@ body {
     to {
         opacity: 1;
     }
+
 }
 
+
 @keyframes cardAppear {
+
     from {
         opacity: 0;
-        transform: translateY(25px) scale(0.97);
+
+        transform:
+            translateY(25px) scale(0.97);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+
+        transform:
+            translateY(0) scale(1);
     }
+
+}
+
+
+@keyframes titleAppear {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateX(-50%) translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateX(-50%) translateY(0);
+    }
+
+}
+
+
+@keyframes girlFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-13px);
+    }
+
+}
+
+
+@keyframes boyFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-13px);
+    }
+
 }
 
 
 /* =========================================
-   MOBILE
+   RESPONSIVE
 ========================================= */
+
+@media (max-width: 900px) {
+
+    .gender-title {
+        top: 5%;
+    }
+
+    .girl-choice {
+        left: 2%;
+
+        width: 43vw;
+    }
+
+    .boy-choice {
+        right: 2%;
+
+        width: 43vw;
+    }
+
+}
+
 
 @media (max-width: 600px) {
 
     .code-card {
-        padding: 32px 24px 35px;
+        padding: 30px 24px;
     }
 
-    .entity-logo {
-        width: 75px;
-        height: 75px;
+    .gender-title {
+        font-size: 30px;
     }
 
-    .code-card h1 {
-        font-size: 34px;
+    .girl-choice {
+        left: -5%;
+
+        width: 55vw;
     }
 
-    .code-title {
-        font-size: 17px;
+    .boy-choice {
+        right: -5%;
+
+        width: 55vw;
     }
 
-    .code-input,
-    .enter-btn {
-        height: 53px;
+    .name-content {
+        padding: 28px 20px;
     }
+
 }

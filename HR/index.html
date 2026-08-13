@@ -12,9 +12,9 @@
 
 <body>
 
-    <!-- =========================
-         HR INTRO
-    ========================== -->
+    <!-- =========================================
+         INTRO
+    ========================================== -->
 
     <section id="introScreen" class="screen intro-screen">
 
@@ -25,9 +25,9 @@
     </section>
 
 
-    <!-- =========================
+    <!-- =========================================
          CODE SCREEN
-    ========================== -->
+    ========================================== -->
 
     <section id="codeScreen" class="screen code-screen hidden">
 
@@ -37,35 +37,142 @@
 
             <h1>HR</h1>
 
-            <p class="code-title">Enter your code</p>
+            <p class="code-title">
+                Enter your code
+            </p>
 
             <input type="text" id="codeInput" class="code-input" placeholder="Enter code" autocomplete="off"
                 spellcheck="false">
 
-            <button id="enterCodeBtn" class="enter-btn">
+            <button id="enterCodeBtn" class="main-btn" type="button">
                 ENTER
             </button>
 
-            <p id="codeError" class="code-error"></p>
+            <p id="codeError" class="error-message"></p>
 
         </div>
 
     </section>
 
 
-    <!-- =========================
-         TEMPORARY RESULT
-    ========================== -->
+    <!-- =========================================
+         PLAYER - CHOOSE GENDER
+    ========================================== -->
 
-    <section id="resultScreen" class="screen result-screen hidden">
+    <section id="genderScreen" class="screen gender-screen hidden">
 
-        <div class="result-card">
+        <div class="gender-background"></div>
 
-            <img src="images/entity-logo.png" class="result-logo" alt="YDP">
 
-            <h2 id="resultTitle"></h2>
+        <h1 class="gender-title">
+            Choose your gender
+        </h1>
 
-            <p id="resultText"></p>
+
+        <div class="gender-characters">
+
+            <!-- GIRL -->
+
+            <button id="girlChoice" class="character-choice girl-choice" type="button">
+
+                <img src="images/girl hr.png" alt="Girl">
+
+            </button>
+
+
+            <!-- BOY -->
+
+            <button id="boyChoice" class="character-choice boy-choice" type="button">
+
+                <img src="images/boy hr.png" alt="Boy">
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         PLAYER - CHOOSE NAME
+    ========================================== -->
+
+    <section id="nameScreen" class="screen name-screen hidden">
+
+        <div class="name-background"></div>
+
+
+        <div class="name-content">
+
+            <h1>
+                Choose your name
+            </h1>
+
+            <p>
+                Select your name to continue
+            </p>
+
+
+            <div id="membersList" class="members-list">
+                <!-- Members will be added by JavaScript -->
+            </div>
+
+
+            <button id="nameContinueBtn" class="main-btn name-continue-btn" type="button" disabled>
+                CONTINUE
+            </button>
+
+
+            <p id="nameError" class="error-message"></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         TEMPORARY PLAYER SCREEN
+         هنستبدلها بالـHR Office بعدين
+    ========================================== -->
+
+    <section id="playerReadyScreen" class="screen ready-screen hidden">
+
+        <div class="ready-card">
+            <img src="images/entity-logo.png" class="ready-logo" alt="YDP">
+
+            <h1>
+                Welcome!
+            </h1>
+
+            <p id="welcomeText"></p>
+
+            <p class="small-text">
+                HR Office will be connected next.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         TEMPORARY ADMIN SCREEN
+         هنستبدله بالـControl Panel بعدين
+    ========================================== -->
+
+    <section id="adminScreen" class="screen ready-screen hidden">
+
+        <div class="ready-card">
+
+            <img src="images/entity-logo.png" class="ready-logo" alt="YDP">
+
+            <h1>
+                Admin Access
+            </h1>
+
+            <p>
+                Control Panel will be connected next.
+            </p>
 
         </div>
 
