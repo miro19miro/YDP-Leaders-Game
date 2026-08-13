@@ -5,76 +5,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>HR Game</title>
+    <title>YDP HR Game</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- =========================================
-         HR INTRO VIDEO
-    ========================================== -->
+    <!-- =========================
+         HR INTRO
+    ========================== -->
 
     <section id="introScreen" class="screen intro-screen">
 
-        <video id="introVideo" playsinline preload="auto">
+        <video id="introVideo" class="intro-video" autoplay playsinline>
             <source src="Intro HR.mp4" type="video/mp4">
-            Your browser does not support video.
         </video>
 
     </section>
 
 
-    <!-- =========================================
-         HR OFFICE SCENE
-    ========================================== -->
+    <!-- =========================
+         CODE SCREEN
+    ========================== -->
 
-    <section id="officeScreen" class="screen office-screen">
+    <section id="codeScreen" class="screen code-screen hidden">
 
-        <div class="office-scene">
+        <div class="code-card">
 
-            <div class="office-background"></div>
+            <img src="images/entity-logo.png" class="entity-logo" alt="YDP">
 
-            <!-- GIRL -->
-            <img src="images/girl hr.png" class="character girl" id="girlCharacter" alt="Girl">
+            <h1>HR</h1>
 
-            <!-- BOY -->
-            <img src="images/boy hr.png" class="character boy" id="boyCharacter" alt="Boy">
+            <p class="code-title">Enter your code</p>
 
-            <!-- FIRST BUBBLE -->
-            <div id="firstBubble" class="speech-bubble first-bubble hidden">
-                <div id="firstText"></div>
-                <div class="bubble-tail"></div>
-            </div>
+            <input type="text" id="codeInput" class="code-input" placeholder="Enter code" autocomplete="off"
+                spellcheck="false">
 
-            <!-- YES BUTTON -->
-            <button id="yesButton" class="yes-button hidden">
-                YES
+            <button id="enterCodeBtn" class="enter-btn">
+                ENTER
             </button>
 
-            <!-- SECOND BUBBLE -->
-            <div id="secondBubble" class="speech-bubble second-bubble hidden">
-                <div id="secondText"></div>
-                <div class="bubble-tail"></div>
-            </div>
-
-            <!-- GENDER SIGNS -->
-            <button id="femaleChoice" class="gender-sign female-sign hidden" aria-label="Choose Female">
-                ♀
-            </button>
-
-            <button id="maleChoice" class="gender-sign male-sign hidden" aria-label="Choose Male">
-                ♂
-            </button>
+            <p id="codeError" class="code-error"></p>
 
         </div>
 
-        <!-- FINAL LOADING SCREEN -->
-        <div id="transitionScreen" class="transition-screen">
-            <div class="loading-message">
-                Work is underway on the game.
-            </div>
+    </section>
+
+
+    <!-- =========================
+         TEMPORARY RESULT
+    ========================== -->
+
+    <section id="resultScreen" class="screen result-screen hidden">
+
+        <div class="result-card">
+
+            <img src="images/entity-logo.png" class="result-logo" alt="YDP">
+
+            <h2 id="resultTitle"></h2>
+
+            <p id="resultText"></p>
+
         </div>
 
     </section>

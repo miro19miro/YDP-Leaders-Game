@@ -1,5 +1,5 @@
 /* =========================================
-   GENERAL
+   RESET
 ========================================= */
 
 * {
@@ -13,568 +13,320 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-
     font-family: Arial, Helvetica, sans-serif;
-
-    background: #000;
 }
 
 
 /* =========================================
-   SCREENS
+   GENERAL SCREEN
 ========================================= */
 
 .screen {
     position: fixed;
-
     inset: 0;
 
     width: 100%;
     height: 100%;
 
-    opacity: 0;
-    visibility: hidden;
-
-    transition:
-        opacity 0.7s ease,
-        visibility 0.7s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.screen.active {
-    opacity: 1;
-    visibility: visible;
+.hidden {
+    display: none !important;
 }
 
 
 /* =========================================
-   INTRO VIDEO
+   INTRO
 ========================================= */
 
 .intro-screen {
     background: #000;
-
-    z-index: 100;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
 }
 
-#introVideo {
+.intro-video {
     width: 100%;
     height: 100%;
 
-    object-fit: contain;
+    object-fit: cover;
 
-    background: #000;
+    display: block;
 }
 
 
 /* =========================================
-   OFFICE SCREEN
+   CODE SCREEN
 ========================================= */
 
-.office-screen {
-    position: fixed;
+.code-screen {
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.94),
+            rgba(255, 255, 255, 0.94));
 
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    background: #000;
-
-    z-index: 10;
-
-    overflow: hidden;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
+    animation: fadeIn 0.6s ease;
 }
 
 
 /* =========================================
-   OFFICE SCENE
-   ORIGINAL IMAGE: 1024 x 1536
-   RATIO: 2 : 3
-
-   Everything inside this scene scales
-   together on laptop and mobile.
+   CODE CARD
 ========================================= */
 
-.office-scene {
-    position: relative;
+.code-card {
+    width: min(90%, 470px);
 
-    width: min(100vw, 66.6667vh);
-    height: min(150vw, 100vh);
+    padding: 42px 40px 45px;
 
-    aspect-ratio: 2 / 3;
+    background: rgba(255, 255, 255, 0.97);
 
-    flex-shrink: 0;
-
-    overflow: hidden;
-}
-
-
-/* =========================================
-   OFFICE BACKGROUND
-========================================= */
-
-.office-background {
-    position: absolute;
-
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    background-image: url("images/Office.jpg");
-
-    background-size: 100% 100%;
-
-    background-position: center;
-
-    background-repeat: no-repeat;
-
-    z-index: 1;
-}
-
-
-/* =========================================
-   CHARACTERS
-========================================= */
-
-.character {
-    position: absolute;
-
-    z-index: 5;
-
-    user-select: none;
-
-    pointer-events: none;
-
-    object-fit: contain;
-
-    transform-origin: bottom center;
-
-    transition:
-        opacity 0.5s ease,
-        transform 0.5s ease;
-}
-
-
-/* =========================================
-   GIRL
-========================================= */
-
-.girl {
-    width: 28%;
-
-    left: 55%;
-
-    bottom: 30%;
-}
-
-
-/* =========================================
-   BOY
-========================================= */
-
-.boy {
-    width: 30%;
-
-    left: 66%;
-
-    bottom: 30%;
-}
-
-
-/* =========================================
-   SPEECH BUBBLES
-========================================= */
-
-.speech-bubble {
-    position: absolute;
-
-    z-index: 20;
-
-    background: white;
-
-    border: 4px solid #000;
-
-    color: #000;
-
-    font-family:
-        "Comic Sans MS",
-        "Segoe Print",
-        cursive;
-
-    font-weight: 500;
+    border-radius: 24px;
 
     text-align: center;
 
-    display: flex;
+    box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.15);
 
-    align-items: center;
-    justify-content: center;
+    border: 2px solid rgba(30, 120, 110, 0.15);
 
-    line-height: 1.25;
+    animation: cardAppear 0.7s ease;
+}
 
-    padding: 30px 35px;
 
-    opacity: 1;
+/* =========================================
+   LOGO
+========================================= */
+
+.entity-logo {
+    width: 95px;
+    height: 95px;
+
+    object-fit: contain;
+
+    margin-bottom: 12px;
+}
+
+
+/* =========================================
+   TITLE
+========================================= */
+
+.code-card h1 {
+    font-size: 42px;
+
+    font-weight: 800;
+
+    color: #173f3b;
+
+    margin-bottom: 8px;
+}
+
+.code-title {
+    font-size: 20px;
+
+    color: #555;
+
+    margin-bottom: 25px;
+}
+
+
+/* =========================================
+   INPUT
+========================================= */
+
+.code-input {
+    width: 100%;
+
+    height: 58px;
+
+    border: 2px solid #cfd9d7;
+
+    border-radius: 14px;
+
+    outline: none;
+
+    padding: 0 18px;
+
+    font-size: 20px;
+
+    text-align: center;
+
+    letter-spacing: 2px;
+
+    color: #222;
+
+    background: #fafafa;
 
     transition:
-        opacity 0.4s ease,
-        transform 0.4s ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-
-/* =========================================
-   FIRST BUBBLE
-========================================= */
-
-.first-bubble {
-    width: 34%;
-
-    min-height: 12.4%;
-
-    left: 30%;
-
-    top: 7%;
-
-    border-radius:
-        48% 52% 45% 55% / 55% 45% 55% 45%;
-
-    font-size: clamp(17px, 2.3vw, 34px);
-
-    transform: rotate(-2deg);
-}
-
-
-/* =========================================
-   SECOND BUBBLE
-========================================= */
-
-.second-bubble {
-    width: 40%;
-
-    min-height: 12.4%;
-
-    left: 35%;
-
-    top: 1%;
-
-    border-radius:
-        48% 52% 45% 55% / 55% 45% 55% 45%;
-
-    font-size: clamp(17px, 2.3vw, 33px);
-    transform: rotate(1deg);
-}
-
-
-/* =========================================
-   BUBBLE TAIL
-========================================= */
-
-.bubble-tail::before,
-.bubble-tail::after {
-    content: "";
-
-    position: absolute;
-
-    background: white;
-
-    border: 4px solid #000;
-
-    border-radius: 50%;
-}
-
-
-/* =========================================
-   FIRST BUBBLE TAIL
-========================================= */
-
-.first-bubble .bubble-tail::before {
-    width: 34px;
-    height: 34px;
-
-    right: 5px;
-
-    bottom: -35px;
-}
-
-.first-bubble .bubble-tail::after {
-    width: 18px;
-    height: 18px;
-
-    right: -22px;
-
-    bottom: -52px;
-}
-
-
-/* =========================================
-   SECOND BUBBLE TAIL
-========================================= */
-
-.second-bubble .bubble-tail::before {
-    width: 34px;
-    height: 34px;
-
-    right: 5px;
-
-    bottom: -35px;
-}
-
-.second-bubble .bubble-tail::after {
-    width: 18px;
-    height: 18px;
-
-    right: -22px;
-
-    bottom: -52px;
-}
-
-
-/* =========================================
-   HIDDEN
-========================================= */
-
-.hidden {
-    opacity: 0 !important;
-
-    visibility: hidden !important;
-
-    pointer-events: none !important;
-}
-
-
-/* =========================================
-   YES BUTTON
-========================================= */
-
-.yes-button {
-    position: absolute;
-
-    z-index: 25;
-
-    left: 20%;
-
-    bottom: 17%;
-
-    width: 200px;
-
-    height: 75px;
-
-    border: none;
-
-    background: #050b18;
-
-    color: white;
-
-    font-family: Georgia, serif;
-
-    font-size: 38px;
-
-    letter-spacing: 4px;
-
-    cursor: pointer;
+.code-input:focus {
+    border-color: #249f91;
 
     box-shadow:
-        0 8px 0 #000,
-        0 0 10px rgba(0, 0, 0, 0.5);
-
-    transition:
-        transform 0.2s ease,
-        filter 0.2s ease,
-        opacity 0.4s ease;
-}
-
-
-/* YES HOVER */
-
-.yes-button:hover {
-    transform: scale(1.06);
-
-    filter: brightness(1.3);
-}
-
-
-/* YES CLICK */
-
-.yes-button:active {
-    transform: scale(0.96);
+        0 0 0 4px rgba(36, 159, 145, 0.12);
 }
 
 
 /* =========================================
-   GENDER SIGNS
+   ENTER BUTTON
 ========================================= */
 
-.gender-sign {
-    position: absolute;
+.enter-btn {
+    width: 100%;
 
-    z-index: 30;
+    height: 58px;
+
+    margin-top: 18px;
 
     border: none;
 
-    background: transparent;
+    border-radius: 14px;
+
+    background: #1f8f82;
+
+    color: white;
+
+    font-size: 19px;
+
+    font-weight: 700;
 
     cursor: pointer;
 
-    font-family: Arial, sans-serif;
-
-    font-weight: bold;
-
     transition:
-        transform 0.25s ease,
-        filter 0.25s ease,
-        opacity 0.5s ease;
+        transform 0.15s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.enter-btn:hover {
+    background: #19786d;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(31, 143, 130, 0.25);
+}
+
+.enter-btn:active {
+    transform: translateY(0);
 }
 
 
 /* =========================================
-   FEMALE SIGN
+   ERROR
 ========================================= */
 
-.female-sign {
-    left: 65%;
+.code-error {
+    min-height: 24px;
 
-    top: 20%;
+    margin-top: 15px;
 
-    color: #ff69b4;
-
-    /*
-       Using clamp keeps the sign visible
-       on both laptop and mobile.
-    */
-
-    font-size: clamp(60px, 9vw, 135px);
-
-    text-shadow:
-        0 0 8px rgba(255, 105, 180, 0.5);
-}
-
-
-/* =========================================
-   MALE SIGN
-========================================= */
-
-.male-sign {
-    left: 77%;
-
-    top: 18%;
-
-    color: #2488e8;
-
-    font-size: clamp(60px, 9vw, 135px);
-
-    text-shadow:
-        0 0 8px rgba(36, 136, 232, 0.5);
-}
-
-
-/* =========================================
-   GENDER HOVER
-========================================= */
-
-.gender-sign:hover {
-    transform: scale(1.12);
-
-    filter: brightness(1.2);
-}
-
-.gender-sign:active {
-    transform: scale(0.95);
-}
-
-
-/* =========================================
-   TRANSITION SCREEN
-========================================= */
-
-.transition-screen {
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 100;
-
-    background: #000;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    opacity: 0;
-
-    visibility: hidden;
-
-    transition:
-        opacity 1s ease,
-        visibility 1s ease;
-}
-
-
-/* =========================================
-   TRANSITION SHOW
-========================================= */
-
-.transition-screen.show {
-    opacity: 1;
-
-    visibility: visible;
-}
-
-
-/* =========================================
-   FINAL LOADING MESSAGE
-========================================= */
-
-.loading-message {
-    color: white;
-
-    font-size: clamp(22px, 3vw, 42px);
+    font-size: 15px;
 
     font-weight: 600;
 
+    color: #d62828;
+}
+
+
+/* =========================================
+   TEMPORARY RESULT
+========================================= */
+
+.result-screen {
+    background: #f7f7f7;
+}
+
+.result-card {
+    width: min(90%, 500px);
+
+    padding: 45px;
+
+    background: white;
+
+    border-radius: 24px;
+
     text-align: center;
 
-    padding: 20px;
-    opacity: 0;
+    box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.12);
+}
 
-    transform: scale(0.9);
+.result-logo {
+    width: 85px;
 
-    transition:
-        opacity 0.8s ease,
-        transform 0.8s ease;
+    margin-bottom: 20px;
+}
+
+.result-card h2 {
+    font-size: 30px;
+
+    color: #173f3b;
+
+    margin-bottom: 12px;
+}
+
+.result-card p {
+    font-size: 18px;
+
+    color: #555;
+}
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 
 /* =========================================
-   FINAL MESSAGE SHOW
+   MOBILE
 ========================================= */
 
-.transition-screen.show .loading-message {
-    opacity: 1;
+@media (max-width: 600px) {
 
-    transform: scale(1);
-}
+    .code-card {
+        padding: 32px 24px 35px;
+    }
 
+    .entity-logo {
+        width: 75px;
+        height: 75px;
+    }
 
-/* =========================================
-   FADE EFFECT
-========================================= */
+    .code-card h1 {
+        font-size: 34px;
+    }
 
-.office-screen.fade-out .office-background,
-.office-screen.fade-out .character,
-.office-screen.fade-out .speech-bubble,
-.office-screen.fade-out .gender-sign,
-.office-screen.fade-out .yes-button {
-    opacity: 0;
+    .code-title {
+        font-size: 17px;
+    }
+
+    .code-input,
+    .enter-btn {
+        height: 53px;
+    }
 }

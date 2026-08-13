@@ -1,103 +1,48 @@
 /* =========================================
+   HR GAME - PHASE 1
+   INTRO → CODE → PLAYER / ADMIN
+========================================= */
+
+
+/* =========================================
+   CODES
+========================================= */
+
+const ADMIN_CODE = "BYS20M";
+const PLAYER_CODE = "MEM201";
+
+
+/* =========================================
    ELEMENTS
 ========================================= */
 
-const introScreen =
-    document.getElementById("introScreen");
+const introScreen = document.getElementById("introScreen");
+const introVideo = document.getElementById("introVideo");
 
-const officeScreen =
-    document.getElementById("officeScreen");
+const codeScreen = document.getElementById("codeScreen");
 
-const introVideo =
-    document.getElementById("introVideo");
+const codeInput = document.getElementById("codeInput");
+const enterCodeBtn = document.getElementById("enterCodeBtn");
+const codeError = document.getElementById("codeError");
 
-
-const firstBubble =
-    document.getElementById("firstBubble");
-
-const firstText =
-    document.getElementById("firstText");
-
-
-const yesButton =
-    document.getElementById("yesButton");
-
-
-const secondBubble =
-    document.getElementById("secondBubble");
-
-const secondText =
-    document.getElementById("secondText");
-
-
-const femaleChoice =
-    document.getElementById("femaleChoice");
-
-const maleChoice =
-    document.getElementById("maleChoice");
-
-
-const transitionScreen =
-    document.getElementById("transitionScreen");
+const resultScreen = document.getElementById("resultScreen");
+const resultTitle = document.getElementById("resultTitle");
+const resultText = document.getElementById("resultText");
 
 
 /* =========================================
-   TEXT
+   SHOW CODE SCREEN
 ========================================= */
 
-const firstMessage =
-    "Hello, Are you the new HR?";
+function showCodeScreen() {
 
-const secondMessage =
-    "Welcome, Now choose your character.";
+    introScreen.classList.add("hidden");
 
+    codeScreen.classList.remove("hidden");
 
-/* =========================================
-   TYPING SPEED
-========================================= */
-
-const typingSpeed = 65;
-
-
-/* =========================================
-   START
-========================================= */
-
-window.addEventListener("load", () => {
-
-    introScreen.classList.add("active");
-
-    playIntro();
-
-});
-
-
-/* =========================================
-   PLAY HR INTRO
-========================================= */
-
-function playIntro() {
-
-    introVideo.currentTime = 0;
-
-    const playPromise =
-        introVideo.play();
-
-    if (playPromise !== undefined) {
-
-        playPromise.catch(() => {
-
-            /*
-                Browser may block autoplay.
-                Clicking the video will start it.
-            */
-
-            introVideo.controls = true;
-
-        });
-
-    }
-
+    setTimeout(() => {
+        codeInput.focus();
+    }, 300);
 }
 
 
@@ -107,220 +52,112 @@ function playIntro() {
 
 introVideo.addEventListener("ended", () => {
 
-    introScreen.classList.remove("active");
-
-    setTimeout(() => {
-
-        officeScreen.classList.add("active");
-
-        startFirstScene();
-
-    }, 500);
+    showCodeScreen();
 
 });
 
 
 /* =========================================
-   FIRST SCENE
+   ENTER CODE
 ========================================= */
 
-function startFirstScene() {
+function checkCode() {
 
-    /*
-        Show first speech bubble.
-    */
+    const enteredCode = codeInput.value.trim().toUpperCase();
 
-    firstBubble.classList.remove("hidden");
+    codeError.textContent = "";
 
 
-    /*
-        Start typing.
-    */
+    /* Empty */
 
-    typeText(
-        firstText,
-        firstMessage,
-        () => {
+    if (!enteredCode) {
 
-            /*
-                After the sentence finishes,
-                wait EXACTLY 1 second,
-                then show YES.
-            */
+        codeError.textContent = "Please enter your code.";
 
-            setTimeout(() => {
+        return;
+    }
 
-                yesButton.classList.remove("hidden");
 
-            }, 1000);
+    /* Admin */
 
-        }
-    );
+    if (enteredCode === ADMIN_CODE) {
+
+        openAdmin();
+
+        return;
+    }
+
+
+    /* Player */
+
+    if (enteredCode === PLAYER_CODE) {
+
+        openPlayer();
+
+        return;
+    }
+
+
+    /* Wrong code */
+
+    codeError.textContent = "Invalid code. Please try again.";
 
 }
 
 
 /* =========================================
-   TYPING FUNCTION
+   ADMIN
 ========================================= */
 
-function typeText(element, text, callback) {
+function openAdmin() {
 
-    element.textContent = "";
+    codeScreen.classList.add("hidden");
 
-    let index = 0;
+    resultScreen.classList.remove("hidden");
 
+    resultTitle.textContent = "Admin Access";
 
-    const interval =
-        setInterval(() => {
-
-            element.textContent +=
-                text.charAt(index);
-
-            index++;
-
-
-            if (index >= text.length) {
-
-                clearInterval(interval);
-
-                if (callback) {
-                    callback();
-                }
-
-            }
-
-        }, typingSpeed);
+    resultText.textContent =
+        "Admin code accepted. Control Panel will be connected next.";
 
 }
 
 
 /* =========================================
-   YES BUTTON
+   PLAYER
 ========================================= */
 
-yesButton.addEventListener("click", () => {
+function openPlayer() {
 
-    /*
-        Hide first bubble + YES.
-    */
+    codeScreen.classList.add("hidden");
 
-    firstBubble.classList.add("hidden");
+    resultScreen.classList.remove("hidden");
 
-    yesButton.classList.add("hidden");
+    resultTitle.textContent = "Player Access";
 
+    resultText.textContent =
+        "Player code accepted. Gender selection will be connected next.";
 
-    /*
-        Show second bubble.
-    */
-
-    setTimeout(() => {
-
-        secondBubble.classList.remove("hidden");
+}
 
 
-        typeText(
-            secondText,
-            secondMessage,
-            () => {
+/* =========================================
+   BUTTON
+========================================= */
 
-                /*
-                    Let the player read it,
-                    then show the gender choices.
-                */
+enterCodeBtn.addEventListener("click", checkCode);
 
-                setTimeout(() => {
 
-                    secondBubble.classList.add("hidden");
-                    showCharacterChoices();
+/* =========================================
+   ENTER KEY
+========================================= */
 
-                }, 1000);
+codeInput.addEventListener("keydown", (event) => {
 
-            }
-        );
+    if (event.key === "Enter") {
 
-    }, 300);
+        checkCode();
+
+    }
 
 });
-
-
-/* =========================================
-   SHOW CHARACTER CHOICES
-========================================= */
-
-function showCharacterChoices() {
-
-    femaleChoice.classList.remove("hidden");
-
-    maleChoice.classList.remove("hidden");
-
-}
-
-
-/* =========================================
-   FEMALE CHOICE
-========================================= */
-
-femaleChoice.addEventListener("click", () => {
-
-    chooseCharacter("Female");
-
-});
-
-
-/* =========================================
-   MALE CHOICE
-========================================= */
-
-maleChoice.addEventListener("click", () => {
-
-    chooseCharacter("Male");
-
-});
-
-
-/* =========================================
-   CHARACTER SELECTED
-========================================= */
-
-function chooseCharacter(character) {
-
-    /*
-        Disable both choices.
-    */
-
-    femaleChoice.disabled = true;
-
-    maleChoice.disabled = true;
-
-
-    /*
-        Store the selected character.
-        This will be useful when we continue
-        developing the HR game.
-    */
-
-    localStorage.setItem(
-        "hrSelectedCharacter",
-        character
-    );
-
-
-    /*
-        Fade everything to black.
-    */
-
-    officeScreen.classList.add("fade-out");
-
-
-    /*
-        Wait for the black transition.
-    */
-
-    setTimeout(() => {
-
-        transitionScreen.classList.add("show");
-
-    }, 800);
-
-}
