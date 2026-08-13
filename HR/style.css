@@ -67,13 +67,14 @@ body {
 
 
 /* =========================================
-   CODE SCREEN
+   CODE
 ========================================= */
 
 .code-screen {
-    background: #ffffff;
+    background: #fff;
 
-    animation: fadeIn 0.5s ease;
+    animation:
+        fadeIn 0.5s ease;
 }
 
 
@@ -82,24 +83,20 @@ body {
 
     padding: 42px 40px 45px;
 
-    background: rgba(255, 255, 255, 0.98);
+    background:
+        rgba(255, 255, 255, 0.98);
 
     border-radius: 24px;
 
     text-align: center;
 
-    border: 2px solid rgba(30, 120, 110, 0.12);
+    border:
+        2px solid rgba(30, 120, 110, 0.12);
 
     box-shadow:
         0 18px 50px rgba(0, 0, 0, 0.15);
-
-    animation: cardAppear 0.6s ease;
 }
 
-
-/* =========================================
-   LOGO
-========================================= */
 
 .entity-logo {
     width: 95px;
@@ -111,16 +108,10 @@ body {
 }
 
 
-/* =========================================
-   CODE TITLE
-========================================= */
-
 .code-card h1 {
     font-size: 42px;
 
     color: #173f3b;
-
-    font-weight: 800;
 
     margin-bottom: 8px;
 }
@@ -135,38 +126,31 @@ body {
 }
 
 
-/* =========================================
-   INPUT
-========================================= */
-
 .code-input {
     width: 100%;
     height: 58px;
 
-    border: 2px solid #cfd9d7;
+    border:
+        2px solid #cfd9d7;
 
     border-radius: 14px;
 
     outline: none;
 
-    padding: 0 18px;
+    padding:
+        0 18px;
 
     font-size: 20px;
 
     text-align: center;
 
     letter-spacing: 2px;
-
-    color: #222;
-
-    background: #fafafa;
-
-    transition: 0.2s ease;
 }
 
 
 .code-input:focus {
-    border-color: #249f91;
+    border-color:
+        #249f91;
 
     box-shadow:
         0 0 0 4px rgba(36, 159, 145, 0.12);
@@ -174,7 +158,7 @@ body {
 
 
 /* =========================================
-   MAIN BUTTON
+   BUTTON
 ========================================= */
 
 .main-btn {
@@ -187,7 +171,8 @@ body {
 
     border-radius: 14px;
 
-    background: #1f8f82;
+    background:
+        #1f8f82;
 
     color: white;
 
@@ -198,41 +183,30 @@ body {
     cursor: pointer;
 
     transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
+        0.2s ease;
 }
 
 
 .main-btn:hover {
-    background: #19786d;
+    background:
+        #19786d;
 
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 8px 20px rgba(31, 143, 130, 0.22);
-}
-
-
-.main-btn:active {
-    transform: translateY(0);
+    transform:
+        translateY(-2px);
 }
 
 
 .main-btn:disabled {
-    opacity: 0.45;
+    opacity:
+        0.45;
 
-    cursor: not-allowed;
+    cursor:
+        not-allowed;
 
-    transform: none;
-
-    box-shadow: none;
+    transform:
+        none;
 }
 
-
-/* =========================================
-   ERROR
-========================================= */
 
 .error-message {
     min-height: 24px;
@@ -248,7 +222,7 @@ body {
 
 
 /* =========================================
-   GENDER SCREEN
+   GENDER
 ========================================= */
 
 .gender-screen {
@@ -266,17 +240,13 @@ body {
     background-image:
         url("images/Office.jpg");
 
-    background-size: cover;
+    background-size:
+        cover;
 
-    background-position: center;
-
-    z-index: 0;
+    background-position:
+        center;
 }
 
-
-/* =========================================
-   GENDER TITLE
-========================================= */
 
 .gender-title {
     position: absolute;
@@ -285,31 +255,24 @@ body {
 
     left: 50%;
 
-    transform: translateX(-50%);
+    transform:
+        translateX(-50%);
 
     z-index: 5;
 
     font-size:
         clamp(30px, 4vw, 58px);
 
-    font-weight: 800;
-
     color: #111;
 
+    font-weight: 800;
+
     white-space: nowrap;
-    text-align: center;
 
     text-shadow:
         0 3px 8px rgba(255, 255, 255, 0.85);
-
-    animation:
-        titleAppear 0.7s ease;
 }
 
-
-/* =========================================
-   CHARACTERS
-========================================= */
 
 .gender-characters {
     position: absolute;
@@ -337,90 +300,55 @@ body {
 
     pointer-events: auto;
 
-    display: flex;
-
-    align-items: flex-end;
-
-    justify-content: center;
-
     transition:
-        transform 0.25s ease,
-        filter 0.25s ease;
+        0.25s ease;
 }
 
 
 .character-choice img {
     width: 100%;
-    height: auto;
 
     display: block;
-
-    object-fit: contain;
 
     filter:
         drop-shadow(0 15px 15px rgba(0, 0, 0, 0.25));
 }
 
 
-/* =========================================
-   GIRL
-========================================= */
-
 .girl-choice {
     left: 7%;
 
-    width: min(32vw, 500px);
-
-    animation:
-        girlFloat 2.4s ease-in-out infinite;
+    width:
+        min(32vw, 500px);
 }
 
-
-/* =========================================
-   BOY
-========================================= */
 
 .boy-choice {
     right: 7%;
 
-    width: min(32vw, 500px);
-
-    animation:
-        boyFloat 2.4s ease-in-out infinite;
+    width:
+        min(32vw, 500px);
 }
 
-
-/* =========================================
-   CHARACTER HOVER
-========================================= */
-
 .character-choice:hover {
-    filter: brightness(1.06);
-
     transform:
         translateY(-8px) scale(1.035);
 }
 
 
-.character-choice:active {
-    transform:
-        translateY(-3px) scale(0.98);
-}
-
-
 /* =========================================
-   NAME SCREEN
+   NAME
 ========================================= */
 
 .name-screen {
-    overflow: hidden;
-
-    background: #ddd;
+    overflow:
+        hidden;
 }
 
 
 .name-background {
-    position: absolute;
+    position:
+        absolute;
 
     inset: 0;
 
@@ -429,43 +357,44 @@ body {
             rgba(255, 255, 255, 0.16)),
         url("images/Office.jpg");
 
-    background-size: cover;
+    background-size:
+        cover;
 
-    background-position: center;
-
-    z-index: 0;
+    background-position:
+        center;
 }
 
 
-/* =========================================
-   NAME CONTENT
-========================================= */
-
 .name-content {
-    position: relative;
+    position:
+        relative;
 
-    z-index: 5;
+    z-index:
+        5;
 
-    width: min(90%, 600px);
+    width:
+        min(90%, 600px);
 
-    max-height: 85vh;
+    max-height:
+        85vh;
 
-    padding: 35px;
+    padding:
+        35px;
 
-    overflow-y: auto;
+    overflow-y:
+        auto;
 
     background:
         rgba(255, 255, 255, 0.96);
 
-    border-radius: 25px;
+    border-radius:
+        25px;
 
-    text-align: center;
+    text-align:
+        center;
 
     box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.22);
-
-    animation:
-        cardAppear 0.6s ease;
 }
 
 
@@ -473,97 +402,866 @@ body {
     font-size:
         clamp(28px, 4vw, 42px);
 
-    color: #173f3b;
+    color:
+        #173f3b;
 
-    margin-bottom: 10px;
+    margin-bottom:
+        10px;
 }
 
 
 .name-content>p {
-    color: #555;
+    color:
+        #555;
 
-    font-size: 17px;
+    font-size:
+        17px;
 
-    margin-bottom: 25px;
+    margin-bottom:
+        25px;
 }
 
-
-/* =========================================
-   MEMBERS LIST
-========================================= */
 
 .members-list {
-    width: 100%;
+    width:
+        100%;
 
-    display: flex;
+    display:
+        flex;
 
-    flex-direction: column;
+    flex-direction:
+        column;
 
-    gap: 12px;
+    gap:
+        12px;
 
-    max-height: 42vh;
+    max-height:
+        42vh;
 
-    overflow-y: auto;
+    overflow-y:
+        auto;
+}
 
-    padding: 5px;
+
+.member-option {
+    width:
+        100%;
+
+    min-height:
+        58px;
+
+    padding:
+        12px 18px;
+
+    border:
+        2px solid #d4dddb;
+
+    border-radius:
+        14px;
+
+    background:
+        #fafafa;
+
+    font-size:
+        17px;
+
+    font-weight:
+        600;
+
+    cursor:
+        pointer;
+}
+
+
+.member-option.selected {
+    border-color:
+        #1f8f82;
+
+    background:
+        #e7f6f3;
+}
+
+
+.name-continue-btn {
+    margin-top:
+        20px;
 }
 
 
 /* =========================================
-   MEMBER OPTION
+   HR OFFICE
 ========================================= */
 
-.member-option {
-    width: 100%;
+.office-screen {
+    overflow:
+        hidden;
 
-    min-height: 58px;
+    background:
+        #5f381d;
+}
 
-    padding: 12px 18px;
 
-    border-radius: 14px;
+/* =========================================
+   WOOD BACKGROUND
+========================================= */
 
-    border: 2px solid #d4dddb;
+.office-background {
+    position:
+        absolute;
 
-    background: #fafafa;
+    inset:
+        0;
 
-    color: #222;
+    width:
+        100%;
 
-    font-size: 17px;
+    height:
+        100%;
 
-    font-weight: 600;
+    object-fit:
+        cover;
 
-    cursor: pointer;
+    object-position:
+        center;
+
+    z-index:
+        0;
+
+    user-select:
+        none;
+}
+
+
+/* =========================================
+   ID MACHINE
+   مكان البنت القديم
+========================================= */
+
+.id-machine {
+    position:
+        absolute;
+
+    z-index:
+        4;
+
+    left:
+        8%;
+
+    bottom:
+        8%;
+
+    width:
+        min(18vw, 280px);
+
+    height:
+        auto;
+
+    object-fit:
+        contain;
+
+    user-select:
+        none;
+
+    pointer-events:
+        none;
+}
+
+
+/* =========================================
+   SCORE
+========================================= */
+
+.score-panel {
+    position:
+        absolute;
+
+    top:
+        3%;
+
+    right:
+        3%;
+
+    z-index:
+        20;
+
+    display:
+        flex;
+
+    gap:
+        14px;
+
+    padding:
+        13px 17px;
+
+    background:
+        rgba(255, 255, 255, 0.95);
+
+    border-radius:
+        18px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.16);
+}
+
+
+.score-item {
+    min-width:
+        80px;
+
+    text-align:
+        center;
+}
+
+
+.score-item span {
+    display:
+        block;
+
+    color:
+        #777;
+
+    font-size:
+        13px;
+
+    margin-bottom:
+        4px;
+}
+
+
+.score-item strong {
+    display:
+        block;
+
+    color:
+        #173f3b;
+
+    font-size:
+        23px;
+}
+
+
+/* =========================================
+   DESK PAPER
+========================================= */
+
+.desk-paper {
+    position:
+        absolute;
+
+    z-index:
+        5;
+
+    left:
+        50%;
+
+    top:
+        52%;
+
+    transform:
+        translate(-50%, -50%) rotate(-1deg);
+
+    width:
+        min(34vw, 470px);
+
+    min-height:
+        280px;
+
+    padding:
+        18px;
+
+    background:
+        #fffdf7;
+
+    border:
+        1px solid #ddd4c5;
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.22);
+
+    animation:
+        paperIn 0.45s ease;
+}
+
+
+/* =========================================
+   PAPER TOP
+========================================= */
+
+.paper-top {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    margin-bottom:
+        12px;
+}
+
+
+.paper-label {
+    font-size:
+        14px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        1px;
+
+    color:
+        #173f3b;
+}
+
+
+/* =========================================
+   EYE
+========================================= */
+
+.eye-button {
+    width:
+        35px;
+
+    height:
+        35px;
+
+    border:
+        1px solid #d7d7d7;
+
+    border-radius:
+        50%;
+
+    background:
+        white;
+
+    cursor:
+        pointer;
+
+    font-size:
+        18px;
 
     transition:
         0.2s ease;
 }
 
 
-.member-option:hover {
-    border-color: #249f91;
+.eye-button:hover {
+    transform:
+        scale(1.08);
 
-    background: #f2fbf9;
-
-    transform: translateY(-2px);
-}
-
-
-.member-option.selected {
-    border-color: #1f8f82;
-
-    background: #e7f6f3;
-
-    box-shadow:
-        0 0 0 3px rgba(31, 143, 130, 0.12);
+    background:
+        #f4f4f4;
 }
 
 
 /* =========================================
-   CONTINUE
+   PAPER PREVIEW
 ========================================= */
 
-.name-continue-btn {
-    margin-top: 20px;
+.paper-preview {
+    display:
+        flex;
+
+    gap:
+        16px;
+
+    align-items:
+        center;
+
+    padding:
+        18px;
+
+    border:
+        1px solid #ebe5da;
+
+    background:
+        #faf8f2;
+}
+
+
+.paper-photo {
+    width:
+        80px;
+
+    height:
+        80px;
+
+    border-radius:
+        8px;
+
+    object-fit:
+        cover;
+}
+
+
+.paper-preview-info h3 {
+    font-size:
+        20px;
+
+    color:
+        #222;
+
+    margin-bottom:
+        6px;
+}
+
+
+.paper-preview-info p {
+    color:
+        #777;
+}
+
+
+/* =========================================
+   STAMPS
+========================================= */
+
+.stamp-button {
+    position:
+        absolute;
+
+    z-index:
+        8;
+
+    border:
+        none;
+
+    background:
+        transparent;
+
+    padding:
+        0;
+
+    cursor:
+        pointer;
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+.stamp-button img {
+    width:
+        100%;
+
+    display:
+        block;
+}
+
+
+.accepted-stamp {
+    right:
+        7%;
+
+    top:
+        12%;
+
+    width:
+        min(10vw, 135px);
+}
+
+
+.rejected-stamp {
+    right:
+        7%;
+
+    top:
+        28%;
+
+    width:
+        min(10vw, 135px);
+}
+
+
+.stamp-button:hover {
+    transform:
+        scale(1.08) rotate(-2deg);
+}
+
+
+/* =========================================
+   NEXT
+========================================= */
+
+.next-button {
+    position:
+        absolute;
+
+    right:
+        4%;
+
+    bottom:
+        5%;
+
+    z-index:
+        20;
+
+    width:
+        150px;
+
+    height:
+        55px;
+
+    border:
+        none;
+
+    border-radius:
+        15px;
+
+    background:
+        #1f8f82;
+
+    color:
+        white;
+
+    font-size:
+        18px;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.2);
+
+    transition:
+        0.2s ease;
+}
+
+
+.next-button:hover {
+    background:
+        #19786d;
+
+    transform:
+        translateY(-3px);
+}
+
+
+/* =========================================
+   PAPER MODAL
+========================================= */
+
+.paper-modal {
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    z-index:
+        50;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    background:
+        rgba(0, 0, 0, 0.58);
+
+    padding:
+        25px;
+}
+
+
+.full-paper {
+    position:
+        relative;
+
+    width:
+        min(94vw, 900px);
+
+    max-height:
+        90vh;
+
+    overflow-y:
+        auto;
+
+    padding:
+        30px 35px 35px;
+
+    background:
+        #fffdf8;
+
+    border-radius:
+        10px;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.35);
+
+    animation:
+        paperOpen 0.3s ease;
+}
+
+
+/* =========================================
+   CLOSE
+========================================= */
+
+.close-paper {
+    position:
+        absolute;
+
+    top:
+        12px;
+
+    right:
+        16px;
+
+    width:
+        38px;
+
+    height:
+        38px;
+
+    border:
+        none;
+
+    background:
+        transparent;
+    color:
+        #555;
+
+    font-size:
+        36px;
+
+    line-height:
+        1;
+
+    cursor:
+        pointer;
+}
+
+
+/* =========================================
+   FULL PAPER HEADER
+========================================= */
+
+.full-paper-header {
+    text-align:
+        center;
+
+    padding-bottom:
+        20px;
+
+    border-bottom:
+        2px solid #e6dfd2;
+
+    margin-bottom:
+        25px;
+}
+
+
+.full-paper-header h2 {
+    color:
+        #173f3b;
+
+    margin-bottom:
+        6px;
+}
+
+
+.full-paper-header span {
+    color:
+        #888;
+
+    font-size:
+        14px;
+}
+
+
+/* =========================================
+   CANDIDATE SECTION
+========================================= */
+
+.candidate-section {
+    display:
+        flex;
+
+    gap:
+        25px;
+
+    margin-bottom:
+        30px;
+}
+
+
+.full-paper-photo {
+    width:
+        145px;
+
+    height:
+        145px;
+
+    object-fit:
+        cover;
+
+    border-radius:
+        10px;
+
+    border:
+        1px solid #ddd;
+}
+
+
+.candidate-data {
+    flex:
+        1;
+}
+
+
+.candidate-data p {
+    margin-bottom:
+        10px;
+
+    color:
+        #444;
+
+    line-height:
+        1.5;
+}
+
+
+.candidate-data strong {
+    color:
+        #173f3b;
+}
+
+
+/* =========================================
+   QUESTIONS
+========================================= */
+
+.interview-summary h3 {
+    color:
+        #173f3b;
+
+    margin-bottom:
+        15px;
+}
+
+
+.question-card {
+    padding:
+        15px 18px;
+
+    margin-bottom:
+        12px;
+
+    border:
+        1px solid #e7e0d3;
+
+    border-radius:
+        10px;
+
+    background:
+        #faf8f2;
+}
+
+
+.question-card .question {
+    font-weight:
+        700;
+
+    color:
+        #333;
+
+    margin-bottom:
+        8px;
+}
+
+
+.question-card .answer {
+    color:
+        #666;
+
+    line-height:
+        1.5;
+}
+
+
+/* =========================================
+   DECISION TEXT ON PAPER
+========================================= */
+
+.paper-decision {
+    position:
+        absolute;
+
+    left:
+        50%;
+
+    top:
+        52%;
+
+    z-index:
+        7;
+
+    transform:
+        translate(-50%, -50%) rotate(-7deg);
+
+    padding:
+        10px 22px;
+
+    border:
+        5px solid currentColor;
+
+    border-radius:
+        8px;
+
+    font-size:
+        clamp(24px, 4vw, 48px);
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        2px;
+
+    background:
+        rgba(255, 255, 255, 0.55);
+
+    pointer-events:
+        none;
+
+    animation:
+        resultPop 0.3s ease;
+}
+
+
+/* =========================================
+   STAMP ANIMATION
+========================================= */
+
+.stamp-moving {
+    position:
+        fixed !important;
+
+    z-index:
+        100 !important;
+
+    pointer-events:
+        none;
+
+    transition:
+        left 0.65s cubic-bezier(0.22,
+            1,
+            0.36,
+            1),
+        top 0.65s cubic-bezier(0.22,
+            1,
+            0.36,
+            1),
+        transform 0.65s ease;
 }
 
 
@@ -572,60 +1270,44 @@ body {
 ========================================= */
 
 .ready-screen {
-    background: #f7f7f7;
+    background:
+        #f7f7f7;
 }
 
 
 .ready-card {
-    width: min(90%, 500px);
-    padding: 45px;
+    width:
+        min(90%, 500px);
 
-    background: #fff;
+    padding:
+        45px;
 
-    border-radius: 24px;
+    background:
+        white;
 
-    text-align: center;
+    border-radius:
+        24px;
+
+    text-align:
+        center;
 
     box-shadow:
         0 18px 50px rgba(0, 0, 0, 0.12);
-
-    animation:
-        cardAppear 0.6s ease;
 }
 
 
 .ready-logo {
-    width: 85px;
-    height: 85px;
+    width:
+        85px;
 
-    object-fit: contain;
+    height:
+        85px;
 
-    margin-bottom: 20px;
-}
+    object-fit:
+        contain;
 
-
-.ready-card h1 {
-    color: #173f3b;
-
-    font-size: 32px;
-
-    margin-bottom: 12px;
-}
-
-
-.ready-card p {
-    color: #555;
-
-    font-size: 18px;
-}
-
-
-.ready-card .small-text {
-    margin-top: 12px;
-
-    font-size: 14px;
-
-    color: #888;
+    margin-bottom:
+        20px;
 }
 
 
@@ -636,79 +1318,73 @@ body {
 @keyframes fadeIn {
 
     from {
-        opacity: 0;
+        opacity:
+            0;
     }
 
     to {
-        opacity: 1;
+        opacity:
+            1;
     }
-
 }
 
 
-@keyframes cardAppear {
+@keyframes paperIn {
 
     from {
-        opacity: 0;
+        opacity:
+            0;
 
         transform:
-            translateY(25px) scale(0.97);
+            translate(-50%, -35%) rotate(-1deg);
     }
 
     to {
-        opacity: 1;
+        opacity:
+            1;
 
         transform:
-            translateY(0) scale(1);
+            translate(-50%, -50%) rotate(-1deg);
     }
-
 }
 
 
-@keyframes titleAppear {
+@keyframes paperOpen {
 
     from {
-        opacity: 0;
-
+        opacity:
+            0;
         transform:
-            translateX(-50%) translateY(-20px);
+            scale(0.94);
     }
 
     to {
-        opacity: 1;
+        opacity:
+            1;
 
         transform:
-            translateX(-50%) translateY(0);
+            scale(1);
     }
-
 }
 
 
-@keyframes girlFloat {
+@keyframes resultPop {
 
-    0%,
-    100% {
-        transform: translateY(0);
+    from {
+        opacity:
+            0;
+
+        transform:
+            translate(-50%, -50%) rotate(-7deg) scale(0.7);
     }
 
-    50% {
-        transform: translateY(-13px);
+    to {
+        opacity:
+            1;
+
+        transform:
+            translate(-50%, -50%) rotate(-7deg) scale(1);
     }
-
-}
-
-
-@keyframes boyFloat {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-13px);
-    }
-
 }
 
 
@@ -716,485 +1392,90 @@ body {
    RESPONSIVE
 ========================================= */
 
-@media (max-width: 900px) {
-
-    .gender-title {
-        top: 5%;
-    }
-
-    .girl-choice {
-        left: 2%;
-
-        width: 43vw;
-    }
-
-    .boy-choice {
-        right: 2%;
-
-        width: 43vw;
-    }
-
-}
-
-
-@media (max-width: 600px) {
-
-    .code-card {
-        padding: 30px 24px;
-    }
-
-    .gender-title {
-        font-size: 30px;
-    }
-
-    .girl-choice {
-        left: -5%;
-
-        width: 55vw;
-    }
-
-    .boy-choice {
-        right: -5%;
-
-        width: 55vw;
-    }
-
-    .name-content {
-        padding: 28px 20px;
-    }
-
-}
-
-/* =========================================
-   HR OFFICE
-========================================= */
-
-.office-screen {
-    overflow: hidden;
-
-    background: #000;
-}
-
-
-/* =========================================
-   OFFICE BACKGROUND
-========================================= */
-
-.office-background {
-    position: absolute;
-
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    object-position: center;
-
-    z-index: 0;
-
-    user-select: none;
-}
-
-
-/* =========================================
-   CHARACTER
-========================================= */
-
-.office-character {
-    position: absolute;
-
-    z-index: 3;
-
-    /*
-       هنظبط المكان بعد أول تجربة
-    */
-
-    left: 18%;
-
-    bottom: 3%;
-
-    width: min(27vw, 420px);
-
-    height: auto;
-
-    object-fit: contain;
-
-    filter:
-        drop-shadow(0 12px 12px rgba(0, 0, 0, 0.22));
-
-    animation:
-        officeCharacterFloat 2.5s ease-in-out infinite;
-
-    pointer-events: none;
-}
-
-
-/* =========================================
-   ID MACHINE
-========================================= */
-
-.id-machine {
-    position: absolute;
-
-    z-index: 4;
-
-    /*
-       مكان مبدئي
-    */
-
-    right: 17%;
-
-    bottom: 8%;
-
-    width: min(18vw, 280px);
-
-    height: auto;
-
-    object-fit: contain;
-
-    pointer-events: none;
-}
-
-
-/* =========================================
-   STAMPS
-========================================= */
-
-.stamp-button {
-    position: absolute;
-
-    z-index: 5;
-
-    border: none;
-
-    background: transparent;
-
-    padding: 0;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        filter 0.2s ease;
-}
-
-
-.stamp-button img {
-    display: block;
-
-    width: 100%;
-    height: auto;
-
-    object-fit: contain;
-}
-
-
-/* =========================================
-   ACCEPTED
-========================================= */
-
-.accepted-stamp {
-
-    right: 8%;
-
-    bottom: 8%;
-
-    width: min(9vw, 130px);
-}
-
-
-/* =========================================
-   REJECTED
-========================================= */
-
-.rejected-stamp {
-
-    right: 8%;
-
-    bottom: 25%;
-
-    width: min(9vw, 130px);
-}
-
-
-/* =========================================
-   STAMP HOVER
-========================================= */
-
-.stamp-button:hover {
-
-    transform:
-        scale(1.08) rotate(-2deg);
-
-    filter:
-        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25));
-}
-
-
-/* =========================================
-   SCORE PANEL
-========================================= */
-
-.score-panel {
-
-    position: absolute;
-
-    top: 4%;
-
-    right: 4%;
-
-    z-index: 10;
-
-    display: flex;
-
-    gap: 12px;
-
-    padding: 12px 16px;
-
-    border-radius: 16px;
-
-    background:
-        rgba(255, 255, 255, 0.94);
-
-    box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-
-.score-panel div {
-
-    min-width: 75px;
-
-    text-align: center;
-}
-
-
-.score-panel span {
-
-    display: block;
-
-    font-size: 12px;
-
-    color: #666;
-
-    margin-bottom: 4px;
-}
-
-
-.score-panel strong {
-
-    display: block;
-
-    font-size: 22px;
-
-    color: #173f3b;
-}
-
-
-/* =========================================
-   NEXT BUTTON
-========================================= */
-
-.next-button {
-
-    position: absolute;
-
-    z-index: 10;
-
-    right: 4%;
-
-    bottom: 5%;
-
-    width: 150px;
-
-    height: 55px;
-
-    border: none;
-
-    border-radius: 14px;
-
-    background: #1f8f82;
-
-    color: white;
-
-    font-size: 18px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.2);
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease;
-}
-
-
-.next-button:hover {
-
-    background: #19786d;
-
-    transform:
-        translateY(-3px);
-}
-
-
-.next-button:active {
-
-    transform:
-        translateY(0);
-}
-
-
-/* =========================================
-   CHARACTER ANIMATION
-========================================= */
-
-@keyframes officeCharacterFloat {
-
-    0%,
-    100% {
-        transform:
-            translateY(0);
-    }
-
-    50% {
-        transform:
-            translateY(-7px);
-    }
-
-}
-
-/* =========================================
-   OFFICE RESPONSIVE
-========================================= */
-
-@media (max-width: 900px) {
-
-    .office-character {
-
-        left: 8%;
-
-        width: 38vw;
-
-    }
-
+@media (max-width: 700px) {
 
     .id-machine {
+        left:
+            7%;
 
-        right: 12%;
+        bottom:
+            8%;
 
-        width: 24vw;
-
+        width:
+            28vw;
     }
 
 
     .accepted-stamp,
     .rejected-stamp {
-
-        width: 12vw;
-
-    }
-
-}
-
-
-@media (max-width: 600px) {
-
-    .office-character {
-
-        left: 3%;
-
-        bottom: 5%;
-
-        width: 48vw;
-
-    }
-
-
-    .id-machine {
-
-        right: 8%;
-
-        bottom: 10%;
-
-        width: 30vw;
-
-    }
-
-
-    .accepted-stamp {
-
-        right: 4%;
-
-        bottom: 8%;
-
-        width: 16vw;
-
-    }
-
-
-    .rejected-stamp {
-
-        right: 4%;
-
-        bottom: 25%;
-
-        width: 16vw;
-
+        width:
+            16vw;
     }
 
 
     .score-panel {
+        top:
+            2%;
 
-        top: 2%;
+        right:
+            2%;
 
-        right: 2%;
+        gap:
+            5px;
 
-        gap: 5px;
-
-        padding: 8px;
-
+        padding:
+            8px;
     }
 
 
-    .score-panel div {
-
-        min-width: 58px;
-
+    .score-item {
+        min-width:
+            58px;
     }
 
 
-    .score-panel span {
-
-        font-size: 10px;
-
+    .score-item span {
+        font-size:
+            10px;
     }
 
 
-    .score-panel strong {
-
-        font-size: 17px;
-
+    .score-item strong {
+        font-size:
+            17px;
     }
 
 
     .next-button {
+        width:
+            120px;
 
-        right: 3%;
+        height:
+            48px;
 
-        bottom: 3%;
+        right:
+            3%;
 
-        width: 120px;
+        bottom:
+            3%;
+    }
 
-        height: 48px;
 
-        font-size: 16px;
+    .candidate-section {
+        flex-direction:
+            column;
 
+        align-items:
+            center;
+
+        text-align:
+            center;
+    }
+
+
+    .full-paper {
+        padding:
+            30px 20px;
     }
 
 }

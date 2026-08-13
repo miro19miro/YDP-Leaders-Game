@@ -1,26 +1,5 @@
 /* =========================================
    YDP HR GAME
-   PHASE 1 + PLAYER NAME SELECTION
-
-   FLOW:
-
-   INTRO
-      ↓
-   CODE
-      ↓
-   PLAYER / ADMIN
-
-   PLAYER:
-      ↓
-   GENDER
-      ↓
-   NAME FROM MEMBER LIST
-      ↓
-   HR OFFICE
-
-   ADMIN:
-      ↓
-   CONTROL PANEL
 ========================================= */
 
 
@@ -34,11 +13,6 @@ const PLAYER_CODE = "MEM201";
 
 /* =========================================
    TEMPORARY MEMBERS
-
-   دول مؤقتين للاختبار فقط.
-
-   بعد ما نعمل Admin Panel و Add Member
-   هنخلي الـAdmin هو اللي يتحكم في القائمة.
 ========================================= */
 
 const DEFAULT_MEMBERS = [
@@ -58,155 +32,349 @@ const DEFAULT_MEMBERS = [
 
 
 /* =========================================
-   INITIALIZE MEMBERS
+   TEMPORARY INTERVIEW
 ========================================= */
 
-function initializeMembers() {
+const TEST_INTERVIEW = {
 
-    const savedMembers =
-        localStorage.getItem("hrMembers");
+    id: "test_001",
 
+    photo: "images/1.jpg",
 
-    if (!savedMembers) {
+    name: "Ahmed Mohamed Ali",
 
-        localStorage.setItem(
-            "hrMembers",
-            JSON.stringify(DEFAULT_MEMBERS)
-        );
+    nationalId: "29806151234567",
 
-    }
+    university: "Cairo University",
 
-}
+    faculty: "Faculty of Commerce",
+
+    age: 21,
+
+    committee: "HR",
+
+    governorate: "Cairo",
+
+    availability: "80%",
+
+    questions: [
+
+        {
+            question:
+                "Tell us about yourself.",
+
+            answer:
+                "I am a motivated university student who enjoys teamwork and learning new skills."
+        },
+
+        {
+            question:
+                "Why do you want to join YDP?",
+
+            answer:
+                "I want to develop my leadership skills and contribute to the team."
+        },
+
+        {
+            question:
+                "How do you deal with pressure?",
+
+            answer:
+                "I try to organize my priorities and stay calm while solving the problem."
+        }
+
+    ],
+
+    /*
+       TEST ONLY
+
+       هنغير ده لما الـAdmin هو اللي
+       يعمل الـInterview.
+    */
+
+    correctDecision: "accepted"
+
+};
 
 
 /* =========================================
-   GET MEMBERS
-========================================= */
-
-function getMembers() {
-
-    const savedMembers =
-        localStorage.getItem("hrMembers");
-
-
-    if (!savedMembers) {
-
-        return [];
-
-    }
-
-
-    try {
-
-        return JSON.parse(savedMembers);
-
-    } catch (error) {
-
-        console.error(
-            "Could not read HR members:",
-            error
-        );
-
-        return [];
-
-    }
-
-}
-
-
-/* =========================================
-   DOM ELEMENTS
+   DOM
 ========================================= */
 
 const introScreen =
-    document.getElementById("introScreen");
+    document.getElementById(
+        "introScreen"
+    );
 
 const introVideo =
-    document.getElementById("introVideo");
+    document.getElementById(
+        "introVideo"
+    );
 
 
 const codeScreen =
-    document.getElementById("codeScreen");
+    document.getElementById(
+        "codeScreen"
+    );
 
 const codeInput =
-    document.getElementById("codeInput");
+    document.getElementById(
+        "codeInput"
+    );
 
 const enterCodeBtn =
-    document.getElementById("enterCodeBtn");
+    document.getElementById(
+        "enterCodeBtn"
+    );
 
 const codeError =
-    document.getElementById("codeError");
+    document.getElementById(
+        "codeError"
+    );
 
 
 const genderScreen =
-    document.getElementById("genderScreen");
+    document.getElementById(
+        "genderScreen"
+    );
 
 const girlChoice =
-    document.getElementById("girlChoice");
+    document.getElementById(
+        "girlChoice"
+    );
 
 const boyChoice =
-    document.getElementById("boyChoice");
+    document.getElementById(
+        "boyChoice"
+    );
 
 
 const nameScreen =
-    document.getElementById("nameScreen");
+    document.getElementById(
+        "nameScreen"
+    );
 
 const membersList =
-    document.getElementById("membersList");
+    document.getElementById(
+        "membersList"
+    );
 
 const nameContinueBtn =
-    document.getElementById("nameContinueBtn");
+    document.getElementById(
+        "nameContinueBtn"
+    );
 
 const nameError =
-    document.getElementById("nameError");
+    document.getElementById(
+        "nameError"
+    );
 
 
-const playerReadyScreen =
-    document.getElementById("playerReadyScreen");
+const officeScreen =
+    document.getElementById(
+        "officeScreen"
+    );
 
-const welcomeText =
-    document.getElementById("welcomeText");
+const nextBtn =
+    document.getElementById(
+        "nextBtn"
+    );
+
+
+const deskPaper =
+    document.getElementById(
+        "deskPaper"
+    );
+
+const eyeButton =
+    document.getElementById(
+        "eyeButton"
+    );
+
+
+const paperModal =
+    document.getElementById(
+        "paperModal"
+    );
+
+const closePaperBtn =
+    document.getElementById(
+        "closePaperBtn"
+    );
+
+
+const paperPhoto =
+    document.getElementById(
+        "paperPhoto"
+    );
+
+const paperName =
+    document.getElementById(
+        "paperName"
+    );
+
+const paperCommittee =
+    document.getElementById(
+        "paperCommittee"
+    );
+
+
+const fullPaperPhoto =
+    document.getElementById(
+        "fullPaperPhoto"
+    );
+
+const fullName =
+    document.getElementById(
+        "fullName"
+    );
+
+const fullNationalId =
+    document.getElementById(
+        "fullNationalId"
+    );
+
+const fullUniversity =
+    document.getElementById(
+        "fullUniversity"
+    );
+
+const fullFaculty =
+    document.getElementById(
+        "fullFaculty"
+    );
+    const fullAge =
+    document.getElementById(
+        "fullAge"
+    );
+
+const fullCommittee =
+    document.getElementById(
+        "fullCommittee"
+    );
+
+const fullGovernorate =
+    document.getElementById(
+        "fullGovernorate"
+    );
+
+const fullAvailability =
+    document.getElementById(
+        "fullAvailability"
+    );
+
+const questionsContainer =
+    document.getElementById(
+        "questionsContainer"
+    );
+
+
+const acceptedStamp =
+    document.getElementById(
+        "acceptedStamp"
+    );
+
+const rejectedStamp =
+    document.getElementById(
+        "rejectedStamp"
+    );
+
+
+const paperDecision =
+    document.getElementById(
+        "paperDecision"
+    );
+
+
+const acceptedCount =
+    document.getElementById(
+        "acceptedCount"
+    );
+
+const rejectedCount =
+    document.getElementById(
+        "rejectedCount"
+    );
+
+const scoreCount =
+    document.getElementById(
+        "scoreCount"
+    );
 
 
 const adminScreen =
-    document.getElementById("adminScreen");
+    document.getElementById(
+        "adminScreen"
+    );
 
-const officeScreen =
-    document.getElementById("officeScreen");
-
-const officeCharacter =
-    document.getElementById("officeCharacter");
-
-const nextBtn =
-    document.getElementById("nextBtn");
-
-const acceptedStamp =
-    document.getElementById("acceptedStamp");
-
-const rejectedStamp =
-    document.getElementById("rejectedStamp");
-
-const acceptedCount =
-    document.getElementById("acceptedCount");
-
-const rejectedCount =
-    document.getElementById("rejectedCount");
-
-const scoreCount =
-    document.getElementById("scoreCount");
 
 /* =========================================
-   PLAYER DATA
+   DATA
 ========================================= */
 
 let selectedGender = null;
 
 let selectedMember = null;
 
+let currentInterview =
+    TEST_INTERVIEW;
+
+let currentDecision = null;
+
+let isStamping = false;
+
 
 /* =========================================
-   START
+   MEMBERS
 ========================================= */
+
+function initializeMembers() {
+
+    const saved =
+        localStorage.getItem(
+            "hrMembers"
+        );
+
+
+    if (!saved) {
+
+        localStorage.setItem(
+            "hrMembers",
+            JSON.stringify(
+                DEFAULT_MEMBERS
+            )
+        );
+
+    }
+
+}
+
+
+function getMembers() {
+
+    const saved =
+        localStorage.getItem(
+            "hrMembers"
+        );
+
+
+    if (!saved) {
+        return [];
+    }
+
+
+    try {
+
+        return JSON.parse(saved);
+
+    } catch {
+
+        return [];
+
+    }
+
+}
+
 
 initializeMembers();
 
@@ -219,42 +387,32 @@ introVideo.addEventListener(
     "ended",
     () => {
 
-        showCodeScreen();
+        introScreen.classList.add(
+            "hidden"
+        );
+
+        codeScreen.classList.remove(
+            "hidden"
+        );
+
+        setTimeout(
+            () => {
+                codeInput.focus();
+            },
+            300
+        );
 
     }
 );
 
 
 /* =========================================
-   SHOW CODE SCREEN
-========================================= */
-
-function showCodeScreen() {
-
-    introScreen.classList.add("hidden");
-
-    codeScreen.classList.remove("hidden");
-
-
-    setTimeout(
-        () => {
-
-            codeInput.focus();
-
-        },
-        300
-    );
-
-}
-
-
-/* =========================================
-   CHECK CODE
+   CODE
 ========================================= */
 
 function checkCode() {
 
-    const enteredCode =
+    const code =
         codeInput.value
             .trim()
             .toUpperCase();
@@ -263,9 +421,8 @@ function checkCode() {
     codeError.textContent = "";
 
 
-    /* Empty */
+    if (!code) {
 
-    if (!enteredCode) {
         codeError.textContent =
             "Please enter your code.";
 
@@ -274,9 +431,7 @@ function checkCode() {
     }
 
 
-    /* ADMIN */
-
-    if (enteredCode === ADMIN_CODE) {
+    if (code === ADMIN_CODE) {
 
         openAdmin();
 
@@ -285,9 +440,7 @@ function checkCode() {
     }
 
 
-    /* PLAYER */
-
-    if (enteredCode === PLAYER_CODE) {
+    if (code === PLAYER_CODE) {
 
         openPlayer();
 
@@ -296,327 +449,25 @@ function checkCode() {
     }
 
 
-    /* WRONG */
-
     codeError.textContent =
         "Invalid code. Please try again.";
 
 }
 
 
-/* =========================================
-   OPEN ADMIN
-========================================= */
-
-function openAdmin() {
-
-    codeScreen.classList.add("hidden");
-
-    adminScreen.classList.remove("hidden");
-
-}
-
-
-/* =========================================
-   OPEN PLAYER
-========================================= */
-
-function openPlayer() {
-
-    codeScreen.classList.add("hidden");
-
-    genderScreen.classList.remove("hidden");
-
-}
-
-
-/* =========================================
-   GIRL SELECT
-========================================= */
-
-girlChoice.addEventListener(
+enterCodeBtn.addEventListener(
     "click",
-    () => {
-
-        selectGender("girl");
-
-    }
+    checkCode
 );
 
-
-/* =========================================
-   BOY SELECT
-========================================= */
-
-boyChoice.addEventListener(
-    "click",
-    () => {
-
-        selectGender("boy");
-
-    }
-);
-
-
-/* =========================================
-   SELECT GENDER
-========================================= */
-
-function selectGender(gender) {
-
-    selectedGender = gender;
-
-
-    const selectedCharacter =
-        gender === "girl"
-            ? girlChoice
-            : boyChoice;
-
-
-    selectedCharacter.style.transform =
-        "scale(1.08) translateY(-10px)";
-
-
-    setTimeout(
-        () => {
-
-            genderScreen.classList.add("hidden");
-
-            openNameScreen();
-
-        },
-        350
-    );
-
-}
-
-
-/* =========================================
-   OPEN NAME SCREEN
-========================================= */
-
-function openNameScreen() {
-
-    nameScreen.classList.remove("hidden");
-
-    renderMembers();
-
-}
-
-
-/* =========================================
-   RENDER MEMBER LIST
-========================================= */
-
-function renderMembers() {
-
-    const members =
-        getMembers();
-
-
-    membersList.innerHTML = "";
-
-    selectedMember = null;
-
-    nameContinueBtn.disabled = true;
-
-    nameError.textContent = "";
-
-
-    /* No members */
-
-    if (members.length === 0) {
-
-        const emptyMessage =
-            document.createElement("p");
-
-        emptyMessage.textContent =
-            "No members are available yet.";
-
-        emptyMessage.style.color =
-            "#777";
-
-        emptyMessage.style.padding =
-            "20px";
-
-        membersList.appendChild(
-            emptyMessage
-        );
-
-        return;
-
-    }
-
-
-    /* Create buttons */
-
-    members.forEach(
-        (member) => {
-
-            const memberButton =
-                document.createElement("button");
-
-
-            memberButton.type =
-                "button";
-
-
-            memberButton.className =
-                "member-option";
-
-
-            memberButton.textContent =
-                member.name;
-
-
-            memberButton.dataset.memberId =
-                member.id;
-
-
-            memberButton.addEventListener(
-                "click",
-                () => {
-
-                    selectMember(
-                        member,
-                        memberButton
-                    );
-
-                }
-            );
-
-
-            membersList.appendChild(
-                memberButton
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================
-   SELECT MEMBER
-========================================= */
-
-function selectMember(
-    member,
-    selectedButton
-) {
-
-    selectedMember = member;
-
-
-    const allButtons =
-        document.querySelectorAll(
-            ".member-option"
-        );
-
-
-    allButtons.forEach(
-        (button) => {
-
-            button.classList.remove(
-                "selected"
-            );
-
-        }
-    );
-
-
-    selectedButton.classList.add(
-        "selected"
-    );
-
-
-    nameContinueBtn.disabled =
-        false;
-
-
-    nameError.textContent = "";
-
-}
-/* =========================================
-   CONTINUE AFTER NAME
-========================================= */
-
-nameContinueBtn.addEventListener(
-    "click",
-    continueWithMember
-);
-
-
-/* =========================================
-   CONTINUE WITH SELECTED MEMBER
-========================================= */
-
-function continueWithMember() {
-
-    if (!selectedMember) {
-
-        nameError.textContent =
-            "Please choose your name.";
-
-        return;
-
-    }
-
-
-    /*
-       Save player information.
-    */
-
-    const playerData = {
-
-        memberId:
-            selectedMember.id,
-
-        name:
-            selectedMember.name,
-
-        gender:
-            selectedGender,
-
-        startTime:
-            new Date().toISOString(),
-
-        score: 0,
-
-        accepted: 0,
-
-        rejected: 0
-
-    };
-
-
-    localStorage.setItem(
-        "hrCurrentPlayer",
-        JSON.stringify(playerData)
-    );
-
-
-    /*
-       Temporary screen.
-       هنستبدلها بالـHR Office.
-    */
-
-    nameScreen.classList.add("hidden");
-
-    openHROffice();
-
-}
-
-
-/* =========================================
-   ENTER KEY ON CODE
-========================================= */
 
 codeInput.addEventListener(
     "keydown",
     (event) => {
 
-        if (event.key === "Enter") {
+        if (
+            event.key === "Enter"
+        ) {
 
             checkCode();
 
@@ -627,80 +478,262 @@ codeInput.addEventListener(
 
 
 /* =========================================
-   ENTER BUTTON
+   ADMIN
 ========================================= */
 
-enterCodeBtn.addEventListener(
-    "click",
-    checkCode
-);
-/* =========================================
-   OPEN HR OFFICE
-========================================= */
+function openAdmin() {
 
-function openHROffice() {
+    codeScreen.classList.add(
+        "hidden"
+    );
 
-    officeScreen.classList.remove("hidden");
-
-
-    const playerData =
-        JSON.parse(
-            localStorage.getItem("hrCurrentPlayer")
-        );
-
-
-    if (!playerData) {
-        return;
-    }
-
-
-    /* Choose character */
-
-    if (playerData.gender === "girl") {
-
-        officeCharacter.src =
-            "images/girl hr.png";
-
-    } else {
-
-        officeCharacter.src =
-            "images/boy hr.png";
-
-    }
-
-
-    /* Update stats */
-
-    updateOfficeStats();
+    adminScreen.classList.remove(
+        "hidden"
+    );
 
 }
 
 
 /* =========================================
-   OFFICE STATS
+   PLAYER
 ========================================= */
 
-function updateOfficeStats() {
+function openPlayer() {
 
-    const playerData =
-        JSON.parse(
-            localStorage.getItem("hrCurrentPlayer")
-        );
+    codeScreen.classList.add(
+        "hidden"
+    );
+
+    genderScreen.classList.remove(
+        "hidden"
+    );
+
+}
 
 
-    if (!playerData) {
-        return;
+/* =========================================
+   GENDER
+========================================= */
+
+girlChoice.addEventListener(
+    "click",
+    () => {
+
+        selectedGender =
+            "girl";
+
+        goToName();
+
     }
+);
 
 
-    acceptedCount.textContent =
-        playerData.accepted || 0;
+boyChoice.addEventListener(
+    "click",
+    () => {
 
-    rejectedCount.textContent =
-        playerData.rejected || 0;
+        selectedGender =
+            "boy";
 
-    scoreCount.textContent =
-        playerData.score || 0;
+        goToName();
+
+    }
+);
+
+
+function goToName() { 
+    genderScreen.classList.add(
+        "hidden"
+    );
+
+    nameScreen.classList.remove(
+        "hidden"
+    );
+
+    renderMembers();
+
+}
+
+
+/* =========================================
+   MEMBERS
+========================================= */
+
+function renderMembers() {
+
+    const members =
+        getMembers();
+
+
+    membersList.innerHTML =
+        "";
+
+    selectedMember =
+        null;
+
+    nameContinueBtn.disabled =
+        true;
+
+    nameError.textContent =
+        "";
+
+
+    members.forEach(
+        (member) => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+            button.className =
+                "member-option";
+
+            button.textContent =
+                member.name;
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".member-option"
+                        )
+                        .forEach(
+                            (item) => {
+
+                                item.classList.remove(
+                                    "selected"
+                                );
+
+                            }
+                        );
+
+
+                    button.classList.add(
+                        "selected"
+                    );
+
+
+                    selectedMember =
+                        member;
+
+
+                    nameContinueBtn.disabled =
+                        false;
+
+                }
+            );
+
+
+            membersList.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+nameContinueBtn.addEventListener(
+    "click",
+    () => {
+
+        if (!selectedMember) {
+
+            nameError.textContent =
+                "Please choose your name.";
+
+            return;
+
+        }
+
+
+        openHROffice();
+
+    }
+);
+
+
+/* =========================================
+   OPEN OFFICE
+========================================= */
+
+function openHROffice() {
+
+    nameScreen.classList.add(
+        "hidden"
+    );
+
+    officeScreen.classList.remove(
+        "hidden"
+    );
+
+
+    /*
+       مفيش Character هنا خالص.
+       الـID machine هو العنصر الموجود
+       في مكان الشخصية القديم.
+    */
+
+
+    resetOffice();
+
+}
+
+
+/* =========================================
+   RESET OFFICE
+========================================= */
+
+function resetOffice() {
+
+    currentDecision =
+        null;
+
+    isStamping =
+        false;
+
+
+    deskPaper.classList.add(
+        "hidden"
+    );
+
+
+    paperModal.classList.add(
+        "hidden"
+    );
+
+
+    acceptedStamp.classList.add(
+        "hidden"
+    );
+
+
+    rejectedStamp.classList.add(
+        "hidden"
+    );
+
+
+    paperDecision.classList.add(
+        "hidden"
+    );
+
+
+    paperDecision.textContent =
+        "";
+
+
+    nextBtn.classList.remove(
+        "hidden"
+    );
 
 }
 
@@ -713,9 +746,529 @@ nextBtn.addEventListener(
     "click",
     () => {
 
-        console.log(
-            "Next interview will appear here."
+        showInterview();
+
+    }
+);
+
+
+/* =========================================
+   SHOW INTERVIEW
+========================================= */
+
+function showInterview() {
+
+    nextBtn.classList.add(
+        "hidden"
+    );
+
+
+    currentInterview =
+        TEST_INTERVIEW;
+
+
+    fillSmallPaper();
+
+
+    deskPaper.classList.remove(
+        "hidden"
+    );
+
+
+    /*
+       لحد ما اللاعب يفتح الورقة،
+       الـstamps مش ظاهرين.
+    */
+
+    acceptedStamp.classList.add(
+        "hidden"
+    );
+
+    rejectedStamp.classList.add(
+        "hidden"
+    );
+
+}
+
+
+/* =========================================
+   SMALL PAPER
+========================================= */
+
+function fillSmallPaper() {
+
+    paperPhoto.src =
+        currentInterview.photo;
+
+    paperName.textContent =
+        currentInterview.name;
+
+    paperCommittee.textContent =
+        currentInterview.committee;
+
+}
+
+
+/* =========================================
+   OPEN FULL PAPER
+========================================= */
+eyeButton.addEventListener(
+    "click",
+    () => {
+
+        fillFullPaper();
+
+        paperModal.classList.remove(
+            "hidden"
         );
 
     }
 );
+
+
+/* =========================================
+   FILL FULL PAPER
+========================================= */
+
+function fillFullPaper() {
+
+    fullPaperPhoto.src =
+        currentInterview.photo;
+
+    fullName.textContent =
+        currentInterview.name;
+
+    fullNationalId.textContent =
+        currentInterview.nationalId;
+
+    fullUniversity.textContent =
+        currentInterview.university;
+
+    fullFaculty.textContent =
+        currentInterview.faculty;
+
+    fullAge.textContent =
+        currentInterview.age;
+
+    fullCommittee.textContent =
+        currentInterview.committee;
+
+    fullGovernorate.textContent =
+        currentInterview.governorate;
+
+    fullAvailability.textContent =
+        currentInterview.availability;
+
+
+    questionsContainer.innerHTML =
+        "";
+
+
+    currentInterview.questions.forEach(
+        (item, index) => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "question-card";
+
+
+            card.innerHTML = `
+                <div class="question">
+                    Q${index + 1}.
+                    ${item.question}
+                </div>
+
+                <div class="answer">
+                    ${item.answer}
+                </div>
+            `;
+
+
+            questionsContainer.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   CLOSE PAPER
+========================================= */
+
+closePaperBtn.addEventListener(
+    "click",
+    () => {
+
+        paperModal.classList.add(
+            "hidden"
+        );
+
+
+        /*
+           بعد ما يخلص قراءة الورقة،
+           الختمين يظهروا.
+        */
+
+        acceptedStamp.classList.remove(
+            "hidden"
+        );
+
+        rejectedStamp.classList.remove(
+            "hidden"
+        );
+
+    }
+);
+
+
+/* =========================================
+   STAMP CLICK
+========================================= */
+
+acceptedStamp.addEventListener(
+    "click",
+    () => {
+
+        startStampAnimation(
+            "accepted"
+        );
+
+    }
+);
+
+
+rejectedStamp.addEventListener(
+    "click",
+    () => {
+
+        startStampAnimation(
+            "rejected"
+        );
+
+    }
+);
+
+
+/* =========================================
+   START STAMP ANIMATION
+========================================= */
+
+function startStampAnimation(
+    decision
+) {
+
+    if (isStamping) {
+        return;
+    }
+
+
+    if (currentDecision) {
+        return;
+    }
+
+
+    isStamping =
+        true;
+
+
+    currentDecision =
+        decision;
+
+
+    const stamp =
+        decision === "accepted"
+            ? acceptedStamp
+            : rejectedStamp;
+
+
+    const stampImage =
+        stamp.querySelector(
+            "img"
+        );
+
+
+    const stampRect =
+        stampImage.getBoundingClientRect();
+
+
+    const paperRect =
+        deskPaper.getBoundingClientRect();
+
+
+    /*
+       نعمل نسخة من الختم
+       عشان الأصلي يفضل في مكانه.
+    */
+
+    const movingStamp =
+        stamp.cloneNode(true);
+
+
+    movingStamp.classList.remove(
+        "hidden"
+    );
+
+
+    movingStamp.classList.add(
+        "stamp-moving"
+    );
+
+
+    movingStamp.style.width =
+        `${stampRect.width}px`;
+
+
+    movingStamp.style.left =
+        `${stampRect.left}px`;
+
+
+    movingStamp.style.top =
+        `${stampRect.top}px`;
+
+
+    movingStamp.style.transform =
+        "rotate(0deg) scale(1)";
+
+
+    document.body.appendChild(
+        movingStamp
+    );
+
+
+    /*
+       مكان الختم على الورقة
+    */
+
+    const targetLeft =
+        paperRect.left +
+        paperRect.width * 0.5 -
+        stampRect.width * 0.5;
+
+
+    const targetTop =
+        paperRect.top +
+        paperRect.height * 0.58 -
+        stampRect.height * 0.5;
+
+
+    requestAnimationFrame(
+        () => {
+
+            movingStamp.style.left =
+                `${targetLeft}px`;
+                movingStamp.style.top =
+                `${targetTop}px`;
+
+            movingStamp.style.transform =
+                "rotate(-8deg) scale(0.78)";
+
+        }
+    );
+
+
+    /*
+       بعد الوصول للورقة
+    */
+
+    setTimeout(
+        () => {
+
+            movingStamp.style.transform =
+                "rotate(-8deg) scale(0.72)";
+
+        },
+        700
+    );
+
+
+    /*
+       بعد الختم
+    */
+
+    setTimeout(
+        () => {
+
+            document.body.removeChild(
+                movingStamp
+            );
+
+
+            showDecision(
+                decision
+            );
+
+
+            returnStampToPlace(
+                stamp
+            );
+
+
+        },
+        1200
+    );
+
+}
+
+
+/* =========================================
+   SHOW DECISION ON PAPER
+========================================= */
+
+function showDecision(
+    decision
+) {
+
+    paperDecision.textContent =
+        decision === "accepted"
+            ? "ACCEPTED"
+            : "REJECTED";
+
+
+    paperDecision.style.color =
+        decision === "accepted"
+            ? "#159447"
+            : "#d62828";
+
+
+    paperDecision.style.borderColor =
+        decision === "accepted"
+            ? "#159447"
+            : "#d62828";
+
+
+    paperDecision.classList.remove(
+        "hidden"
+    );
+
+
+    updateScore(
+        decision
+    );
+
+}
+
+
+/* =========================================
+   UPDATE SCORE
+========================================= */
+
+function updateScore(
+    decision
+) {
+
+    const playerData =
+        JSON.parse(
+            localStorage.getItem(
+                "hrCurrentPlayer"
+            ) || "{}"
+        );
+
+
+    if (!playerData.accepted) {
+        playerData.accepted =
+            0;
+    }
+
+
+    if (!playerData.rejected) {
+        playerData.rejected =
+            0;
+    }
+
+
+    if (!playerData.score) {
+        playerData.score =
+            0;
+    }
+
+
+    if (
+        decision === "accepted"
+    ) {
+
+        playerData.accepted++;
+
+    } else {
+
+        playerData.rejected++;
+
+    }
+
+
+    /*
+       Test scoring.
+       الـcorrectDecision الحالي = accepted
+    */
+
+    if (
+        decision ===
+        currentInterview.correctDecision
+    ) {
+
+        playerData.score +=
+            10;
+
+    } else {
+
+        playerData.score -=
+            10;
+
+    }
+
+
+    acceptedCount.textContent =
+        playerData.accepted;
+
+    rejectedCount.textContent =
+        playerData.rejected;
+
+    scoreCount.textContent =
+        playerData.score;
+
+
+    localStorage.setItem(
+        "hrCurrentPlayer",
+        JSON.stringify(
+            playerData
+        )
+    );
+
+}
+
+
+/* =========================================
+   STAMP RETURNS TO ORIGINAL PLACE
+========================================= */
+
+function returnStampToPlace(
+    stamp
+) {
+
+    /*
+       مجرد تأكيد بصري إن الختم
+       رجع لمكانه الأصلي.
+    */
+
+    stamp.style.transform =
+        "scale(1) rotate(0deg)";
+
+
+    setTimeout(
+        () => {
+
+            isStamping =
+                false;
+
+        },
+        250
+    );
+
+}

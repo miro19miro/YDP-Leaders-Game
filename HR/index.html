@@ -26,7 +26,7 @@
 
 
     <!-- =========================================
-         CODE SCREEN
+         CODE
     ========================================== -->
 
     <section id="codeScreen" class="screen code-screen hidden">
@@ -56,22 +56,18 @@
 
 
     <!-- =========================================
-         PLAYER - CHOOSE GENDER
+         GENDER
     ========================================== -->
 
     <section id="genderScreen" class="screen gender-screen hidden">
 
         <div class="gender-background"></div>
 
-
         <h1 class="gender-title">
             Choose your gender
         </h1>
 
-
         <div class="gender-characters">
-
-            <!-- GIRL -->
 
             <button id="girlChoice" class="character-choice girl-choice" type="button">
 
@@ -79,8 +75,6 @@
 
             </button>
 
-
-            <!-- BOY -->
 
             <button id="boyChoice" class="character-choice boy-choice" type="button">
 
@@ -94,13 +88,12 @@
 
 
     <!-- =========================================
-         PLAYER - CHOOSE NAME
+         NAME
     ========================================== -->
 
     <section id="nameScreen" class="screen name-screen hidden">
 
         <div class="name-background"></div>
-
 
         <div class="name-content">
 
@@ -112,16 +105,11 @@
                 Select your name to continue
             </p>
 
-
-            <div id="membersList" class="members-list">
-                <!-- Members will be added by JavaScript -->
-            </div>
-
+            <div id="membersList" class="members-list"></div>
 
             <button id="nameContinueBtn" class="main-btn name-continue-btn" type="button" disabled>
                 CONTINUE
             </button>
-
 
             <p id="nameError" class="error-message"></p>
 
@@ -131,76 +119,236 @@
 
 
     <!-- =========================================
-     HR OFFICE
-========================================= -->
+         HR OFFICE
+    ========================================== -->
 
     <section id="officeScreen" class="screen office-screen hidden">
 
-        <!-- OFFICE BACKGROUND -->
+        <!-- WOOD BACKGROUND -->
+
         <img src="images/Office 2.png" class="office-background" alt="HR Office">
 
 
-        <!-- PLAYER CHARACTER -->
+        <!-- =====================================
+             SCORE
+        ====================================== -->
 
-        <img id="officeCharacter" class="office-character" src="" alt="Player">
+        <div class="score-panel">
+            <div class="score-item">
+
+                <span>Accepted</span>
+
+                <strong id="acceptedCount">
+                    0
+                </strong>
+
+            </div>
 
 
-        <!-- ID MACHINE -->
+            <div class="score-item">
 
-        <img src="images/id machine.png" class="id-machine" alt="ID Machine">
+                <span>Rejected</span>
+
+                <strong id="rejectedCount">
+                    0
+                </strong>
+
+            </div>
 
 
-        <!-- ACCEPTED STAMP -->
+            <div class="score-item">
 
-        <button id="acceptedStamp" class="stamp-button accepted-stamp" type="button">
+                <span>Score</span>
+
+                <strong id="scoreCount">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             ID MACHINE
+        ====================================== -->
+
+        <img id="idMachine" src="images/id machine.png" class="id-machine" alt="ID Machine">
+
+
+        <!-- =====================================
+             PAPER ON DESK
+        ====================================== -->
+
+        <div id="deskPaper" class="desk-paper hidden">
+
+            <div class="paper-top">
+
+                <span class="paper-label">
+                    INTERVIEW
+                </span>
+
+                <button id="eyeButton" class="eye-button" type="button" aria-label="Open interview">
+                    👁
+                </button>
+
+            </div>
+
+
+            <div class="paper-preview">
+
+                <img id="paperPhoto" src="" alt="Candidate" class="paper-photo">
+
+                <div class="paper-preview-info">
+
+                    <h3 id="paperName">
+                        Candidate
+                    </h3>
+
+                    <p id="paperCommittee">
+                        Committee
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             STAMPS
+        ====================================== -->
+
+        <button id="acceptedStamp" class="stamp-button accepted-stamp hidden" type="button" aria-label="Accept">
 
             <img src="images/green.png" alt="Accepted">
 
         </button>
 
 
-        <!-- REJECTED STAMP -->
-
-        <button id="rejectedStamp" class="stamp-button rejected-stamp" type="button">
+        <button id="rejectedStamp" class="stamp-button rejected-stamp hidden" type="button" aria-label="Reject">
 
             <img src="images/red.png" alt="Rejected">
 
         </button>
 
 
-        <!-- SCORE -->
-
-        <div class="score-panel">
-
-            <div>
-                <span>Accepted</span>
-                <strong id="acceptedCount">0</strong>
-            </div>
-
-            <div>
-                <span>Rejected</span>
-                <strong id="rejectedCount">0</strong>
-            </div>
-
-            <div>
-                <span>Score</span>
-                <strong id="scoreCount">0</strong>
-            </div>
-
-        </div>
-
-
-        <!-- NEXT -->
+        <!-- =====================================
+             NEXT
+        ====================================== -->
 
         <button id="nextBtn" class="next-button" type="button">
             NEXT
         </button>
 
+
+        <!-- =====================================
+             FULL PAPER MODAL
+        ====================================== -->
+
+        <div id="paperModal" class="paper-modal hidden">
+
+            <div class="full-paper">
+
+                <button id="closePaperBtn" class="close-paper" type="button" aria-label="Close">
+                    ×
+                </button>
+
+
+                <div class="full-paper-header">
+
+                    <h2>
+                        YDP HR INTERVIEW
+                    </h2>
+
+                    <span>
+                        Interview File
+                    </span>
+
+                </div>
+
+
+                <div class="full-paper-content">
+
+                    <div class="candidate-section">
+                        <img id="fullPaperPhoto" src="" alt="Candidate" class="full-paper-photo">
+
+                        <div class="candidate-data">
+
+                            <p>
+                                <strong>Name:</strong>
+                                <span id="fullName"></span>
+                            </p>
+
+                            <p>
+                                <strong>National ID:</strong>
+                                <span id="fullNationalId"></span>
+                            </p>
+
+                            <p>
+                                <strong>University:</strong>
+                                <span id="fullUniversity"></span>
+                            </p>
+
+                            <p>
+                                <strong>Faculty:</strong>
+                                <span id="fullFaculty"></span>
+                            </p>
+
+                            <p>
+                                <strong>Age:</strong>
+                                <span id="fullAge"></span>
+                            </p>
+
+                            <p>
+                                <strong>Committee:</strong>
+                                <span id="fullCommittee"></span>
+                            </p>
+
+                            <p>
+                                <strong>Governorate:</strong>
+                                <span id="fullGovernorate"></span>
+                            </p>
+
+                            <p>
+                                <strong>Availability:</strong>
+                                <span id="fullAvailability"></span>
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="interview-summary">
+
+                        <h3>
+                            Interview Summary
+                        </h3>
+
+                        <div id="questionsContainer" class="questions-container"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             RESULT ON PAPER
+        ====================================== -->
+
+        <div id="paperDecision" class="paper-decision hidden"></div>
+
     </section>
 
+
     <!-- =========================================
-         TEMPORARY ADMIN SCREEN
-         هنستبدله بالـControl Panel بعدين
+         ADMIN TEMPORARY
     ========================================== -->
 
     <section id="adminScreen" class="screen ready-screen hidden">
