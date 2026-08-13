@@ -764,3 +764,437 @@ body {
     }
 
 }
+
+/* =========================================
+   HR OFFICE
+========================================= */
+
+.office-screen {
+    overflow: hidden;
+
+    background: #000;
+}
+
+
+/* =========================================
+   OFFICE BACKGROUND
+========================================= */
+
+.office-background {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    object-position: center;
+
+    z-index: 0;
+
+    user-select: none;
+}
+
+
+/* =========================================
+   CHARACTER
+========================================= */
+
+.office-character {
+    position: absolute;
+
+    z-index: 3;
+
+    /*
+       هنظبط المكان بعد أول تجربة
+    */
+
+    left: 18%;
+
+    bottom: 3%;
+
+    width: min(27vw, 420px);
+
+    height: auto;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(0 12px 12px rgba(0, 0, 0, 0.22));
+
+    animation:
+        officeCharacterFloat 2.5s ease-in-out infinite;
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   ID MACHINE
+========================================= */
+
+.id-machine {
+    position: absolute;
+
+    z-index: 4;
+
+    /*
+       مكان مبدئي
+    */
+
+    right: 17%;
+
+    bottom: 8%;
+
+    width: min(18vw, 280px);
+
+    height: auto;
+
+    object-fit: contain;
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   STAMPS
+========================================= */
+
+.stamp-button {
+    position: absolute;
+
+    z-index: 5;
+
+    border: none;
+
+    background: transparent;
+
+    padding: 0;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease;
+}
+
+
+.stamp-button img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    object-fit: contain;
+}
+
+
+/* =========================================
+   ACCEPTED
+========================================= */
+
+.accepted-stamp {
+
+    right: 8%;
+
+    bottom: 8%;
+
+    width: min(9vw, 130px);
+}
+
+
+/* =========================================
+   REJECTED
+========================================= */
+
+.rejected-stamp {
+
+    right: 8%;
+
+    bottom: 25%;
+
+    width: min(9vw, 130px);
+}
+
+
+/* =========================================
+   STAMP HOVER
+========================================= */
+
+.stamp-button:hover {
+
+    transform:
+        scale(1.08) rotate(-2deg);
+
+    filter:
+        drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25));
+}
+
+
+/* =========================================
+   SCORE PANEL
+========================================= */
+
+.score-panel {
+
+    position: absolute;
+
+    top: 4%;
+
+    right: 4%;
+
+    z-index: 10;
+
+    display: flex;
+
+    gap: 12px;
+
+    padding: 12px 16px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(255, 255, 255, 0.94);
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+
+.score-panel div {
+
+    min-width: 75px;
+
+    text-align: center;
+}
+
+
+.score-panel span {
+
+    display: block;
+
+    font-size: 12px;
+
+    color: #666;
+
+    margin-bottom: 4px;
+}
+
+
+.score-panel strong {
+
+    display: block;
+
+    font-size: 22px;
+
+    color: #173f3b;
+}
+
+
+/* =========================================
+   NEXT BUTTON
+========================================= */
+
+.next-button {
+
+    position: absolute;
+
+    z-index: 10;
+
+    right: 4%;
+
+    bottom: 5%;
+
+    width: 150px;
+
+    height: 55px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #1f8f82;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.2);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.next-button:hover {
+
+    background: #19786d;
+
+    transform:
+        translateY(-3px);
+}
+
+
+.next-button:active {
+
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================
+   CHARACTER ANIMATION
+========================================= */
+
+@keyframes officeCharacterFloat {
+
+    0%,
+    100% {
+        transform:
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            translateY(-7px);
+    }
+
+}
+
+/* =========================================
+   OFFICE RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .office-character {
+
+        left: 8%;
+
+        width: 38vw;
+
+    }
+
+
+    .id-machine {
+
+        right: 12%;
+
+        width: 24vw;
+
+    }
+
+
+    .accepted-stamp,
+    .rejected-stamp {
+
+        width: 12vw;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .office-character {
+
+        left: 3%;
+
+        bottom: 5%;
+
+        width: 48vw;
+
+    }
+
+
+    .id-machine {
+
+        right: 8%;
+
+        bottom: 10%;
+
+        width: 30vw;
+
+    }
+
+
+    .accepted-stamp {
+
+        right: 4%;
+
+        bottom: 8%;
+
+        width: 16vw;
+
+    }
+
+
+    .rejected-stamp {
+
+        right: 4%;
+
+        bottom: 25%;
+
+        width: 16vw;
+
+    }
+
+
+    .score-panel {
+
+        top: 2%;
+
+        right: 2%;
+
+        gap: 5px;
+
+        padding: 8px;
+
+    }
+
+
+    .score-panel div {
+
+        min-width: 58px;
+
+    }
+
+
+    .score-panel span {
+
+        font-size: 10px;
+
+    }
+
+
+    .score-panel strong {
+
+        font-size: 17px;
+
+    }
+
+
+    .next-button {
+
+        right: 3%;
+
+        bottom: 3%;
+
+        width: 120px;
+
+        height: 48px;
+
+        font-size: 16px;
+
+    }
+
+}

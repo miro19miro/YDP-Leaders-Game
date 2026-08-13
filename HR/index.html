@@ -131,29 +131,72 @@
 
 
     <!-- =========================================
-         TEMPORARY PLAYER SCREEN
-         هنستبدلها بالـHR Office بعدين
-    ========================================== -->
+     HR OFFICE
+========================================= -->
 
-    <section id="playerReadyScreen" class="screen ready-screen hidden">
+    <section id="officeScreen" class="screen office-screen hidden">
 
-        <div class="ready-card">
-            <img src="images/entity-logo.png" class="ready-logo" alt="YDP">
+        <!-- OFFICE BACKGROUND -->
+        <img src="images/Office 2.png" class="office-background" alt="HR Office">
 
-            <h1>
-                Welcome!
-            </h1>
 
-            <p id="welcomeText"></p>
+        <!-- PLAYER CHARACTER -->
 
-            <p class="small-text">
-                HR Office will be connected next.
-            </p>
+        <img id="officeCharacter" class="office-character" src="" alt="Player">
+
+
+        <!-- ID MACHINE -->
+
+        <img src="images/id machine.png" class="id-machine" alt="ID Machine">
+
+
+        <!-- ACCEPTED STAMP -->
+
+        <button id="acceptedStamp" class="stamp-button accepted-stamp" type="button">
+
+            <img src="images/green.png" alt="Accepted">
+
+        </button>
+
+
+        <!-- REJECTED STAMP -->
+
+        <button id="rejectedStamp" class="stamp-button rejected-stamp" type="button">
+
+            <img src="images/red.png" alt="Rejected">
+
+        </button>
+
+
+        <!-- SCORE -->
+
+        <div class="score-panel">
+
+            <div>
+                <span>Accepted</span>
+                <strong id="acceptedCount">0</strong>
+            </div>
+
+            <div>
+                <span>Rejected</span>
+                <strong id="rejectedCount">0</strong>
+            </div>
+
+            <div>
+                <span>Score</span>
+                <strong id="scoreCount">0</strong>
+            </div>
 
         </div>
 
-    </section>
 
+        <!-- NEXT -->
+
+        <button id="nextBtn" class="next-button" type="button">
+            NEXT
+        </button>
+
+    </section>
 
     <!-- =========================================
          TEMPORARY ADMIN SCREEN

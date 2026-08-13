@@ -171,6 +171,29 @@ const welcomeText =
 const adminScreen =
     document.getElementById("adminScreen");
 
+const officeScreen =
+    document.getElementById("officeScreen");
+
+const officeCharacter =
+    document.getElementById("officeCharacter");
+
+const nextBtn =
+    document.getElementById("nextBtn");
+
+const acceptedStamp =
+    document.getElementById("acceptedStamp");
+
+const rejectedStamp =
+    document.getElementById("rejectedStamp");
+
+const acceptedCount =
+    document.getElementById("acceptedCount");
+
+const rejectedCount =
+    document.getElementById("rejectedCount");
+
+const scoreCount =
+    document.getElementById("scoreCount");
 
 /* =========================================
    PLAYER DATA
@@ -578,16 +601,9 @@ function continueWithMember() {
        هنستبدلها بالـHR Office.
     */
 
-    nameScreen.classList.add(
-        "hidden"
-    );
+    nameScreen.classList.add("hidden");
 
-    playerReadyScreen.classList.remove(
-        "hidden"
-    );
-
-
-    welcomeText.textContent = `Welcome ${selectedMember.name}!`;
+    openHROffice();
 
 }
 
@@ -617,4 +633,89 @@ codeInput.addEventListener(
 enterCodeBtn.addEventListener(
     "click",
     checkCode
+);
+/* =========================================
+   OPEN HR OFFICE
+========================================= */
+
+function openHROffice() {
+
+    officeScreen.classList.remove("hidden");
+
+
+    const playerData =
+        JSON.parse(
+            localStorage.getItem("hrCurrentPlayer")
+        );
+
+
+    if (!playerData) {
+        return;
+    }
+
+
+    /* Choose character */
+
+    if (playerData.gender === "girl") {
+
+        officeCharacter.src =
+            "images/girl hr.png";
+
+    } else {
+
+        officeCharacter.src =
+            "images/boy hr.png";
+
+    }
+
+
+    /* Update stats */
+
+    updateOfficeStats();
+
+}
+
+
+/* =========================================
+   OFFICE STATS
+========================================= */
+
+function updateOfficeStats() {
+
+    const playerData =
+        JSON.parse(
+            localStorage.getItem("hrCurrentPlayer")
+        );
+
+
+    if (!playerData) {
+        return;
+    }
+
+
+    acceptedCount.textContent =
+        playerData.accepted || 0;
+
+    rejectedCount.textContent =
+        playerData.rejected || 0;
+
+    scoreCount.textContent =
+        playerData.score || 0;
+
+}
+
+
+/* =========================================
+   NEXT
+========================================= */
+
+nextBtn.addEventListener(
+    "click",
+    () => {
+
+        console.log(
+            "Next interview will appear here."
+        );
+
+    }
 );
