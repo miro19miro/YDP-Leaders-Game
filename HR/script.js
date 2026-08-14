@@ -1,6 +1,6 @@
 /* =========================================================
    YDP HR GAME
-   SCRIPT.JS
+   SCRIPT.JS - FIXED VERSION
 ========================================================= */
 
 
@@ -17,66 +17,39 @@ const STORAGE_KEYS = {
 
 
 /* =========================================================
-   DEFAULT DATA
+   DEFAULT QUESTIONS
 ========================================================= */
 
 const defaultQuestions = [
-    {
-        id: "q1",
-        text: "Tell me about yourself."
-    },
-    {
-        id: "q2",
-        text: "Why do you want to join YDP?"
-    },
-    {
-        id: "q3",
-        text: "What are your strongest soft skills?"
-    },
-    {
-        id: "q4",
-        text: "How do you deal with pressure?"
-    },
-    {
-        id: "q5",
-        text: "How do you work within a team?"
-    },
-    {
-        id: "q6",
-        text: "Tell me about a problem you solved."
-    },
-    {
-        id: "q7",
-        text: "What is one weakness you are working on?"
-    },
-    {
-        id: "q8",
-        text: "How do you manage your time?"
-    },
-    {
-        id: "q9",
-        text: "How do you handle disagreement with a teammate?"
-    },
-    {
-        id: "q10",
-        text: "Why should we choose you?"
-    }
+    { id: "q1", text: "Tell me about yourself." },
+    { id: "q2", text: "Why do you want to join YDP?" },
+    { id: "q3", text: "What are your strongest soft skills?" },
+    { id: "q4", text: "How do you deal with pressure?" },
+    { id: "q5", text: "How do you work within a team?" },
+    { id: "q6", text: "Tell me about a problem you solved." },
+    { id: "q7", text: "What is one weakness you are working on?" },
+    { id: "q8", text: "How do you manage your time?" },
+    { id: "q9", text: "How do you handle disagreement with a teammate?" },
+    { id: "q10", text: "Why should we choose you?" }
 ];
 
 
 /* =========================================================
-   DATA HELPERS
+   DATA
 ========================================================= */
 
 function loadData(key, fallback = []) {
     try {
-        const data = localStorage.getItem(key);
+        const saved = localStorage.getItem(key);
 
-        if (!data) {
+        if (!saved) {
             return fallback;
         }
 
-        return JSON.parse(data);
+        const parsed = JSON.parse(saved);
+
+        return Array.isArray(parsed) ? parsed : fallback;
+
     } catch (error) {
         console.error("Storage error:", error);
         return fallback;
@@ -85,7 +58,11 @@ function loadData(key, fallback = []) {
 
 
 function saveData(key, data) {
-    localStorage.setItem(key, JSON.stringify(data));
+    try {
+        localStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+        console.error("Save error:", error);
+    }
 }
 
 
@@ -135,16 +112,19 @@ const game = {
 
 
 /* =========================================================
-   DOM HELPERS
+   DOM
 ========================================================= */
 
 const $ = (id) => document.getElementById(id);
 
 
 function showScreen(id) {
-    document.querySelectorAll(".screen").forEach(screen => {
-        screen.classList.add("hidden");
-    });
+
+    document
+        .querySelectorAll(".screen")
+        .forEach(screen => {
+            screen.classList.add("hidden");
+        });
 
     const target = $(id);
 
@@ -155,6 +135,7 @@ function showScreen(id) {
 
 
 function showElement(id) {
+
     const element = $(id);
 
     if (element) {
@@ -164,6 +145,7 @@ function showElement(id) {
 
 
 function hideElement(id) {
+
     const element = $(id);
 
     if (element) {
@@ -173,6 +155,7 @@ function hideElement(id) {
 
 
 function createId(prefix = "id") {
+
     return (
         prefix +
         "_" +
@@ -186,7 +169,11 @@ function createId(prefix = "id") {
 
 
 function escapeHTML(value) {
-    if (value === null || value === undefined) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
         return "";
     }
 
@@ -206,12 +193,15 @@ function escapeHTML(value) {
 const introVideo = $("introVideo");
 
 if (introVideo) {
-
-    introVideo.addEventListener("ended", () => {
-        showScreen("codeScreen");
-    });
+    introVideo.addEventListener(
+        "ended",
+        () => {
+            showScreen("codeScreen");
+        }
+    );
 
 }
+
 
 /* =========================================================
    CODE SCREEN
@@ -224,18 +214,30 @@ const codeError = $("codeError");
 
 function enterGameCode() {
 
+    if (!codeInput) {
+        return;
+    }
+
     const code = codeInput.value.trim();
 
-    codeError.textContent = "";
+    if (codeError) {
+        codeError.textContent = "";
+    }
+
 
     if (!code) {
-        codeError.textContent = "Please enter your code.";
+
+        if (codeError) {
+            codeError.textContent =
+                "Please enter your code.";
+        }
+
         return;
     }
 
 
     /* =========================
-       ADMIN
+       ADMIN CODE
     ========================= */
 
     if (code === "BYS20M") {
@@ -247,12 +249,13 @@ function enterGameCode() {
 
 
     /* =========================
-       PLAYER
+       PLAYER CODE
     ========================= */
 
     if (code === "MEM201") {
 
-        game.gameStartedAt = new Date().toISOString();
+        game.gameStartedAt =
+            new Date().toISOString();
 
         showScreen("genderScreen");
 
@@ -261,18 +264,26 @@ function enterGameCode() {
 
 
     /* =========================
-       INVALID
+       WRONG CODE
     ========================= */
 
-    codeError.textContent = "Invalid code. Please try again.";
+    if (codeError) {
+
+        codeError.textContent =
+            "Invalid code. Please try again.";
+
+    }
+
 }
 
 
 if (enterCodeBtn) {
+
     enterCodeBtn.addEventListener(
         "click",
         enterGameCode
     );
+
 }
 
 
@@ -280,7 +291,7 @@ if (codeInput) {
 
     codeInput.addEventListener(
         "keydown",
-        (event) => {
+        event => {
 
             if (event.key === "Enter") {
                 enterGameCode();
@@ -290,15 +301,6 @@ if (codeInput) {
     );
 
 }
-
-
-/* =========================================================
-   ROLE SCREEN
-   ---------------------------------------------------------
-   The current HTML contains a Player/Admin screen.
-   The code itself already determines the role, so this
-   screen is intentionally not used.
-========================================================= */
 
 
 /* =========================================================
@@ -340,7 +342,7 @@ if (boyChoice) {
 
 
 /* =========================================================
-   PLAYER NAME
+   PLAYER NAMES
 ========================================================= */
 
 let selectedMemberId = null;
@@ -380,15 +382,19 @@ function renderPlayerNames() {
 
     members.forEach(member => {
 
-        const button = document.createElement("button");
+        const button =
+            document.createElement("button");
 
         button.type = "button";
 
-        button.className = "member-choice";
+        button.className =
+            "member-choice";
 
-        button.dataset.id = member.id;
+        button.dataset.id =
+            member.id;
 
-        button.textContent = member.name;
+        button.textContent =
+            member.name;
 
 
         button.addEventListener(
@@ -396,31 +402,44 @@ function renderPlayerNames() {
             () => {
 
                 document
-                    .querySelectorAll(".member-choice")
+                    .querySelectorAll(
+                        ".member-choice"
+                    )
                     .forEach(item => {
-                        item.classList.remove("selected");
+
+                        item.classList.remove(
+                            "selected"
+                        );
+
                     });
 
 
-                button.classList.add("selected");
+                button.classList.add(
+                    "selected"
+                );
 
-                selectedMemberId = member.id;
+                selectedMemberId =
+                    member.id;
 
-                game.playerName = member.name;
+                game.playerName =
+                    member.name;
 
-                nameError.textContent = "";
+                if (nameError) {
+                    nameError.textContent = "";
+                }
 
                 if (nameContinueBtn) {
                     nameContinueBtn.disabled = false;
                 }
 
-            }
+                }
         );
 
 
         membersList.appendChild(button);
 
     });
+
 }
 
 
@@ -431,12 +450,14 @@ if (nameContinueBtn) {
         () => {
 
             if (!selectedMemberId) {
-                nameError.textContent =
-                    "Please choose your name.";
+
+                if (nameError) {
+                    nameError.textContent =
+                        "Please choose your name.";
+                }
 
                 return;
             }
-
 
             startPlayerGame();
 
@@ -447,7 +468,7 @@ if (nameContinueBtn) {
 
 
 /* =========================================================
-   START PLAYER GAME
+   START PLAYER
 ========================================================= */
 
 function startPlayerGame() {
@@ -458,7 +479,16 @@ function startPlayerGame() {
 
     game.usedInterviewIds = [];
 
-    game.gameStartedAt = new Date().toISOString();
+    game.currentInterview = null;
+
+    game.selectedDecision = null;
+
+    game.selectedQuestions = [];
+
+    game.currentQuestionIndex = 0;
+
+    game.gameStartedAt =
+        new Date().toISOString();
 
     updateScore();
 
@@ -476,28 +506,32 @@ function startPlayerGame() {
 function prepareOffice() {
 
     hideElement("paperDeck");
+
     hideElement("candidateCharacter");
+
     hideElement("idButton");
+
     hideElement("chatButton");
 
-    const nextButton = $("nextBtn");
+    hideElement("paperDecision");
+
+    const nextButton =
+        $("nextBtn");
 
     if (nextButton) {
-        nextButton.classList.remove("hidden");
+
+        nextButton.classList.remove(
+            "hidden"
+        );
+
         nextButton.disabled = false;
+
     }
 
-
-    hideElement("paperDecision");
 }
 
 
-/* =========================================================
-   NEXT BUTTON
-========================================================= */
-
 const nextBtn = $("nextBtn");
-
 
 if (nextBtn) {
 
@@ -520,14 +554,14 @@ function getRandomInterview() {
     }
 
 
-    let available = interviews.filter(
-        interview =>
-            !game.usedInterviewIds.includes(interview.id)
-    );
+    let available =
+        interviews.filter(
+            interview =>
+                !game.usedInterviewIds.includes(
+                    interview.id
+                )
+        );
 
-
-    /* If all interviews were used,
-       start randomizing them again. */
 
     if (available.length === 0) {
 
@@ -540,7 +574,8 @@ function getRandomInterview() {
 
     const randomIndex =
         Math.floor(
-            Math.random() * available.length
+            Math.random() *
+            available.length
         );
 
 
@@ -549,12 +584,13 @@ function getRandomInterview() {
 
 
 /* =========================================================
-   START NEXT INTERVIEW
+   START INTERVIEW
 ========================================================= */
 
 function startNextInterview() {
 
-    const interview = getRandomInterview();
+    const interview =
+        getRandomInterview();
 
 
     if (!interview) {
@@ -567,19 +603,27 @@ function startNextInterview() {
     }
 
 
-    game.currentInterview = interview;
+    game.currentInterview =
+        interview;
 
-    game.usedInterviewIds.push(interview.id);
+    game.usedInterviewIds.push(
+        interview.id
+    );
 
     game.selectedDecision = null;
 
     game.selectedQuestions = [];
+
     game.currentQuestionIndex = 0;
 
 
     hideElement("nextBtn");
 
     hideElement("paperDecision");
+
+    hideElement("idButton");
+
+    hideElement("chatButton");
 
     showElement("paperDeck");
 
@@ -596,7 +640,8 @@ function startNextInterview() {
 
 function renderInterview() {
 
-    const interview = game.currentInterview;
+    const interview =
+        game.currentInterview;
 
     if (!interview) {
         return;
@@ -607,7 +652,9 @@ function renderInterview() {
        CV
     ========================= */
 
-    const cvContent = $("cvContent");
+    const cvContent =
+        $("cvContent");
+
 
     if (cvContent) {
 
@@ -615,56 +662,96 @@ function renderInterview() {
 
             <div class="candidate-photo-small">
                 <img
-                    src="${escapeHTML(interview.photo || "images/1.png")}"
+                    src="${escapeHTML(
+                        interview.photo ||
+                        "images/1.png"
+                    )}"
                     alt="Candidate"
                 >
             </div>
-
             <div class="cv-field">
                 <strong>Name:</strong>
-                <span>${escapeHTML(interview.name)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.name
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Address:</strong>
-                <span>${escapeHTML(interview.address)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.address
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Phone Number:</strong>
-                <span>${escapeHTML(interview.phone)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.phone
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Age:</strong>
-                <span>${escapeHTML(interview.age)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.age
+                    )}
+                </span>
             </div>
+
             <div class="cv-section">
                 <strong>Short Summary</strong>
-                <p>${escapeHTML(interview.summary)}</p>
+                <p>
+                    ${escapeHTML(
+                        interview.summary
+                    )}
+                </p>
             </div>
 
             <div class="cv-section">
                 <strong>Soft Skills</strong>
-                <p>${escapeHTML(interview.softSkills)}</p>
+                <p>
+                    ${escapeHTML(
+                        interview.softSkills
+                    )}
+                </p>
             </div>
 
             <div class="cv-section">
                 <strong>Technical Skills</strong>
-                <p>${escapeHTML(interview.technicalSkills)}</p>
+                <p>
+                    ${escapeHTML(
+                        interview.technicalSkills
+                    )}
+                </p>
             </div>
 
             <div class="cv-section">
                 <strong>Languages</strong>
-                <p>${escapeHTML(interview.languages)}</p>
+                <p>
+                    ${escapeHTML(
+                        interview.languages
+                    )}
+                </p>
             </div>
 
             <div class="cv-section">
                 <strong>Experience</strong>
-                <p>${escapeHTML(interview.experience)}</p>
+                <p>
+                    ${escapeHTML(
+                        interview.experience
+                    )}
+                </p>
             </div>
 
         ;
+
     }
 
 
@@ -682,90 +769,140 @@ function renderInterview() {
 
             <div class="candidate-photo-small">
                 <img
-                    src="${escapeHTML(interview.photo || "images/1.png")}"
+                    src="${escapeHTML(
+                        interview.photo ||
+                        "images/1.png"
+                    )}"
                     alt="Candidate"
                 >
             </div>
 
             <div class="cv-field">
                 <strong>Name:</strong>
-                <span>${escapeHTML(interview.name)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.name
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Address:</strong>
-                <span>${escapeHTML(interview.address)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.address
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Nationality:</strong>
-                <span>${escapeHTML(interview.nationality)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.nationality
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>National ID:</strong>
-                <span>${escapeHTML(interview.nationalId)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.nationalId
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Status:</strong>
-                <span>${escapeHTML(interview.status)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.status
+                    )}
+                </span>
             </div>
 
-        ;
+        `;
+
     }
 
 
     /* =========================
        APPLICATION
     ========================= */
-
     const applicationContent =
         $("applicationContent");
 
 
     if (applicationContent) {
 
-        applicationContent.innerHTML = 
-
+        applicationContent.innerHTML = `
             <div class="cv-field">
                 <strong>Name:</strong>
-                <span>${escapeHTML(interview.name)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.name
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Gender:</strong>
-                <span>${escapeHTML(
-                    interview.gender || "—"
-                )}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.gender ||
+                        "—"
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Phone Number:</strong>
-                <span>${escapeHTML(interview.phone)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.phone
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Age:</strong>
-                <span>${escapeHTML(interview.age)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.age
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Community:</strong>
-                <span>${escapeHTML(interview.community)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.community
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Governorate:</strong>
-                <span>${escapeHTML(interview.governorate)}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.governorate
+                    )}
+                </span>
             </div>
 
             <div class="cv-field">
                 <strong>Committee:</strong>
-                <span>${escapeHTML(interview.committee || "HR")}</span>
+                <span>
+                    ${escapeHTML(
+                        interview.committee ||
+                        "HR"
+                    )}
+                </span>
             </div>
-
         `;
+
     }
 
 
@@ -801,7 +938,11 @@ function animateCandidateEntrance() {
     if (!character) {
         return;
     }
-    character.classList.remove("hidden");
+
+
+    character.classList.remove(
+        "hidden"
+    );
 
     character.style.opacity = "0";
 
@@ -825,7 +966,7 @@ function animateCandidateEntrance() {
 
 
 /* =========================================================
-   PAPER CLICK
+   PAPERS
 ========================================================= */
 
 [
@@ -845,7 +986,9 @@ function animateCandidateEntrance() {
         "click",
         () => {
 
-            paper.classList.toggle("paper-active");
+            paper.classList.toggle(
+                "paper-active"
+            );
 
         }
     );
@@ -854,16 +997,18 @@ function animateCandidateEntrance() {
 
 
 /* =========================================================
-   CANDIDATE PHOTO / EYE
+   PHOTO
 ========================================================= */
 
-const cvEyeCard = $("cvEyeCard");
+const cvEyeCard =
+    $("cvEyeCard");
+
 
 if (cvEyeCard) {
 
     cvEyeCard.addEventListener(
         "click",
-        (event) => {
+        event => {
 
             event.stopPropagation();
 
@@ -881,7 +1026,7 @@ document
 
         button.addEventListener(
             "click",
-            (event) => {
+            event => {
 
                 event.stopPropagation();
 
@@ -903,8 +1048,7 @@ function openCandidatePhoto() {
     const image =
         $("candidatePhotoLarge");
 
-
-    if (image) {
+        if (image) {
 
         image.src =
             game.currentInterview.photo ||
@@ -913,13 +1057,15 @@ function openCandidatePhoto() {
     }
 
 
-    showElement("candidatePhotoModal");
+    showElement(
+        "candidatePhotoModal"
+    );
 
 }
 
 
 /* =========================================================
-   CLOSE MODALS
+   MODALS
 ========================================================= */
 
 document
@@ -953,7 +1099,9 @@ document
                     overlay.closest(".modal");
 
                 if (modal) {
-                    modal.classList.add("hidden");
+                    modal.classList.add(
+                        "hidden"
+                    );
                 }
 
             }
@@ -1009,12 +1157,9 @@ function makeDecision(decision) {
     }
 
 
-    game.selectedDecision = decision;
+    game.selectedDecision =
+        decision;
 
-
-    /* =========================
-       ANIMATE STAMP
-    ========================= */
 
     const stamp =
         decision === "accepted"
@@ -1022,12 +1167,11 @@ function makeDecision(decision) {
             : rejectedStamp;
 
 
-    animateStamp(stamp, decision);
+    animateStamp(
+        stamp,
+        decision
+    );
 
-
-    /* =========================
-       COUNT DECISION
-    ========================= */
 
     if (decision === "accepted") {
 
@@ -1039,10 +1183,6 @@ function makeDecision(decision) {
 
     }
 
-
-    /* =========================
-       SCORE
-    ========================= */
 
     const correct =
         decision ===
@@ -1062,9 +1202,6 @@ function makeDecision(decision) {
 
     updateScore();
 
-    /* =========================
-       SHOW DECISION
-    ========================= */
 
     const decisionText =
         $("paperDecision");
@@ -1077,7 +1214,14 @@ function makeDecision(decision) {
                 ? "ACCEPTED"
                 : "REJECTED";
 
-        decisionText.classList.remove("hidden");
+        decisionText.classList.remove(
+            "hidden"
+        );
+
+        decisionText.classList.remove(
+            "decision-accepted",
+            "decision-rejected"
+        );
 
         decisionText.classList.add(
             decision === "accepted"
@@ -1087,11 +1231,6 @@ function makeDecision(decision) {
 
     }
 
-
-    /* =========================
-       ID BUTTON
-       ONLY ACCEPTED
-    ========================= */
 
     if (decision === "accepted") {
 
@@ -1104,16 +1243,8 @@ function makeDecision(decision) {
     }
 
 
-    /* =========================
-       CHAT BUTTON
-    ========================= */
-
     showElement("chatButton");
 
-
-    /* =========================
-       SAVE RESULT
-    ========================= */
 
     saveInterviewResult(
         decision,
@@ -1137,17 +1268,19 @@ function animateStamp(
     }
 
 
-    stamp.classList.add("stamp-hit");
+    stamp.classList.add(
+        "stamp-hit"
+    );
 
 
     setTimeout(() => {
 
-        stamp.classList.remove("stamp-hit");
+        stamp.classList.remove(
+            "stamp-hit"
+        );
 
     }, 700);
 
-
-    /* Add decision text visually to the paper */
 
     const paperDecision =
         $("paperDecision");
@@ -1160,7 +1293,9 @@ function animateStamp(
                 ? "ACCEPTED"
                 : "REJECTED";
 
-        paperDecision.classList.remove("hidden");
+        paperDecision.classList.remove(
+            "hidden"
+        );
 
     }
 
@@ -1173,27 +1308,31 @@ function animateStamp(
 
 function updateScore() {
 
-    if ($("acceptedCount")) {
+    const accepted =
+        $("acceptedCount");
 
-        $("acceptedCount").textContent =
+    const rejected =
+        $("rejectedCount");
+
+        const score =
+        $("scoreCount");
+
+
+    if (accepted) {
+        accepted.textContent =
             game.accepted;
-
     }
 
 
-    if ($("rejectedCount")) {
-
-        $("rejectedCount").textContent =
+    if (rejected) {
+        rejected.textContent =
             game.rejected;
-
     }
 
 
-    if ($("scoreCount")) {
-
-        $("scoreCount").textContent =
+    if (score) {
+        score.textContent =
             game.score;
-
     }
 
 }
@@ -1203,7 +1342,8 @@ function updateScore() {
    ID CARD
 ========================================================= */
 
-const idButton = $("idButton");
+const idButton =
+    $("idButton");
 
 
 if (idButton) {
@@ -1230,10 +1370,8 @@ function openGeneratedId() {
     const photo =
         $("generatedIdPhoto");
 
-
     const name =
         $("generatedIdName");
-
 
     const committee =
         $("generatedIdCommittee");
@@ -1251,7 +1389,8 @@ function openGeneratedId() {
     if (name) {
 
         name.textContent =
-            interview.name || "";
+            interview.name ||
+            "";
 
     }
 
@@ -1271,7 +1410,7 @@ function openGeneratedId() {
 
 
 /* =========================================================
-   CHAT
+   INTERVIEW CHAT
 ========================================================= */
 
 const chatButton =
@@ -1287,10 +1426,6 @@ if (chatButton) {
 
 }
 
-
-/* =========================================================
-   QUESTION CHAT
-========================================================= */
 
 function openQuestionChat() {
 
@@ -1309,32 +1444,37 @@ function openQuestionChat() {
     }
 
 
-    /* Shuffle questions */
-
     const shuffled =
         [...questions].sort(
             () => Math.random() - 0.5
         );
 
 
-    /* Maximum 10 */
-
     game.selectedQuestions =
         shuffled.slice(
             0,
-            Math.min(10, shuffled.length)
+            Math.min(
+                10,
+                shuffled.length
+            )
         );
 
 
     game.currentQuestionIndex = 0;
 
 
-    hideElement("questionAnswer");
+    hideElement(
+        "questionAnswer"
+    );
 
-    hideElement("nextQuestionBtn");
+    hideElement(
+        "nextQuestionBtn"
+    );
 
 
-    showElement("questionModal");
+    showElement(
+        "questionModal"
+    );
 
 
     renderCurrentQuestion();
@@ -1343,16 +1483,13 @@ function openQuestionChat() {
 
 
 /* =========================================================
-   RENDER CURRENT QUESTION
+   QUESTIONS
 ========================================================= */
 
 function renderCurrentQuestion() {
 
     const choices =
         $("questionChoices");
-
-    const answer =
-        $("questionAnswer");
 
     const progress =
         $("questionProgress");
@@ -1365,14 +1502,18 @@ function renderCurrentQuestion() {
 
     choices.innerHTML = "";
 
-    hideElement("questionAnswer");
 
-    hideElement("nextQuestionBtn");
+    hideElement(
+        "questionAnswer"
+    );
+
+    hideElement(
+        "nextQuestionBtn"
+    );
 
 
     const total =
         game.selectedQuestions.length;
-
 
     const index =
         game.currentQuestionIndex;
@@ -1381,7 +1522,10 @@ function renderCurrentQuestion() {
     if (progress) {
 
         progress.textContent =
-            `Choose a question — ${index} / ${total}`;
+            `Choose a question — ${Math.min(
+                index,
+                total
+            )} / ${total}`;
 
     }
 
@@ -1389,10 +1533,9 @@ function renderCurrentQuestion() {
     if (index >= total) {
 
         choices.innerHTML = 
-            <div class="question-finished">
+            `<div class="question-finished">
                 Interview questions completed.
-            </div>
-        ;
+            </div>`;
 
         if (progress) {
 
@@ -1406,17 +1549,18 @@ function renderCurrentQuestion() {
 
 
     game.selectedQuestions.forEach(
-        (question, questionIndex) => {
+        question => {
 
             const button =
-                document.createElement("button");
+                document.createElement(
+                    "button"
+                );
 
 
             button.type = "button";
 
             button.className =
                 "question-choice";
-
 
             button.textContent =
                 question.text;
@@ -1434,7 +1578,9 @@ function renderCurrentQuestion() {
             );
 
 
-            choices.appendChild(button);
+            choices.appendChild(
+                button
+            );
 
         }
     );
@@ -1442,17 +1588,14 @@ function renderCurrentQuestion() {
 }
 
 
-/* =========================================================
-   CHOOSE QUESTION
-========================================================= */
-
-function chooseInterviewQuestion(question) {
+function chooseInterviewQuestion(
+    question
+) {
 
     const choices =
         $("questionChoices");
 
-
-    if (choices) {
+        if (choices) {
 
         choices
             .querySelectorAll("button")
@@ -1466,7 +1609,9 @@ function chooseInterviewQuestion(question) {
 
 
     const answer =
-        getInterviewAnswer(question.id);
+        getInterviewAnswer(
+            question.id
+        );
 
 
     const answerBox =
@@ -1510,10 +1655,6 @@ function chooseInterviewQuestion(question) {
 }
 
 
-/* =========================================================
-   GET INTERVIEW ANSWER
-========================================================= */
-
 function getInterviewAnswer(
     questionId
 ) {
@@ -1524,17 +1665,14 @@ function getInterviewAnswer(
 
 
     const answers =
-        game.currentInterview.answers || {};
+        game.currentInterview.answers ||
+        {};
 
 
     return answers[questionId] || "";
 
 }
 
-
-/* =========================================================
-   NEXT QUESTION
-========================================================= */
 
 const nextQuestionBtn =
     $("nextQuestionBtn");
@@ -1572,7 +1710,8 @@ function saveInterviewResult(
 
     const result = {
 
-        id: createId("result"),
+        id:
+            createId("result"),
 
         player:
             game.playerName,
@@ -1580,7 +1719,7 @@ function saveInterviewResult(
         interviewId:
             game.currentInterview.id,
 
-            interview:
+        interview:
             game.currentInterview.name,
 
         decision:
@@ -1590,7 +1729,9 @@ function saveInterviewResult(
             correct,
 
         score:
-            correct ? 10 : -10,
+            correct
+                ? 10
+                : -10,
 
         questions:
             game.selectedQuestions.length,
@@ -1624,12 +1765,10 @@ function openAdminPanel() {
 }
 
 
-/* =========================================================
-   ADMIN TABS
-========================================================= */
-
 document
-    .querySelectorAll(".admin-tabs button")
+    .querySelectorAll(
+        ".admin-tabs button"
+    )
     .forEach(button => {
 
         button.addEventListener(
@@ -1708,7 +1847,6 @@ if (adminRefreshBtn) {
 
 }
 
-
 /* =========================================================
    ADMIN RENDER
 ========================================================= */
@@ -1725,8 +1863,6 @@ function renderAdmin() {
 
     renderResults();
 
-    renderInterviewAnswerFields();
-
 }
 
 
@@ -1736,42 +1872,47 @@ function renderAdmin() {
 
 function renderStats() {
 
-    if ($("statMembers")) {
+    const statMembers =
+        $("statMembers");
 
-        $("statMembers").textContent =
+    const statInterviews =
+        $("statInterviews");
+
+    const statQuestions =
+        $("statQuestions");
+
+    const statResults =
+        $("statResults");
+
+
+    if (statMembers) {
+        statMembers.textContent =
             members.length;
-
     }
 
 
-    if ($("statInterviews")) {
-
-        $("statInterviews").textContent =
+    if (statInterviews) {
+        statInterviews.textContent =
             interviews.length;
-
     }
 
 
-    if ($("statQuestions")) {
-
-        $("statQuestions").textContent =
+    if (statQuestions) {
+        statQuestions.textContent =
             questions.length;
-
     }
 
 
-    if ($("statResults")) {
-
-        $("statResults").textContent =
+    if (statResults) {
+        statResults.textContent =
             results.length;
-
     }
 
 }
 
 
 /* =========================================================
-   ADMIN INTERVIEW LIST
+   ADMIN INTERVIEWS
 ========================================================= */
 
 function renderInterviewList() {
@@ -1800,66 +1941,76 @@ function renderInterviewList() {
     }
 
 
-    interviews.forEach(interview => {
+    interviews.forEach(
+        interview => {
 
-        const item =
-            document.createElement("div");
-
-
-        item.className =
-            "admin-list-item";
-
-
-        item.innerHTML = `
-
-            <div class="admin-item-info">
-
-                <strong>
-                    ${escapeHTML(interview.name)}
-                </strong>
-                <span>
-                    Committee:
-                    ${escapeHTML(
-                        interview.committee || "HR"
-                    )}
-                </span>
-
-                <span>
-                    Correct:
-                    ${escapeHTML(
-                        interview.decision
-                    )}
-                </span>
-
-            </div>
+            const item =
+                document.createElement(
+                    "div"
+                );
 
 
-            <div class="admin-item-actions">
-
-                <button
-                    class="admin-edit-btn"
-                    type="button"
-                    data-edit-interview="${interview.id}"
-                >
-                    EDIT
-                </button>
-
-                <button
-                    class="admin-delete-btn"
-                    type="button"
-                    data-delete-interview="${interview.id}"
-                >
-                    DELETE
-                </button>
-
-            </div>
-
-        `;
+            item.className =
+                "admin-list-item";
 
 
-        list.appendChild(item);
+            item.innerHTML = `
+                <div class="admin-item-info">
 
-    });
+                    <strong>
+                        ${escapeHTML(
+                            interview.name
+                        )}
+                    </strong>
+
+                    <span>
+                        Committee:
+                        ${escapeHTML(
+                            interview.committee ||
+                            "HR"
+                        )}
+                    </span>
+
+                    <span>
+                        Correct:
+                        ${escapeHTML(
+                            interview.decision
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="admin-item-actions">
+
+                    <button
+                        class="admin-edit-btn"
+                        type="button"
+                        data-edit-interview="${escapeHTML(
+                            interview.id
+                        )}"
+                    >
+                        EDIT
+                    </button>
+
+                    <button
+                        class="admin-delete-btn"
+                        type="button"
+                        data-delete-interview="${escapeHTML(
+                            interview.id
+                        )}"
+                    >
+                        DELETE
+                    </button>
+
+                </div>
+            `;
+
+
+            list.appendChild(item);
+
+        }
+    );
 
 
     list
@@ -1904,15 +2055,9 @@ function renderInterviewList() {
 }
 
 
-/* =========================================================
-   ADD INTERVIEW
-========================================================= */
-
 const addInterviewBtn =
     $("addInterviewBtn");
-
-
-if (addInterviewBtn) {
+    if (addInterviewBtn) {
 
     addInterviewBtn.addEventListener(
         "click",
@@ -1945,10 +2090,8 @@ function openInterviewEditor(
     $("editInterviewId").value =
         "";
 
-
     $("fPhoto").value =
         "images/1.png";
-
 
     $("fCommittee").value =
         "HR";
@@ -1959,7 +2102,8 @@ function openInterviewEditor(
         const interview =
             interviews.find(
                 item =>
-                    item.id === interviewId
+                    item.id ===
+                    interviewId
             );
 
 
@@ -2053,7 +2197,8 @@ function openInterviewEditor(
 
         fillField(
             "fCommittee",
-            interview.committee || "HR"
+            interview.committee ||
+            "HR"
         );
 
 
@@ -2078,21 +2223,21 @@ function openInterviewEditor(
     );
 
 
-    showElement("adminEditor");
+    showElement(
+        "adminEditor"
+    );
 
 }
 
-
-/* =========================================================
-   FILL FIELD
-========================================================= */
 
 function fillField(
     id,
     value
 ) {
 
-    const element = $(id);
+    const element =
+        $(id);
+
 
     if (element) {
 
@@ -2105,7 +2250,7 @@ function fillField(
 
 
 /* =========================================================
-   INTERVIEW ANSWER FIELDS
+   INTERVIEW ANSWERS
 ========================================================= */
 
 function renderInterviewAnswerFields(
@@ -2132,7 +2277,8 @@ function renderInterviewAnswerFields(
         interview =
             interviews.find(
                 item =>
-                    item.id === interviewId
+                    item.id ===
+                    interviewId
             );
 
     }
@@ -2154,35 +2300,46 @@ function renderInterviewAnswerFields(
     }
 
 
-    questions.forEach(question => {
+    questions.forEach(
+        question => {
 
-        const wrapper =
-            document.createElement("div");
+            const wrapper =
+                document.createElement(
+                    "div"
+                );
 
 
-        wrapper.className =
-            "answer-editor-row";
+            wrapper.className =
+                "answer-editor-row";
 
 
-        wrapper.innerHTML = `
+            wrapper.innerHTML = `
             <label>
-                ${escapeHTML(question.text)}
-            </label>
+                    ${escapeHTML(
+                        question.text
+                    )}
+                </label>
 
-            <textarea
-                data-answer-question="${question.id}"
-                placeholder="Candidate's answer..."
-            >${escapeHTML(
-                answers[question.id] || ""
-            )}</textarea>
-        `;
+                <textarea
+                    data-answer-question="${escapeHTML(
+                        question.id
+                    )}"
+                    placeholder="Candidate's answer..."
+                >${escapeHTML(
+                    answers[
+                        question.id
+                    ] || ""
+                )}</textarea>
+
+            `;
 
 
-        container.appendChild(
-            wrapper
-        );
+            container.appendChild(
+                wrapper
+            );
 
-    });
+        }
+    );
 
 }
 
@@ -2205,7 +2362,8 @@ if (interviewForm) {
 
 
             const id =
-                $("editInterviewId").value ||
+                $("editInterviewId")
+                    .value ||
                 createId("interview");
 
 
@@ -2223,14 +2381,17 @@ if (interviewForm) {
                 .querySelectorAll(
                     "[data-answer-question]"
                 )
-                .forEach(textarea => {
+                .forEach(
+                    textarea => {
 
-                    answers[
-                        textarea.dataset.answerQuestion
-                    ] =
-                        textarea.value.trim();
+                        answers[
+                            textarea.dataset
+                                .answerQuestion
+                        ] =
+                            textarea.value.trim();
 
-                });
+                    }
+                );
 
 
             const interview = {
@@ -2238,56 +2399,90 @@ if (interviewForm) {
                 id,
 
                 photo:
-                    $("fPhoto").value.trim() ||
+                    $("fPhoto")
+                        .value
+                        .trim() ||
                     "images/1.png",
 
                 name:
-                    $("fName").value.trim(),
+                    $("fName")
+                        .value
+                        .trim(),
 
                 age:
-                    $("fAge").value.trim(),
+                    $("fAge")
+                        .value
+                        .trim(),
 
                 address:
-                    $("fAddress").value.trim(),
+                    $("fAddress")
+                        .value
+                        .trim(),
 
                 phone:
-                    $("fPhone").value.trim(),
+                    $("fPhone")
+                        .value
+                        .trim(),
 
                 summary:
-                    $("fSummary").value.trim(),
+                    $("fSummary")
+                        .value
+                        .trim(),
 
                 softSkills:
-                    $("fSoftSkills").value.trim(),
+                    $("fSoftSkills")
+                        .value
+                        .trim(),
 
                 technicalSkills:
-                    $("fTechnicalSkills").value.trim(),
+                    $("fTechnicalSkills")
+                        .value
+                        .trim(),
 
                 languages:
-                    $("fLanguages").value.trim(),
+                    $("fLanguages")
+                        .value
+                        .trim(),
 
                 experience:
-                    $("fExperience").value.trim(),
+                    $("fExperience")
+                        .value
+                        .trim(),
 
                 nationality:
-                    $("fNationality").value.trim(),
-                    nationalId:
-                    $("fNationalId").value.trim(),
+                    $("fNationality")
+                        .value
+                        .trim(),
+
+                nationalId:
+                    $("fNationalId")
+                        .value
+                        .trim(),
 
                 status:
-                    $("fStatus").value.trim(),
+                    $("fStatus")
+                        .value
+                        .trim(),
 
                 community:
-                    $("fCommunity").value.trim(),
+                    $("fCommunity")
+                        .value
+                        .trim(),
 
                 governorate:
-                    $("fGovernorate").value.trim(),
+                    $("fGovernorate")
+                        .value
+                        .trim(),
 
                 committee:
-                    $("fCommittee").value.trim() ||
+                    $("fCommittee")
+                        .value
+                        .trim() ||
                     "HR",
 
                 decision:
-                    $("fDecision").value,
+                    $("fDecision")
+                        .value,
 
                 answers
 
@@ -2295,7 +2490,6 @@ if (interviewForm) {
 
 
             if (existing) {
-
                 interviews =
                     interviews.map(
                         item =>
@@ -2340,7 +2534,8 @@ function deleteInterview(id) {
 
     const interview =
         interviews.find(
-            item => item.id === id
+            item =>
+                item.id === id
         );
 
 
@@ -2362,7 +2557,8 @@ function deleteInterview(id) {
 
     interviews =
         interviews.filter(
-            item => item.id !== id
+            item =>
+                item.id !== id
         );
 
 
@@ -2378,7 +2574,7 @@ function deleteInterview(id) {
 
 
 /* =========================================================
-   MEMBERS
+   MEMBERS ADMIN
 ========================================================= */
 
 const addMemberBtn =
@@ -2421,51 +2617,61 @@ function renderMemberAdminList() {
     }
 
 
-    members.forEach(member => {
+    members.forEach(
+        member => {
 
-        const item =
-            document.createElement("div");
-
-
-        item.className =
-            "admin-list-item";
-
-
-        item.innerHTML = `
-            <div class="admin-item-info">
-
-                <strong>
-                    ${escapeHTML(member.name)}
-                </strong>
-
-            </div>
+            const item =
+                document.createElement(
+                    "div"
+                );
 
 
-            <div class="admin-item-actions">
-
-                <button
-                    class="admin-edit-btn"
-                    type="button"
-                    data-edit-member="${member.id}"
-                >
-                    EDIT
-                </button>
-
-                <button
-                    class="admin-delete-btn"
-                    type="button"
-                    data-delete-member="${member.id}"
-                >
-                    DELETE
-                </button>
-
-            </div>
-        `;
+            item.className =
+                "admin-list-item";
 
 
-        list.appendChild(item);
+            item.innerHTML = `
+                <div class="admin-item-info">
 
-    });
+                    <strong>
+                        ${escapeHTML(
+                            member.name
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="admin-item-actions">
+
+                    <button
+                        class="admin-edit-btn"
+                        type="button"
+                        data-edit-member="${escapeHTML(
+                            member.id
+                        )}"
+                    >
+                        EDIT
+                    </button>
+
+                    <button
+                        class="admin-delete-btn"
+                        type="button"
+                        data-delete-member="${escapeHTML(
+                            member.id
+                        )}"
+                    >
+                        DELETE
+                    </button>
+
+                </div>
+            `;
+
+
+            list.appendChild(item);
+
+        }
+    );
 
 
     list
@@ -2508,6 +2714,8 @@ function renderMemberAdminList() {
         });
 
 }
+
+
 /* =========================================================
    MEMBER EDITOR
 ========================================================= */
@@ -2537,7 +2745,8 @@ function openMemberEditor(
         const member =
             members.find(
                 item =>
-                    item.id === memberId
+                    item.id ===
+                    memberId
             );
 
 
@@ -2549,14 +2758,15 @@ function openMemberEditor(
         $("editMemberId").value =
             member.id;
 
-
         $("memberName").value =
             member.name;
 
     }
 
 
-    showElement("memberEditor");
+    showElement(
+        "memberEditor"
+    );
 
 }
 
@@ -2579,7 +2789,9 @@ if (memberForm) {
 
 
             const name =
-                $("memberName").value.trim();
+                $("memberName")
+                    .value
+                    .trim();
 
 
             if (!name) {
@@ -2588,16 +2800,14 @@ if (memberForm) {
 
 
             const id =
-                $("editMemberId").value ||
+                $("editMemberId")
+                    .value ||
                 createId("member");
 
 
             const member = {
-
                 id,
-
                 name
-
             };
 
 
@@ -2614,336 +2824,7 @@ if (memberForm) {
                     members.map(
                         item =>
                             item.id === id
-                                ? member
-                                : item
-                    );
-
-            } else {
-
-                members.push(
-                    member
-                );
-
-            }
-
-
-            saveData(
-                STORAGE_KEYS.members,
-                members
-            );
-
-
-            hideElement(
-                "memberEditor"
-            );
-
-
-            renderAdmin();
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   DELETE MEMBER
-========================================================= */
-
-function deleteMember(id) {
-
-    const member =
-        members.find(
-            item =>
-                item.id === id
-        );
-
-
-    if (!member) {
-        return;
-    }
-
-
-    if (
-        !confirm(
-            `Delete ${member.name}?`
-        )
-    ) {
-        return;
-    }
-
-
-    members =
-        members.filter(
-            item =>
-                item.id !== id
-        );
-
-
-    saveData(
-        STORAGE_KEYS.members,
-        members
-    );
-
-
-    renderAdmin();
-
-}
-
-
-/* =========================================================
-   QUESTIONS
-========================================================= */
-
-const addQuestionBtn =
-    $("addQuestionBtn");
-
-
-if (addQuestionBtn) {
-
-    addQuestionBtn.addEventListener(
-        "click",
-        () => openQuestionEditor()
-    );
-
-}
-
-
-function renderQuestionAdminList() {
-
-    const list =
-        $("questionAdminList");
-
-
-    if (!list) {
-        return;
-    }
-
-
-    list.innerHTML = "";
-
-
-    if (questions.length === 0) {
-
-        list.innerHTML = 
-            <div class="empty-message">
-                No questions yet.
-            </div>
-        ;
-
-        return;
-    }
-
-
-    questions.forEach(
-        (question, index) => {
-
-            const item =
-                document.createElement("div");
-
-
-            item.className =
-                "admin-list-item";
-
-
-            item.innerHTML = `
-
-                <div class="admin-item-info">
-
-                    <strong>
-                        Q${index + 1}
-                    </strong>
-
-                    <span>
-                        ${escapeHTML(
-                            question.text
-                        )}
-                    </span>
-
-                </div>
-
-
-                <div class="admin-item-actions">
-                <button
-                        class="admin-edit-btn"
-                        type="button"
-                        data-edit-question="${question.id}"
-                    >
-                        EDIT
-                    </button>
-
-                    <button
-                        class="admin-delete-btn"
-                        type="button"
-                        data-delete-question="${question.id}"
-                    >
-                        DELETE
-                    </button>
-
-                </div>
-
-            `;
-
-
-            list.appendChild(item);
-
-        }
-    );
-
-
-    list
-        .querySelectorAll(
-            "[data-edit-question]"
-        )
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    openQuestionEditor(
-                        button.dataset.editQuestion
-                    );
-
-                }
-            );
-
-        });
-
-
-    list
-        .querySelectorAll(
-            "[data-delete-question]"
-        )
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    deleteQuestion(
-                        button.dataset.deleteQuestion
-                    );
-
-                }
-            );
-
-        });
-
-}
-
-
-/* =========================================================
-   QUESTION EDITOR
-========================================================= */
-
-function openQuestionEditor(
-    questionId = null
-) {
-
-    const form =
-        $("questionForm");
-
-
-    if (!form) {
-        return;
-    }
-
-
-    form.reset();
-
-
-    $("editQuestionId").value =
-        "";
-
-
-    if (questionId) {
-
-        const question =
-            questions.find(
-                item =>
-                    item.id === questionId
-            );
-
-
-        if (!question) {
-            return;
-        }
-
-
-        $("editQuestionId").value =
-            question.id;
-
-
-        $("questionText").value =
-            question.text;
-
-    }
-
-
-    showElement(
-        "questionEditor"
-    );
-
-}
-
-
-/* =========================================================
-   SAVE QUESTION
-========================================================= */
-
-const questionForm =
-    $("questionForm");
-
-
-if (questionForm) {
-
-    questionForm.addEventListener(
-        "submit",
-        event => {
-
-            event.preventDefault();
-
-
-            const text =
-                $("questionText")
-                    .value
-                    .trim();
-
-
-            if (!text) {
-                return;
-            }
-
-
-            const id =
-                $("editQuestionId").value ||
-                createId("question");
-
-
-            const question = {
-
-                id,
-
-                text
-
-            };
-
-
-            const existing =
-                questions.some(
-                    item =>
-                        item.id === id
-                );
-
-
-            if (existing) {
-
-                questions =
-                    questions.map(
-                        item =>
-                            item.id === id
-                                ? question
+                        ? question
                                 : item
                     );
 
@@ -2973,6 +2854,7 @@ if (questionForm) {
     );
 
 }
+
 
 /* =========================================================
    DELETE QUESTION
@@ -3020,7 +2902,7 @@ function deleteQuestion(id) {
 
 
 /* =========================================================
-   RESULTS
+   RESULTS / SHEET
 ========================================================= */
 
 function renderResults() {
@@ -3053,58 +2935,67 @@ function renderResults() {
 
     [...results]
         .reverse()
-        .forEach(result => {
+        .forEach(
+            result => {
 
-            const row =
-                document.createElement("tr");
-
-
-            row.innerHTML = `
-                <td>
-                    ${escapeHTML(
-                        result.player
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHTML(
-                        result.interview
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHTML(
-                        result.decision
-                    )}
-                </td>
-
-                <td>
-                    ${result.correct
-                        ? "YES"
-                        : "NO"}
-                </td>
-
-                <td>
-                    ${result.score}
-                </td>
-
-                <td>
-                    ${result.questions}
-                </td>
-
-                <td>
-                    ${formatDate(
-                        result.finished
-                    )}
-                </td>
-            `;
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
 
 
-            body.appendChild(row);
+                row.innerHTML = `
+                    <td>
+                        ${escapeHTML(
+                            result.player
+                        )}
+                    </td>
 
-        });
+                    <td>
+                        ${escapeHTML(
+                            result.interview
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            result.decision
+                        )}
+                    </td>
+
+                    <td>
+                        ${
+                            result.correct
+                                ? "YES"
+                                : "NO"
+                        }
+                    </td>
+
+                    <td>
+                        ${result.score}
+                    </td>
+
+                    <td>
+                        ${result.questions}
+                    </td>
+
+                    <td>
+                        ${formatDate(
+                            result.finished
+                        )}
+                    </td>
+                `;
+
+
+                body.appendChild(
+                    row
+                );
+
+            }
+        );
 
 }
+
 
 /* =========================================================
    CLEAR RESULTS
@@ -3162,7 +3053,7 @@ function formatDate(date) {
         return new Date(date)
             .toLocaleString();
 
-    } catch {
+    } catch (error) {
 
         return date;
 
@@ -3170,9 +3061,8 @@ function formatDate(date) {
 
 }
 
-
 /* =========================================================
-   KEYBOARD ESCAPE
+   ESCAPE KEY
 ========================================================= */
 
 document.addEventListener(
@@ -3204,12 +3094,10 @@ document.addEventListener(
 
 function initializeGame() {
 
-    /* Keep intro visible first */
+    showScreen(
+        "introScreen"
+    );
 
-    showScreen("introScreen");
-
-
-    /* Make sure all modals are hidden */
 
     document
         .querySelectorAll(".modal")
@@ -3222,32 +3110,42 @@ function initializeGame() {
         });
 
 
-    /* Reset score */
-
     updateScore();
 
 
-    /* If browser blocks autoplay,
-       the video can still be played manually. */
-
     if (introVideo) {
 
-        const playPromise =
-            introVideo.play();
+        try {
+
+            const playPromise =
+                introVideo.play();
 
 
-        if (
-            playPromise &&
-            typeof playPromise.catch === "function"
-        ) {
+            if (
+                playPromise &&
+                typeof playPromise.catch ===
+                    "function"
+            ) {
 
-            playPromise.catch(() => {
+                playPromise.catch(
+                    error => {
 
-                console.log(
-                    "Autoplay was blocked by the browser."
+                        console.log(
+                            "Autoplay was blocked.",
+                            error
+                        );
+
+                    }
                 );
 
-            });
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Video play error:",
+                error
+            );
 
         }
 
@@ -3256,11 +3154,15 @@ function initializeGame() {
 }
 
 
+/* =========================================================
+   START
+========================================================= */
+
 initializeGame();
 
 
 /* =========================================================
-   DEBUG HELP
+   DEBUG
 ========================================================= */
 
 window.YDP_HR = {
@@ -3282,6 +3184,7 @@ window.YDP_HR = {
     get results() {
         return results;
     },
+
 
     resetAllData() {
 
