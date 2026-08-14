@@ -369,12 +369,12 @@ function renderPlayerNames() {
 
     if (members.length === 0) {
 
-        membersList.innerHTML = 
-            <div class="empty-message">
-                No player names have been added yet.
-                Ask the administrator to add your name.
-            </div>
-        ;
+        membersList.innerHTML = `
+    <div class="empty-message">
+        No player names have been added yet.
+        Ask the administrator to add your name.
+    </div>
+`;
 
         return;
     }
@@ -750,7 +750,7 @@ function renderInterview() {
                 </p>
             </div>
 
-        ;
+        `;
 
     }
 
@@ -765,7 +765,7 @@ function renderInterview() {
 
     if (personalCard) {
 
-        personalCard.innerHTML = 
+        personalCard.innerHTML = `
 
             <div class="candidate-photo-small">
                 <img
@@ -1931,11 +1931,11 @@ function renderInterviewList() {
 
     if (interviews.length === 0) {
 
-        list.innerHTML = 
-            <div class="empty-message">
-                No interviews yet.
-            </div>
-        ;
+        list.innerHTML = `
+    <div class="empty-message">
+        No interviews yet.
+    </div>
+`;
 
         return;
     }
@@ -2290,11 +2290,11 @@ function renderInterviewAnswerFields(
 
     if (questions.length === 0) {
 
-        container.innerHTML = 
-            <div class="empty-message">
-                Add questions first.
-            </div>
-        ;
+        container.innerHTML = `
+    <div class="empty-message">
+        Add questions first.
+    </div>
+`;
 
         return;
     }
@@ -2607,11 +2607,11 @@ function renderMemberAdminList() {
 
     if (members.length === 0) {
 
-        list.innerHTML = 
-            <div class="empty-message">
-                No members added yet.
-            </div>
-        ;
+        list.innerHTML = `
+    <div class="empty-message">
+        No members added yet.
+    </div>
+`;
 
         return;
     }
@@ -2820,35 +2820,29 @@ if (memberForm) {
 
             if (existing) {
 
-                members =
-                    members.map(
-                        item =>
-                            item.id === id
-                        ? question
-                                : item
-                    );
+    members = members.map(
+        item =>
+            item.id === id
+                ? member
+                : item
+    );
 
-            } else {
+} else {
 
-                questions.push(
-                    question
-                );
+    members.push(member);
 
-            }
+}
 
+saveData(
+    STORAGE_KEYS.members,
+    members
+);
 
-            saveData(
-                STORAGE_KEYS.questions,
-                questions
-            );
+hideElement(
+    "memberEditor"
+);
 
-
-            hideElement(
-                "questionEditor"
-            );
-
-
-            renderAdmin();
+renderAdmin();
 
         }
     );
@@ -2921,14 +2915,13 @@ function renderResults() {
 
     if (results.length === 0) {
 
-        body.innerHTML = 
-            <tr>
-                <td colspan="7">
-                    No results yet.
-                </td>
-            </tr>
-        ;
-
+        body.innerHTML = `
+    <tr>
+        <td colspan="7">
+            No results yet.
+        </td>
+    </tr>
+`;
         return;
     }
 
