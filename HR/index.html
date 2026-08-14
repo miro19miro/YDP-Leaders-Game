@@ -377,12 +377,22 @@
 
     <div class="modal-overlay"></div>
 
-    <div class="photo-modal-card">
+    <div class="document-modal-card">
 
       <button class="modal-close" type="button" data-close="candidatePhotoModal">
         ×
       </button>
-      <img id="candidatePhotoLarge" src="" alt="Candidate">
+
+      <div class="document-viewer-header">
+        <strong id="documentViewerTitle">CURRICULUM VITAE</strong>
+        <span id="documentViewerCounter">1 / 3</span>
+      </div>
+
+      <div id="documentViewerContent" class="document-viewer-content"></div>
+
+      <button id="documentViewerNext" class="document-viewer-next" type="button" aria-label="Next document">
+        →
+      </button>
 
     </div>
 
@@ -521,9 +531,14 @@
         </div>
 
 
-        <button id="adminRefreshBtn" class="admin-refresh" type="button">
-          REFRESH
-        </button>
+        <div class="admin-header-actions">
+          <button id="adminBackBtn" class="admin-back" type="button" aria-label="Back to code">
+            ←
+          </button>
+          <button id="adminRefreshBtn" class="admin-refresh" type="button">
+            REFRESH
+          </button>
+        </div>
 
       </header>
       <!-- =================================================
@@ -1134,6 +1149,10 @@
          JAVASCRIPT
     ====================================================== -->
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
   <script src="script.js"></script>
 
 </body>
