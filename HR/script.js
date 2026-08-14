@@ -1,409 +1,156 @@
-/* =========================================
-   YDP HR GAME
-========================================= */
-
-
-/* =========================================
-   ACCESS CODES
-========================================= */
-
 const ADMIN_CODE = "BYS20M";
 const PLAYER_CODE = "MEM201";
 
+const KEYS = {
+    members: "hrMembersV2",
+    interviews: "hrInterviewsV2",
+    questions: "hrQuestionsV2",
+    results: "hrResultsV2"
+};
 
-/* =========================================
-   TEMPORARY MEMBERS
-========================================= */
+const $ = id => document.getElementById(id);
 
-const DEFAULT_MEMBERS = [
-    {
-        id: "member_001",
-        name: "Mariam Waleed Aref"
-    },
-    {
-        id: "member_002",
-        name: "Ahmed Mohamed Ali"
-    },
-    {
-        id: "member_003",
-        name: "Sara Mahmoud Hassan"
+const read = (key, fallback = []) => {
+    try {
+        return JSON.parse(localStorage.getItem(key)) || fallback;
+    } catch {
+        return fallback;
     }
-];
+};
 
+const write = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value));
+};
 
-/* =========================================
-   TEMPORARY INTERVIEW
-========================================= */
+const uid = prefix =>
+    `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
-const TEST_INTERVIEW = {
+const esc = value =>
+    String(value ?? "").replace(/[&<>'"]/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;"
+    }[c]));
 
-    id: "test_001",
+const show = el => {
+    if (el) el.classList.remove("hidden");
+};
 
-    photo: "images/1.jpg",
-
-    name: "Ahmed Mohamed Ali",
-
-    nationalId: "29806151234567",
-
-    university: "Cairo University",
-
-    faculty: "Faculty of Commerce",
-
-    age: 21,
-
-    committee: "HR",
-
-    governorate: "Cairo",
-
-    availability: "80%",
-
-    questions: [
-
-        {
-            question:
-                "Tell us about yourself.",
-
-            answer:
-                "I am a motivated university student who enjoys teamwork and learning new skills."
-        },
-
-        {
-            question:
-                "Why do you want to join YDP?",
-
-            answer:
-                "I want to develop my leadership skills and contribute to the team."
-        },
-
-        {
-            question:
-                "How do you deal with pressure?",
-
-            answer:
-                "I try to organize my priorities and stay calm while solving the problem."
-        }
-
-    ],
-
-    /*
-       TEST ONLY
-
-       هنغير ده لما الـAdmin هو اللي
-       يعمل الـInterview.
-    */
-
-    correctDecision: "accepted"
-
+const hide = el => {
+    if (el) el.classList.add("hidden");
 };
 
 
 /* =========================================
-   DOM
+   GAME STATE
 ========================================= */
 
-const introScreen =
-    document.getElementById(
-        "introScreen"
-    );
+let state = {
+    gender: null,
+    member: null,
+    interview: null,
 
-const introVideo =
-    document.getElementById(
-        "introVideo"
-    );
+    paperIndex: 0,
 
+    decision: null,
+    stamping: false,
 
-const codeScreen =
-    document.getElementById(
-        "codeScreen"
-    );
+    questionCount: 0,
+    chosenQuestions: [],
+    questionRound: 0,
+    currentQuestion: null,
 
-const codeInput =
-    document.getElementById(
-        "codeInput"
-    );
-
-const enterCodeBtn =
-    document.getElementById(
-        "enterCodeBtn"
-    );
-
-const codeError =
-    document.getElementById(
-        "codeError"
-    );
-
-
-const genderScreen =
-    document.getElementById(
-        "genderScreen"
-    );
-
-const girlChoice =
-    document.getElementById(
-        "girlChoice"
-    );
-
-const boyChoice =
-    document.getElementById(
-        "boyChoice"
-    );
-
-
-const nameScreen =
-    document.getElementById(
-        "nameScreen"
-    );
-
-const membersList =
-    document.getElementById(
-        "membersList"
-    );
-
-const nameContinueBtn =
-    document.getElementById(
-        "nameContinueBtn"
-    );
-
-const nameError =
-    document.getElementById(
-        "nameError"
-    );
-
-
-const officeScreen =
-    document.getElementById(
-        "officeScreen"
-    );
-
-const nextBtn =
-    document.getElementById(
-        "nextBtn"
-    );
-
-
-const deskPaper =
-    document.getElementById(
-        "deskPaper"
-    );
-
-const eyeButton =
-    document.getElementById(
-        "eyeButton"
-    );
-
-
-const paperModal =
-    document.getElementById(
-        "paperModal"
-    );
-
-const closePaperBtn =
-    document.getElementById(
-        "closePaperBtn"
-    );
-
-
-const paperPhoto =
-    document.getElementById(
-        "paperPhoto"
-    );
-
-const paperName =
-    document.getElementById(
-        "paperName"
-    );
-
-const paperCommittee =
-    document.getElementById(
-        "paperCommittee"
-    );
-
-
-const fullPaperPhoto =
-    document.getElementById(
-        "fullPaperPhoto"
-    );
-
-const fullName =
-    document.getElementById(
-        "fullName"
-    );
-
-const fullNationalId =
-    document.getElementById(
-        "fullNationalId"
-    );
-
-const fullUniversity =
-    document.getElementById(
-        "fullUniversity"
-    );
-
-const fullFaculty =
-    document.getElementById(
-        "fullFaculty"
-    );
-    const fullAge =
-    document.getElementById(
-        "fullAge"
-    );
-
-const fullCommittee =
-    document.getElementById(
-        "fullCommittee"
-    );
-
-const fullGovernorate =
-    document.getElementById(
-        "fullGovernorate"
-    );
-
-const fullAvailability =
-    document.getElementById(
-        "fullAvailability"
-    );
-
-const questionsContainer =
-    document.getElementById(
-        "questionsContainer"
-    );
-
-
-const acceptedStamp =
-    document.getElementById(
-        "acceptedStamp"
-    );
-
-const rejectedStamp =
-    document.getElementById(
-        "rejectedStamp"
-    );
-
-
-const paperDecision =
-    document.getElementById(
-        "paperDecision"
-    );
-
-
-const acceptedCount =
-    document.getElementById(
-        "acceptedCount"
-    );
-
-const rejectedCount =
-    document.getElementById(
-        "rejectedCount"
-    );
-
-const scoreCount =
-    document.getElementById(
-        "scoreCount"
-    );
-
-
-const adminScreen =
-    document.getElementById(
-        "adminScreen"
-    );
+    sessionStarted: null
+};
 
 
 /* =========================================
-   DATA
+   ELEMENTS
 ========================================= */
 
-let selectedGender = null;
+const introScreen = $("introScreen");
+const introVideo = $("introVideo");
 
-let selectedMember = null;
+const codeScreen = $("codeScreen");
+const codeInput = $("codeInput");
+const codeError = $("codeError");
 
-let currentInterview =
-    TEST_INTERVIEW;
+const genderScreen = $("genderScreen");
 
-let currentDecision = null;
+const nameScreen = $("nameScreen");
+const membersList = $("membersList");
+const nameContinueBtn = $("nameContinueBtn");
+const nameError = $("nameError");
 
-let isStamping = false;
+const officeScreen = $("officeScreen");
+
+const nextBtn = $("nextBtn");
+
+const paperDeck = $("paperDeck");
+const paper1 = $("paper1");
+const paper2 = $("paper2");
+const paper3 = $("paper3");
+
+const candidateCharacter = $("candidateCharacter");
+const candidateCharacterImage = $("candidateCharacterImage");
+
+const cvEyeCard = $("cvEyeCard");
+
+const acceptedStamp = $("acceptedStamp");
+const rejectedStamp = $("rejectedStamp");
+
+const paperDecision = $("paperDecision");
+
+const acceptedCount = $("acceptedCount");
+const rejectedCount = $("rejectedCount");
+const scoreCount = $("scoreCount");
+
+const chatButton = $("chatButton");
+const idButton = $("idButton");
 
 
 /* =========================================
-   MEMBERS
+   STORAGE HELPERS
 ========================================= */
-
-function initializeMembers() {
-
-    const saved =
-        localStorage.getItem(
-            "hrMembers"
-        );
-
-
-    if (!saved) {
-
-        localStorage.setItem(
-            "hrMembers",
-            JSON.stringify(
-                DEFAULT_MEMBERS
-            )
-        );
-
-    }
-
-}
-
 
 function getMembers() {
+    return read(KEYS.members);
+}
 
-    const saved =
-        localStorage.getItem(
-            "hrMembers"
-        );
+function getInterviews() {
+    return read(KEYS.interviews);
+}
 
+function getQuestions() {
+    return read(KEYS.questions);
+}
 
-    if (!saved) {
-        return [];
-    }
-
-
-    try {
-
-        return JSON.parse(saved);
-
-    } catch {
-
-        return [];
-
-    }
-
+function getResults() {
+    return read(KEYS.results);
 }
 
 
-initializeMembers();
-
-
 /* =========================================
-   INTRO → CODE
+   INTRO
 ========================================= */
 
-introVideo.addEventListener(
-    "ended",
-    () => {
+function finishIntro() {
+    hide(introScreen);
+    show(codeScreen);
 
-        introScreen.classList.add(
-            "hidden"
-        );
+    setTimeout(() => {
+        if (codeInput) {
+            codeInput.focus();
+        }
+    }, 200);
+}
 
-        codeScreen.classList.remove(
-            "hidden"
-        );
-
-        setTimeout(
-            () => {
-                codeInput.focus();
-            },
-            300
-        );
-
-    }
-);
+if (introVideo) {
+    introVideo.addEventListener("ended", finishIntro);
+    introVideo.addEventListener("error", finishIntro);
+}
 
 
 /* =========================================
@@ -412,329 +159,210 @@ introVideo.addEventListener(
 
 function checkCode() {
 
-    const code =
-        codeInput.value
-            .trim()
-            .toUpperCase();
-
+    const code = codeInput.value
+        .trim()
+        .toUpperCase();
 
     codeError.textContent = "";
 
-
-    if (!code) {
-
-        codeError.textContent =
-            "Please enter your code.";
-
-        return;
-
-    }
-
-
     if (code === ADMIN_CODE) {
+
+        hide(codeScreen);
 
         openAdmin();
 
         return;
-
     }
-
 
     if (code === PLAYER_CODE) {
 
-        openPlayer();
+        hide(codeScreen);
+
+        show(genderScreen);
 
         return;
-
     }
-
 
     codeError.textContent =
-        "Invalid code. Please try again.";
-
+        code
+            ? "Invalid code. Please try again."
+            : "Please enter your code.";
 }
 
+if ($("enterCodeBtn")) {
 
-enterCodeBtn.addEventListener(
-    "click",
-    checkCode
-);
+    $("enterCodeBtn")
+        .addEventListener("click", checkCode);
+}
 
+if (codeInput) {
 
-codeInput.addEventListener(
-    "keydown",
-    (event) => {
+    codeInput.addEventListener("keydown", e => {
 
-        if (
-            event.key === "Enter"
-        ) {
-
+        if (e.key === "Enter") {
             checkCode();
-
         }
 
-    }
-);
-
-
-/* =========================================
-   ADMIN
-========================================= */
-
-function openAdmin() {
-
-    codeScreen.classList.add(
-        "hidden"
-    );
-
-    adminScreen.classList.remove(
-        "hidden"
-    );
-
+    });
 }
-
-
-/* =========================================
-   PLAYER
-========================================= */
-
-function openPlayer() {
-
-    codeScreen.classList.add(
-        "hidden"
-    );
-
-    genderScreen.classList.remove(
-        "hidden"
-    );
-
-}
-
 
 /* =========================================
    GENDER
 ========================================= */
 
-girlChoice.addEventListener(
-    "click",
-    () => {
+document
+    .querySelectorAll(".gender-choice")
+    .forEach(btn => {
 
-        selectedGender =
-            "girl";
+        btn.addEventListener("click", () => {
 
-        goToName();
+            state.gender = btn.dataset.gender;
 
-    }
-);
+            hide(genderScreen);
 
+            show(nameScreen);
 
-boyChoice.addEventListener(
-    "click",
-    () => {
+            renderPlayerMembers();
+        });
 
-        selectedGender =
-            "boy";
-
-        goToName();
-
-    }
-);
-
-
-function goToName() { 
-    genderScreen.classList.add(
-        "hidden"
-    );
-
-    nameScreen.classList.remove(
-        "hidden"
-    );
-
-    renderMembers();
-
-}
+    });
 
 
 /* =========================================
-   MEMBERS
+   PLAYER NAMES
 ========================================= */
 
-function renderMembers() {
+function renderPlayerMembers() {
 
-    const members =
-        getMembers();
+    const members = getMembers();
 
+    membersList.innerHTML = "";
 
-    membersList.innerHTML =
-        "";
+    state.member = null;
 
-    selectedMember =
-        null;
+    nameContinueBtn.disabled = true;
 
-    nameContinueBtn.disabled =
-        true;
+    nameError.textContent = "";
 
-    nameError.textContent =
-        "";
+    if (!members.length) {
 
+        membersList.innerHTML =
+            <div class="admin-note">
+                No player names have been added by the Admin yet.
+            </div>
+            ;
 
-    members.forEach(
-        (member) => {
+        return;
+    }
 
-            const button =
-                document.createElement(
-                    "button"
+    members.forEach(member => {
+
+        const button =
+            document.createElement("button");
+
+        button.className = "member-option";
+
+        button.type = "button";
+
+        button.textContent = member.name;
+
+        button.addEventListener("click", () => {
+
+            document
+                .querySelectorAll(".member-option")
+                .forEach(item =>
+                    item.classList.remove("selected")
                 );
 
+            button.classList.add("selected");
 
-            button.type =
-                "button";
+            state.member = member;
 
-            button.className =
-                "member-option";
+            nameContinueBtn.disabled = false;
+        });
 
-            button.textContent =
-                member.name;
+        membersList.appendChild(button);
 
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            ".member-option"
-                        )
-                        .forEach(
-                            (item) => {
-
-                                item.classList.remove(
-                                    "selected"
-                                );
-
-                            }
-                        );
-
-
-                    button.classList.add(
-                        "selected"
-                    );
-
-
-                    selectedMember =
-                        member;
-
-
-                    nameContinueBtn.disabled =
-                        false;
-
-                }
-            );
-
-
-            membersList.appendChild(
-                button
-            );
-
-        }
-    );
-
+    });
 }
 
 
-nameContinueBtn.addEventListener(
-    "click",
-    () => {
+if (nameContinueBtn) {
 
-        if (!selectedMember) {
+    nameContinueBtn.addEventListener("click", () => {
+
+        if (!state.member) {
 
             nameError.textContent =
                 "Please choose your name.";
 
             return;
-
         }
 
+        openOffice();
 
-        openHROffice();
-
-    }
-);
-
-
-/* =========================================
-   OPEN OFFICE
-========================================= */
-
-function openHROffice() {
-
-    nameScreen.classList.add(
-        "hidden"
-    );
-
-    officeScreen.classList.remove(
-        "hidden"
-    );
-
-
-    /*
-       مفيش Character هنا خالص.
-       الـID machine هو العنصر الموجود
-       في مكان الشخصية القديم.
-    */
-
-
-    resetOffice();
+    });
 
 }
 
 
 /* =========================================
-   RESET OFFICE
+   OFFICE
 ========================================= */
+
+function openOffice() {
+
+    hide(nameScreen);
+
+    show(officeScreen);
+
+    state.sessionStarted = Date.now();
+
+    state.paperIndex = 0;
+
+    state.decision = null;
+
+    state.questionCount = 0;
+
+    state.chosenQuestions = [];
+
+    state.questionRound = 0;
+
+    resetOffice();
+
+    updateScorePanel();
+}
+
 
 function resetOffice() {
 
-    currentDecision =
-        null;
+    hide(paperDeck);
 
-    isStamping =
-        false;
+    hide(candidateCharacter);
 
+    hide(cvEyeCard);
 
-    deskPaper.classList.add(
-        "hidden"
-    );
+    hide(acceptedStamp);
 
+    hide(rejectedStamp);
 
-    paperModal.classList.add(
-        "hidden"
-    );
+    hide(chatButton);
 
+    hide(idButton);
 
-    acceptedStamp.classList.add(
-        "hidden"
-    );
+    hide(paperDecision);
 
+    paperDecision.textContent = "";
 
-    rejectedStamp.classList.add(
-        "hidden"
-    );
+    state.interview = null;
 
+    state.decision = null;
 
-    paperDecision.classList.add(
-        "hidden"
-    );
+    state.stamping = false;
 
+    nextBtn.textContent = "NEXT";
 
-    paperDecision.textContent =
-        "";
-
-
-    nextBtn.classList.remove(
-        "hidden"
-    );
-
+    show(nextBtn);
 }
 
 
@@ -742,155 +370,395 @@ function resetOffice() {
    NEXT
 ========================================= */
 
-nextBtn.addEventListener(
-    "click",
-    () => {
+if (nextBtn) {
 
-        showInterview();
+    nextBtn.addEventListener("click", () => {
 
-    }
-);
+        startNextInterview();
 
-
-/* =========================================
-   SHOW INTERVIEW
-========================================= */
-
-function showInterview() {
-
-    nextBtn.classList.add(
-        "hidden"
-    );
-
-
-    currentInterview =
-        TEST_INTERVIEW;
-
-
-    fillSmallPaper();
-
-
-    deskPaper.classList.remove(
-        "hidden"
-    );
-
-
-    /*
-       لحد ما اللاعب يفتح الورقة،
-       الـstamps مش ظاهرين.
-    */
-
-    acceptedStamp.classList.add(
-        "hidden"
-    );
-
-    rejectedStamp.classList.add(
-        "hidden"
-    );
+    });
 
 }
 
 
-/* =========================================
-   SMALL PAPER
-========================================= */
+function startNextInterview() {
 
-function fillSmallPaper() {
+    const interviews = getInterviews();
 
-    paperPhoto.src =
-        currentInterview.photo;
+    if (!interviews.length) {
 
-    paperName.textContent =
-        currentInterview.name;
-
-    paperCommittee.textContent =
-        currentInterview.committee;
-
-}
-
-
-/* =========================================
-   OPEN FULL PAPER
-========================================= */
-eyeButton.addEventListener(
-    "click",
-    () => {
-
-        fillFullPaper();
-
-        paperModal.classList.remove(
-            "hidden"
+        alert(
+            "Admin has not added any interviews yet."
         );
 
+        return;
     }
-);
+
+    const results =
+        getResults()
+            .filter(
+                result =>
+                    result.playerId ===
+                    state.member?.id
+            );
+
+    const completedIds =
+        new Set(
+            results.map(
+                result =>
+                    result.interviewId
+            )
+        );
+
+    const next =
+        interviews.find(
+            interview =>
+                !completedIds.has(interview.id)
+        ) || interviews[0];
+
+    state.interview = next;
+
+    state.paperIndex = 0;
+
+    state.decision = null;
+
+    state.questionCount = 0;
+
+    state.chosenQuestions = [];
+
+    state.questionRound = 0;
+
+    state.currentQuestion = null;
+
+    hide(nextBtn);
+
+    hide(paperDecision);
+
+    hide(acceptedStamp);
+
+    hide(rejectedStamp);
+
+    hide(idButton);
+
+    show(chatButton);
+
+    fillPapers(next);
+
+    show(paperDeck);
+
+    show(candidateCharacter);
+
+    candidateCharacterImage.src =
+        next.photo;
+
+    paperDeck.classList.remove("fly-out");
+
+    void paperDeck.offsetWidth;
+    paperDeck.classList.add("fly-out");
+
+    setTimeout(() => {
+
+        show(cvEyeCard);
+
+    }, 450);
+}
 
 
 /* =========================================
-   FILL FULL PAPER
+   PAPERS
 ========================================= */
 
-function fillFullPaper() {
+function basePaper(title, body) {
 
-    fullPaperPhoto.src =
-        currentInterview.photo;
-
-    fullName.textContent =
-        currentInterview.name;
-
-    fullNationalId.textContent =
-        currentInterview.nationalId;
-
-    fullUniversity.textContent =
-        currentInterview.university;
-
-    fullFaculty.textContent =
-        currentInterview.faculty;
-
-    fullAge.textContent =
-        currentInterview.age;
-
-    fullCommittee.textContent =
-        currentInterview.committee;
-
-    fullGovernorate.textContent =
-        currentInterview.governorate;
-
-    fullAvailability.textContent =
-        currentInterview.availability;
+    return `
+        <h2>${esc(title)}</h2>
+        ${body}
+    `;
+}
 
 
-    questionsContainer.innerHTML =
-        "";
+function fillPapers(interview) {
+
+    const cv =
+        interview.cv || {};
+
+    const id =
+        interview.idCard || {};
+
+    const committeeData =
+        interview.committeeData || {};
 
 
-    currentInterview.questions.forEach(
-        (item, index) => {
+    /* CV */
 
-            const card =
-                document.createElement(
-                    "div"
-                );
+    paper1.innerHTML =
+        basePaper(
+            "CURRICULUM VITAE",
+            `
+            <div class="cv-grid">
 
-
-            card.className =
-                "question-card";
-
-
-            card.innerHTML = `
-                <div class="question">
-                    Q${index + 1}.
-                    ${item.question}
+                <div class="cv-field">
+                    <b>Name:</b>
+                    ${esc(cv.name || interview.name)}
                 </div>
 
-                <div class="answer">
-                    ${item.answer}
+                <div class="cv-field">
+                    <b>Age:</b>
+                    ${esc(cv.age || interview.age)}
                 </div>
-            `;
+
+                <div class="cv-field">
+                    <b>Address:</b>
+                    ${esc(cv.address || "")}
+                </div>
+
+                <div class="cv-field">
+                    <b>Phone:</b>
+                    ${esc(cv.phone || "")}
+                </div>
+
+            </div>
+
+            <div class="cv-summary">
+
+                <h3>About</h3>
+
+                <p>
+                    ${esc(cv.summary || "")}
+                </p>
+
+            </div>
+
+            <div class="skill-list">
+
+                <h3>Soft Skills</h3>
+
+                <p>
+                    ${esc(cv.softSkills || "")}
+                </p>
+
+                <h3>Technical Skills</h3>
+
+                <p>
+                    ${esc(cv.technicalSkills || "")}
+                </p>
+
+                <h3>Languages</h3>
+
+                <p>
+                    ${esc(cv.languages || "")}
+                </p>
+
+                <h3>Experience</h3>
+
+                <p>
+                    ${esc(cv.experience || "")}
+                </p>
+
+            </div>
+            `
+        );
 
 
-            questionsContainer.appendChild(
-                card
+    /* PERSONAL ID */
+
+    paper2.innerHTML =
+        basePaper(
+            "PERSONAL ID",
+            `
+            <div class="cv-summary">
+
+                <p>
+                    <b>Name:</b>
+                    ${esc(id.name || interview.name)}
+                </p>
+
+                <p>
+                    <b>Address:</b>
+                    ${esc(id.address || "")}
+                </p>
+
+                <p>
+                    <b>Nationality:</b>
+                    ${esc(id.nationality || "")}
+                </p>
+
+                <p>
+                    <b>National ID:</b>
+                    ${esc(id.nationalId || "")}
+                </p>
+
+                <p>
+                    <b>Status:</b>
+                    ${esc(id.status || "")}
+                </p>
+
+            </div>
+            `
+        );
+
+
+    /* APPLICATION DATA */
+
+    paper3.innerHTML =
+        basePaper(
+            "APPLICATION DATA",
+            `
+            <div class="cv-summary">
+
+                <p>
+                    <b>Name:</b>
+                    ${esc(
+                committeeData.name ||
+                interview.name
+            )}
+                </p>
+
+                <p>
+                    <b>Gender:</b>
+                    ${esc(
+                committeeData.gender ||
+                ""
+            )}
+                </p>
+
+                <p>
+                    <b>Phone number:</b>
+                    ${esc(
+                committeeData.phone ||
+                ""
+            )}
+                </p>
+
+                <p>
+                    <b>Age:</b>
+                    ${esc(
+                committeeData.age ||
+                interview.age
+            )}
+                </p>
+
+                <p>
+                    <b>Community:</b>
+                    ${esc(
+                committeeData.community ||
+                ""
+            )}
+                </p>
+                <p>
+                    <b>Governorate:</b>
+                    ${esc(
+                committeeData.governorate ||
+                ""
+            )}
+                </p>
+
+                <p>
+                    <b>Committee:</b>
+                    ${esc(
+                committeeData.committee ||
+                interview.committee ||
+                "HR"
+            )}
+                </p>
+
+            </div>
+            `
+        );
+
+
+    [paper1, paper2, paper3]
+        .forEach((paper, index) => {
+
+            paper.classList
+                .remove("active-paper");
+
+            paper.style.zIndex =
+                String(3 - index);
+
+            paper.onclick = () =>
+                cyclePaper(index);
+
+        });
+
+
+    activatePaper(0);
+}
+
+
+/* =========================================
+   PAPER TURN
+========================================= */
+
+function activatePaper(index) {
+
+    state.paperIndex = index;
+
+    [paper1, paper2, paper3]
+        .forEach((paper, i) => {
+
+            paper.classList.toggle(
+                "active-paper",
+                i === index
+            );
+
+            paper.style.zIndex =
+                i === index
+                    ? 5
+                    : 3 - i;
+
+            paper.style.transform =
+                i === index
+                    ? "translate(0,0) rotate(-1deg)"
+                    : `translate(${(i - index) * 18}px, ${(i - index) * 18}px) rotate(${(i - index) * 3}deg)`;
+        });
+
+
+    if (index === 0) {
+
+        show(cvEyeCard);
+
+    } else {
+
+        hide(cvEyeCard);
+
+    }
+
+}
+
+
+function cyclePaper(index) {
+
+    if (index !== state.paperIndex) {
+        return;
+    }
+
+    activatePaper(
+        (state.paperIndex + 1) % 3
+    );
+
+}
+
+
+/* =========================================
+   EYE / PHOTO
+========================================= */
+
+if (cvEyeCard) {
+
+    cvEyeCard.addEventListener(
+        "click",
+        () => {
+
+            if (!state.interview) {
+                return;
+            }
+
+            $("candidatePhotoLarge").src =
+                state.interview.photo;
+
+            show(
+                $("candidatePhotoModal")
             );
 
         }
@@ -900,231 +768,149 @@ function fillFullPaper() {
 
 
 /* =========================================
-   CLOSE PAPER
+   CLOSE MODALS
 ========================================= */
 
-closePaperBtn.addEventListener(
-    "click",
-    () => {
+document
+    .querySelectorAll("[data-close]")
+    .forEach(button => {
 
-        paperModal.classList.add(
-            "hidden"
+        button.addEventListener(
+            "click",
+            () => {
+
+                hide(
+                    $(button.dataset.close)
+                );
+
+            }
         );
 
-
-        /*
-           بعد ما يخلص قراءة الورقة،
-           الختمين يظهروا.
-        */
-
-        acceptedStamp.classList.remove(
-            "hidden"
-        );
-
-        rejectedStamp.classList.remove(
-            "hidden"
-        );
-
-    }
-);
+    });
 
 
 /* =========================================
-   STAMP CLICK
+   STAMPS
 ========================================= */
 
-acceptedStamp.addEventListener(
-    "click",
-    () => {
+if (acceptedStamp) {
 
-        startStampAnimation(
-            "accepted"
-        );
+    acceptedStamp.addEventListener(
+        "click",
+        () => stampDecision("accepted")
+    );
 
-    }
-);
+}
 
+if (rejectedStamp) {
 
-rejectedStamp.addEventListener(
-    "click",
-    () => {
+    rejectedStamp.addEventListener(
+        "click",
+        () => stampDecision("rejected")
+    );
 
-        startStampAnimation(
-            "rejected"
-        );
-
-    }
-);
+}
 
 
-/* =========================================
-   START STAMP ANIMATION
-========================================= */
+function stampDecision(decision) {
 
-function startStampAnimation(
-    decision
-) {
-
-    if (isStamping) {
+    if (
+        state.stamping ||
+        state.decision
+    ) {
         return;
     }
 
+    state.stamping = true;
 
-    if (currentDecision) {
-        return;
-    }
-
-
-    isStamping =
-        true;
-
-
-    currentDecision =
-        decision;
-
+    state.decision = decision;
 
     const stamp =
         decision === "accepted"
             ? acceptedStamp
             : rejectedStamp;
 
-
-    const stampImage =
-        stamp.querySelector(
-            "img"
-        );
-
+    const img =
+        stamp.querySelector("img");
 
     const stampRect =
-        stampImage.getBoundingClientRect();
+        img.getBoundingClientRect();
 
+    const paper =
+        paperDeck.querySelector(
+            ".active-paper"
+        );
 
     const paperRect =
-        deskPaper.getBoundingClientRect();
+        paper.getBoundingClientRect();
 
 
-    /*
-       نعمل نسخة من الختم
-       عشان الأصلي يفضل في مكانه.
-    */
-
-    const movingStamp =
+    const moving =
         stamp.cloneNode(true);
 
+    moving.classList.remove("hidden");
 
-    movingStamp.classList.remove(
-        "hidden"
-    );
+    moving.style.position = "fixed";
 
+    moving.style.left =
+        stampRect.left + "px";
 
-    movingStamp.classList.add(
-        "stamp-moving"
-    );
+    moving.style.top =
+        stampRect.top + "px";
 
+    moving.style.width =
+        stampRect.width + "px";
 
-    movingStamp.style.width =
-        `${stampRect.width}px`;
+    moving.style.zIndex = "999";
+    moving.style.transition =
+        "left .65s cubic-bezier(.22,1,.36,1), top .65s cubic-bezier(.22,1,.36,1), transform .65s ease";
 
-
-    movingStamp.style.left =
-        `${stampRect.left}px`;
-
-
-    movingStamp.style.top =
-        `${stampRect.top}px`;
-
-
-    movingStamp.style.transform =
-        "rotate(0deg) scale(1)";
-
+    moving.style.transform =
+        "rotate(0) scale(1)";
 
     document.body.appendChild(
-        movingStamp
+        moving
     );
 
 
-    /*
-       مكان الختم على الورقة
-    */
+    requestAnimationFrame(() => {
 
-    const targetLeft =
-        paperRect.left +
-        paperRect.width * 0.5 -
-        stampRect.width * 0.5;
+        moving.style.left =
+            (
+                paperRect.left +
+                paperRect.width * 0.5 -
+                stampRect.width * 0.5
+            ) + "px";
 
+        moving.style.top =
+            (
+                paperRect.top +
+                paperRect.height * 0.56 -
+                stampRect.height * 0.5
+            ) + "px";
 
-    const targetTop =
-        paperRect.top +
-        paperRect.height * 0.58 -
-        stampRect.height * 0.5;
+        moving.style.transform =
+            "rotate(-8deg) scale(.72)";
 
-
-    requestAnimationFrame(
-        () => {
-
-            movingStamp.style.left =
-                `${targetLeft}px`;
-                movingStamp.style.top =
-                `${targetTop}px`;
-
-            movingStamp.style.transform =
-                "rotate(-8deg) scale(0.78)";
-
-        }
-    );
+    });
 
 
-    /*
-       بعد الوصول للورقة
-    */
+    setTimeout(() => {
 
-    setTimeout(
-        () => {
+        moving.remove();
 
-            movingStamp.style.transform =
-                "rotate(-8deg) scale(0.72)";
+        showDecision(decision);
 
-        },
-        700
-    );
-
-
-    /*
-       بعد الختم
-    */
-
-    setTimeout(
-        () => {
-
-            document.body.removeChild(
-                movingStamp
-            );
-
-
-            showDecision(
-                decision
-            );
-
-
-            returnStampToPlace(
-                stamp
-            );
-
-
-        },
-        1200
-    );
+    }, 1150);
 
 }
 
 
 /* =========================================
-   SHOW DECISION ON PAPER
+   DECISION
 ========================================= */
 
-function showDecision(
-    decision
-) {
+function showDecision(decision) {
 
     paperDecision.textContent =
         decision === "accepted"
@@ -1139,136 +925,843 @@ function showDecision(
 
 
     paperDecision.style.borderColor =
-        decision === "accepted"
-            ? "#159447"
-            : "#d62828";
+        paperDecision.style.color;
 
 
-    paperDecision.classList.remove(
-        "hidden"
-    );
+    show(paperDecision);
+
+    hide(acceptedStamp);
+
+    hide(rejectedStamp);
 
 
-    updateScore(
-        decision
-    );
+    saveResult(decision);
+
+    updateScorePanel();
+
+
+    state.stamping = false;
+
+
+    show(nextBtn);
+
+    nextBtn.textContent =
+        "NEXT";
+
+
+    if (decision === "accepted") {
+
+        show(idButton);
+
+    }
 
 }
 
 
 /* =========================================
-   UPDATE SCORE
+   RESULTS
 ========================================= */
 
-function updateScore(
-    decision
-) {
+function saveResult(decision) {
 
-    const playerData =
-        JSON.parse(
-            localStorage.getItem(
-                "hrCurrentPlayer"
-            ) || "{}"
-        );
+    const results =
+        getResults();
+
+    const correct =
+        state.interview.correctDecision ===
+        decision;
+
+    const score =
+        correct
+            ? 10
+            : -10;
 
 
-    if (!playerData.accepted) {
-        playerData.accepted =
-            0;
+    results.push({
+
+        id: uid("result"),
+
+        playerId:
+            state.member.id,
+
+        playerName:
+            state.member.name,
+
+        gender:
+            state.gender,
+
+        interviewId:
+            state.interview.id,
+
+        interviewName:
+            state.interview.name,
+
+        decision,
+
+        correct,
+
+        score,
+
+        questionsAsked:
+            state.questionCount,
+
+        startedAt:
+            state.sessionStarted,
+
+        finishedAt:
+            Date.now()
+
+    });
+
+
+    write(
+        KEYS.results,
+        results
+    );
+
+}
+
+
+function updateScorePanel() {
+
+    if (!state.member) {
+
+        acceptedCount.textContent = "0";
+
+        rejectedCount.textContent = "0";
+
+        scoreCount.textContent = "0";
+
+        return;
     }
 
 
-    if (!playerData.rejected) {
-        playerData.rejected =
-            0;
-    }
-
-
-    if (!playerData.score) {
-        playerData.score =
-            0;
-    }
-
-
-    if (
-        decision === "accepted"
-    ) {
-
-        playerData.accepted++;
-
-    } else {
-
-        playerData.rejected++;
-
-    }
-
-
-    /*
-       Test scoring.
-       الـcorrectDecision الحالي = accepted
-    */
-
-    if (
-        decision ===
-        currentInterview.correctDecision
-    ) {
-
-        playerData.score +=
-            10;
-
-    } else {
-
-        playerData.score -=
-            10;
-
-    }
+    const results =
+        getResults()
+            .filter(
+                result =>
+                    result.playerId ===
+                    state.member.id
+            );
 
 
     acceptedCount.textContent =
-        playerData.accepted;
+        results.filter(
+            result =>
+                result.decision === "accepted"
+        ).length;
+
 
     rejectedCount.textContent =
-        playerData.rejected;
+        results.filter(
+            result =>
+                result.decision === "rejected"
+        ).length;
+
 
     scoreCount.textContent =
-        playerData.score;
+        results.reduce(
+            (total, result) =>
+                total + result.score,
+            0
+        );
+
+}
 
 
-    localStorage.setItem(
-        "hrCurrentPlayer",
-        JSON.stringify(
-            playerData
-        )
+/* =========================================
+   ID CARD
+========================================= */
+
+if (idButton) {
+
+    idButton.addEventListener(
+        "click",
+        () => {
+
+            const interview =
+                state.interview;
+
+            if (!interview) {
+                return;
+            }
+
+
+            $("generatedIdPhoto").src =
+                interview.photo;
+
+
+            $("generatedIdName")
+                .textContent =
+                interview.name;
+
+
+            $("generatedIdCommittee")
+                .textContent =
+                interview.committeeData?.committee ||
+                interview.committee ||
+                "HR";
+
+
+            show(
+                $("idModal")
+            );
+        }
     );
 
 }
 
 
 /* =========================================
-   STAMP RETURNS TO ORIGINAL PLACE
+   QUESTIONS
 ========================================= */
 
-function returnStampToPlace(
-    stamp
-) {
+if (chatButton) {
 
-    /*
-       مجرد تأكيد بصري إن الختم
-       رجع لمكانه الأصلي.
-    */
-
-    stamp.style.transform =
-        "scale(1) rotate(0deg)";
-
-
-    setTimeout(
-        () => {
-
-            isStamping =
-                false;
-
-        },
-        250
+    chatButton.addEventListener(
+        "click",
+        openQuestionChat
     );
 
+}
+
+
+function getInterviewQuestions() {
+
+    const bank =
+        getQuestions();
+
+    const answers =
+        state.interview?.answers || {};
+
+
+    return bank
+        .filter(
+            question =>
+                answers[question.id]?.trim()
+        )
+        .map(question => ({
+            ...question,
+            answer:
+                answers[question.id]
+        }));
+
+}
+
+
+function openQuestionChat() {
+
+    if (
+        !state.interview ||
+        state.decision
+    ) {
+        return;
+    }
+
+
+    state.questionRound = 0;
+
+    state.questionCount = 0;
+
+    state.chosenQuestions = [];
+
+    state.currentQuestion = null;
+
+
+    show(
+        $("questionModal")
+    );
+
+
+    renderQuestionChoices();
+
+}
+
+
+function renderQuestionChoices() {
+
+    const choices =
+        $("questionChoices");
+
+    const progress =
+        $("questionProgress");
+
+    const answer =
+        $("questionAnswer");
+
+    const nextQuestion =
+        $("nextQuestionBtn");
+
+
+    progress.textContent =
+        `Choose a question — ${state.questionRound} / 10`;
+
+
+    choices.innerHTML = "";
+
+    hide(answer);
+
+    hide(nextQuestion);
+
+
+    if (
+        state.questionRound >= 10
+    ) {
+
+        choices.innerHTML =
+            `
+                <div class="admin-note">
+                    You have completed the
+                    10-question interview.
+                </div>
+            `;
+
+        return;
+    }
+
+
+    const available =
+        getInterviewQuestions()
+            .filter(
+                question =>
+                    !state.chosenQuestions
+                        .includes(question.id)
+            );
+
+
+    if (!available.length) {
+
+        choices.innerHTML = `
+            <div class="admin-note">
+                There are not enough answered
+                questions for this character yet.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    available.forEach(question => {
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "question-choice";
+
+        button.textContent =
+            question.text;
+
+
+        button.onclick = () =>
+            askQuestion(question);
+
+
+        choices.appendChild(button);
+
+    });
+
+}
+
+
+function askQuestion(question) {
+
+    state.currentQuestion =
+        question;
+
+    state.chosenQuestions.push(
+        question.id
+    );
+
+    state.questionRound++;
+
+    state.questionCount++;
+
+
+    $("questionProgress")
+        .textContent =
+        `Question ${ state.questionRound } / 10`;
+
+
+    $("questionChoices").innerHTML = `
+        <div
+            class="question-choice"
+            style="cursor:default"
+        >
+            <b>
+                ${esc(question.text)}
+            </b>
+        </div>
+    `;
+
+
+    $("questionAnswer").innerHTML = `
+        <b>
+            ${esc(state.interview.name)}:
+        </b>
+        <br>
+        ${esc(question.answer)}
+    `;
+
+
+    show(
+        $("questionAnswer")
+    );
+
+
+    if (
+        state.questionRound < 10
+    ) {
+
+        $("nextQuestionBtn")
+            .textContent =
+            "CHOOSE NEXT";
+
+        show(
+            $("nextQuestionBtn")
+        );
+
+    } else {
+
+        $("nextQuestionBtn")
+            .textContent =
+            "FINISH INTERVIEW";
+
+        show(
+            $("nextQuestionBtn")
+        );
+
+    }
+
+}
+
+
+if ($("nextQuestionBtn")) {
+
+    $("nextQuestionBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                if (
+                    state.questionRound >= 10
+                ) {
+
+                    hide(
+                        $("questionModal")
+                    );
+
+                    return;
+                }
+
+                renderQuestionChoices();
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   ADMIN
+========================================= */
+
+function openAdmin() {
+
+    show(
+        $("adminScreen")
+    );
+    renderAdmin();
+
+}
+
+
+function renderAdmin() {
+
+    renderOverview();
+
+    renderInterviewAdmin();
+
+    renderMemberAdmin();
+
+    renderQuestionAdmin();
+
+    renderResultsAdmin();
+
+}
+
+
+function renderOverview() {
+
+    $("statMembers").textContent =
+        getMembers().length;
+
+    $("statInterviews").textContent =
+        getInterviews().length;
+
+    $("statQuestions").textContent =
+        getQuestions().length;
+
+    $("statResults").textContent =
+        getResults().length;
+
+}
+
+
+/* =========================================
+   ADMIN TABS
+========================================= */
+
+document
+    .querySelectorAll(".admin-tabs button")
+    .forEach(tab => {
+
+        tab.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .querySelectorAll(
+                        ".admin-tabs button"
+                    )
+                    .forEach(button =>
+                        button.classList
+                            .remove("active")
+                    );
+
+
+                document
+                    .querySelectorAll(
+                        ".admin-tab"
+                    )
+                    .forEach(section =>
+                        section.classList
+                            .remove("active-tab")
+                    );
+
+
+                tab.classList.add(
+                    "active"
+                );
+
+
+                $("tab-" + tab.dataset.tab)
+                    .classList
+                    .add("active-tab");
+
+            }
+        );
+
+    });
+
+
+/* =========================================
+   ADMIN BUTTONS
+========================================= */
+
+if ($("adminRefreshBtn")) {
+
+    $("adminRefreshBtn")
+        .addEventListener(
+            "click",
+            renderAdmin
+        );
+
+}
+
+
+if ($("addInterviewBtn")) {
+
+    $("addInterviewBtn")
+        .addEventListener(
+            "click",
+            () => openInterviewEditor()
+        );
+
+}
+
+
+if ($("addMemberBtn")) {
+
+    $("addMemberBtn")
+        .addEventListener(
+            "click",
+            () => openMemberEditor()
+        );
+
+}
+
+
+if ($("addQuestionBtn")) {
+
+    $("addQuestionBtn")
+        .addEventListener(
+            "click",
+            () => openQuestionEditor()
+        );
+
+}
+
+
+if ($("clearResultsBtn")) {
+
+    $("clearResultsBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                if (
+                    confirm(
+                        "Clear all results?"
+                    )
+                ) {
+
+                    write(
+                        KEYS.results,
+                        []
+                    );
+
+                    renderAdmin();
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   INTERVIEW ADMIN
+========================================= */
+
+function renderInterviewAdmin() {
+
+    const list =
+        $("interviewList");
+
+    list.innerHTML = "";
+
+    const items =
+        getInterviews();
+
+
+    if (!items.length) {
+
+        list.innerHTML = 
+            <div class="admin-note">
+                No interviews yet.
+                Add the first candidate.
+            </div>
+        ;
+
+        return;
+    }
+
+
+    items.forEach(interview => {
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "admin-row";
+
+
+        row.innerHTML = `
+
+            <div class="admin-row-main">
+
+                <div class="admin-row-title">
+                    ${esc(interview.name)}
+                </div>
+
+                <div class="admin-row-sub">
+
+                    ${esc(
+                        interview.committee ||
+                        "HR"
+                    )}
+
+                    · Correct decision:
+
+                    ${esc(
+                        interview.correctDecision
+                    )}
+
+                    ·${
+                        Object
+                            .values(
+                                interview.answers || {}
+                            )
+                            .filter(Boolean)
+                            .length
+                    }
+
+                    answered questions
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-actions">
+
+                <button
+                    class="action-btn edit"
+                >
+                    Edit
+                </button>
+
+                <button
+                    class="action-btn delete"
+                >
+                    Delete
+                </button>
+
+            </div>
+        ;
+
+
+        row
+            .querySelector(".edit")
+            .onclick = () =>
+                openInterviewEditor(
+                    interview.id
+                );
+
+
+        row
+            .querySelector(".delete")
+            .onclick = () => {
+
+                if (
+                    confirm(
+                        "Delete this interview?"
+                    )
+                ) {
+
+                    write(
+                        KEYS.interviews,
+                        getInterviews()
+                            .filter(
+                                item =>
+                                    item.id !==
+                                    interview.id
+                            )
+                    );
+
+                    renderAdmin();
+
+                }
+
+            };
+
+
+        list.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================================
+   MEMBERS ADMIN
+========================================= */
+
+function renderMemberAdmin() {
+
+    const list =
+        $("memberAdminList");
+
+    list.innerHTML = "";
+
+    const items =
+        getMembers();
+
+
+    if (!items.length) {
+
+        list.innerHTML = 
+            <div class="admin-note">
+                No members yet.
+            </div>
+        ;
+
+        return;
+    }
+
+
+    items.forEach(member => {
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "admin-row";
+
+
+        row.innerHTML = 
+
+            <div class="admin-row-main">
+
+                <div class="admin-row-title">
+                    ${esc(member.name)}
+                </div>
+
+                <div class="admin-row-sub">
+                    ${esc(member.id)}
+                </div>
+
+            </div>
+
+
+            <div class="admin-actions">
+
+                <button
+                    class="action-btn edit"
+                >
+                    Edit
+                </button>
+
+                <button
+                    class="action-btn delete"
+                >
+                    Delete
+                </button>
+
+            </div>
+        `;
+
+
+        row
+            .querySelector(".edit")
+            .onclick = () =>
+                openMemberEditor(
+                    member.id
+                );
+
+
+        row
+            .querySelector(".delete")
+            .onclick = () => {
+
+                if (
+                    confirm(
+                        "Delete this member?"
+                    )
+                ) {
+                    deleteMember(
+                        member.id
+                    );
+
+                    renderMembers();
+                }
+            };
+
+        list.appendChild(row);
+    });
+
+    return;
 }
