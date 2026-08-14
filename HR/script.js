@@ -1,285 +1,422 @@
-const ADMIN_CODE = "BYS20M";
-const PLAYER_CODE = "MEM201";
+/* =========================================================
+   YDP HR GAME
+   SCRIPT.JS
+========================================================= */
 
-const KEYS = {
-    members: "hrMembersV2",
-    interviews: "hrInterviewsV2",
-    questions: "hrQuestionsV2",
-    results: "hrResultsV2"
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+const STORAGE_KEYS = {
+    interviews: "ydp_hr_interviews",
+    members: "ydp_hr_members",
+    questions: "ydp_hr_questions",
+    results: "ydp_hr_results"
 };
 
-const $ = id => document.getElementById(id);
 
-const read = (key, fallback = []) => {
+/* =========================================================
+   DEFAULT DATA
+========================================================= */
+
+const defaultQuestions = [
+    {
+        id: "q1",
+        text: "Tell me about yourself."
+    },
+    {
+        id: "q2",
+        text: "Why do you want to join YDP?"
+    },
+    {
+        id: "q3",
+        text: "What are your strongest soft skills?"
+    },
+    {
+        id: "q4",
+        text: "How do you deal with pressure?"
+    },
+    {
+        id: "q5",
+        text: "How do you work within a team?"
+    },
+    {
+        id: "q6",
+        text: "Tell me about a problem you solved."
+    },
+    {
+        id: "q7",
+        text: "What is one weakness you are working on?"
+    },
+    {
+        id: "q8",
+        text: "How do you manage your time?"
+    },
+    {
+        id: "q9",
+        text: "How do you handle disagreement with a teammate?"
+    },
+    {
+        id: "q10",
+        text: "Why should we choose you?"
+    }
+];
+
+
+/* =========================================================
+   DATA HELPERS
+========================================================= */
+
+function loadData(key, fallback = []) {
     try {
-        return JSON.parse(localStorage.getItem(key)) || fallback;
-    } catch {
+        const data = localStorage.getItem(key);
+
+        if (!data) {
+            return fallback;
+        }
+
+        return JSON.parse(data);
+    } catch (error) {
+        console.error("Storage error:", error);
         return fallback;
     }
-};
-
-const write = (key, value) => {
-    localStorage.setItem(key, JSON.stringify(value));
-};
-
-const uid = prefix =>
-    `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-
-const esc = value =>
-    String(value ?? "").replace(/[&<>'"]/g, c => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "'": "&#39;",
-        '"': "&quot;"
-    }[c]));
-
-const show = el => {
-    if (el) el.classList.remove("hidden");
-};
-
-const hide = el => {
-    if (el) el.classList.add("hidden");
-};
+}
 
 
-/* =========================================
+function saveData(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+
+let interviews = loadData(
+    STORAGE_KEYS.interviews,
+    []
+);
+
+let members = loadData(
+    STORAGE_KEYS.members,
+    []
+);
+
+let questions = loadData(
+    STORAGE_KEYS.questions,
+    defaultQuestions
+);
+
+let results = loadData(
+    STORAGE_KEYS.results,
+    []
+);
+
+
+/* =========================================================
    GAME STATE
-========================================= */
+========================================================= */
 
-let state = {
-    gender: null,
-    member: null,
-    interview: null,
+const game = {
+    playerName: "",
+    gender: "",
+    currentInterview: null,
 
-    paperIndex: 0,
+    accepted: 0,
+    rejected: 0,
+    score: 0,
 
-    decision: null,
-    stamping: false,
+    selectedDecision: null,
 
-    questionCount: 0,
-    chosenQuestions: [],
-    questionRound: 0,
-    currentQuestion: null,
+    usedInterviewIds: [],
 
-    sessionStarted: null
+    selectedQuestions: [],
+    currentQuestionIndex: 0,
+
+    gameStartedAt: null
 };
 
 
-/* =========================================
-   ELEMENTS
-========================================= */
+/* =========================================================
+   DOM HELPERS
+========================================================= */
 
-const introScreen = $("introScreen");
+const $ = (id) => document.getElementById(id);
+
+
+function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.add("hidden");
+    });
+
+    const target = $(id);
+
+    if (target) {
+        target.classList.remove("hidden");
+    }
+}
+
+
+function showElement(id) {
+    const element = $(id);
+
+    if (element) {
+        element.classList.remove("hidden");
+    }
+}
+
+
+function hideElement(id) {
+    const element = $(id);
+
+    if (element) {
+        element.classList.add("hidden");
+    }
+}
+
+
+function createId(prefix = "id") {
+    return (
+        prefix +
+        "_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2, 8)
+    );
+}
+
+
+function escapeHTML(value) {
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   INTRO
+========================================================= */
+
 const introVideo = $("introVideo");
 
-const codeScreen = $("codeScreen");
+if (introVideo) {
+
+    introVideo.addEventListener("ended", () => {
+        showScreen("codeScreen");
+    });
+
+}
+
+/* =========================================================
+   CODE SCREEN
+========================================================= */
+
+const enterCodeBtn = $("enterCodeBtn");
 const codeInput = $("codeInput");
 const codeError = $("codeError");
 
-const genderScreen = $("genderScreen");
 
-const nameScreen = $("nameScreen");
+function enterGameCode() {
+
+    const code = codeInput.value.trim();
+
+    codeError.textContent = "";
+
+    if (!code) {
+        codeError.textContent = "Please enter your code.";
+        return;
+    }
+
+
+    /* =========================
+       ADMIN
+    ========================= */
+
+    if (code === "BYS20M") {
+
+        openAdminPanel();
+
+        return;
+    }
+
+
+    /* =========================
+       PLAYER
+    ========================= */
+
+    if (code === "MEM201") {
+
+        game.gameStartedAt = new Date().toISOString();
+
+        showScreen("genderScreen");
+
+        return;
+    }
+
+
+    /* =========================
+       INVALID
+    ========================= */
+
+    codeError.textContent = "Invalid code. Please try again.";
+}
+
+
+if (enterCodeBtn) {
+    enterCodeBtn.addEventListener(
+        "click",
+        enterGameCode
+    );
+}
+
+
+if (codeInput) {
+
+    codeInput.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (event.key === "Enter") {
+                enterGameCode();
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ROLE SCREEN
+   ---------------------------------------------------------
+   The current HTML contains a Player/Admin screen.
+   The code itself already determines the role, so this
+   screen is intentionally not used.
+========================================================= */
+
+
+/* =========================================================
+   GENDER
+========================================================= */
+
+const girlChoice = $("girlChoice");
+const boyChoice = $("boyChoice");
+
+
+function chooseGender(gender) {
+
+    game.gender = gender;
+
+    showScreen("nameScreen");
+
+    renderPlayerNames();
+}
+
+
+if (girlChoice) {
+
+    girlChoice.addEventListener(
+        "click",
+        () => chooseGender("female")
+    );
+
+}
+
+
+if (boyChoice) {
+
+    boyChoice.addEventListener(
+        "click",
+        () => chooseGender("male")
+    );
+
+}
+
+
+/* =========================================================
+   PLAYER NAME
+========================================================= */
+
+let selectedMemberId = null;
+
 const membersList = $("membersList");
 const nameContinueBtn = $("nameContinueBtn");
 const nameError = $("nameError");
 
-const officeScreen = $("officeScreen");
 
-const nextBtn = $("nextBtn");
+function renderPlayerNames() {
 
-const paperDeck = $("paperDeck");
-const paper1 = $("paper1");
-const paper2 = $("paper2");
-const paper3 = $("paper3");
-
-const candidateCharacter = $("candidateCharacter");
-const candidateCharacterImage = $("candidateCharacterImage");
-
-const cvEyeCard = $("cvEyeCard");
-
-const acceptedStamp = $("acceptedStamp");
-const rejectedStamp = $("rejectedStamp");
-
-const paperDecision = $("paperDecision");
-
-const acceptedCount = $("acceptedCount");
-const rejectedCount = $("rejectedCount");
-const scoreCount = $("scoreCount");
-
-const chatButton = $("chatButton");
-const idButton = $("idButton");
-
-
-/* =========================================
-   STORAGE HELPERS
-========================================= */
-
-function getMembers() {
-    return read(KEYS.members);
-}
-
-function getInterviews() {
-    return read(KEYS.interviews);
-}
-
-function getQuestions() {
-    return read(KEYS.questions);
-}
-
-function getResults() {
-    return read(KEYS.results);
-}
-
-
-/* =========================================
-   INTRO
-========================================= */
-
-function finishIntro() {
-    hide(introScreen);
-    show(codeScreen);
-
-    setTimeout(() => {
-        if (codeInput) {
-            codeInput.focus();
-        }
-    }, 200);
-}
-
-if (introVideo) {
-    introVideo.addEventListener("ended", finishIntro);
-    introVideo.addEventListener("error", finishIntro);
-}
-
-
-/* =========================================
-   CODE
-========================================= */
-
-function checkCode() {
-
-    const code = codeInput.value
-        .trim()
-        .toUpperCase();
-
-    codeError.textContent = "";
-
-    if (code === ADMIN_CODE) {
-
-        hide(codeScreen);
-
-        openAdmin();
-
+    if (!membersList) {
         return;
     }
-
-    if (code === PLAYER_CODE) {
-
-        hide(codeScreen);
-
-        show(genderScreen);
-
-        return;
-    }
-
-    codeError.textContent =
-        code
-            ? "Invalid code. Please try again."
-            : "Please enter your code.";
-}
-
-if ($("enterCodeBtn")) {
-
-    $("enterCodeBtn")
-        .addEventListener("click", checkCode);
-}
-
-if (codeInput) {
-
-    codeInput.addEventListener("keydown", e => {
-
-        if (e.key === "Enter") {
-            checkCode();
-        }
-
-    });
-}
-
-/* =========================================
-   GENDER
-========================================= */
-
-document
-    .querySelectorAll(".gender-choice")
-    .forEach(btn => {
-
-        btn.addEventListener("click", () => {
-
-            state.gender = btn.dataset.gender;
-
-            hide(genderScreen);
-
-            show(nameScreen);
-
-            renderPlayerMembers();
-        });
-
-    });
-
-
-/* =========================================
-   PLAYER NAMES
-========================================= */
-
-function renderPlayerMembers() {
-
-    const members = getMembers();
 
     membersList.innerHTML = "";
 
-    state.member = null;
+    selectedMemberId = null;
 
-    nameContinueBtn.disabled = true;
+    if (nameContinueBtn) {
+        nameContinueBtn.disabled = true;
+    }
 
-    nameError.textContent = "";
 
-    if (!members.length) {
+    if (members.length === 0) {
 
-        membersList.innerHTML =
-            <div class="admin-note">
-                No player names have been added by the Admin yet.
+        membersList.innerHTML = 
+            <div class="empty-message">
+                No player names have been added yet.
+                Ask the administrator to add your name.
             </div>
-            ;
+        ;
 
         return;
     }
 
+
     members.forEach(member => {
 
-        const button =
-            document.createElement("button");
-
-        button.className = "member-option";
+        const button = document.createElement("button");
 
         button.type = "button";
 
+        button.className = "member-choice";
+
+        button.dataset.id = member.id;
+
         button.textContent = member.name;
 
-        button.addEventListener("click", () => {
 
-            document
-                .querySelectorAll(".member-option")
-                .forEach(item =>
-                    item.classList.remove("selected")
-                );
+        button.addEventListener(
+            "click",
+            () => {
 
-            button.classList.add("selected");
+                document
+                    .querySelectorAll(".member-choice")
+                    .forEach(item => {
+                        item.classList.remove("selected");
+                    });
 
-            state.member = member;
 
-            nameContinueBtn.disabled = false;
-        });
+                button.classList.add("selected");
+
+                selectedMemberId = member.id;
+
+                game.playerName = member.name;
+
+                nameError.textContent = "";
+
+                if (nameContinueBtn) {
+                    nameContinueBtn.disabled = false;
+                }
+
+            }
+        );
+
 
         membersList.appendChild(button);
 
@@ -289,477 +426,448 @@ function renderPlayerMembers() {
 
 if (nameContinueBtn) {
 
-    nameContinueBtn.addEventListener("click", () => {
+    nameContinueBtn.addEventListener(
+        "click",
+        () => {
 
-        if (!state.member) {
+            if (!selectedMemberId) {
+                nameError.textContent =
+                    "Please choose your name.";
 
-            nameError.textContent =
-                "Please choose your name.";
+                return;
+            }
 
-            return;
+
+            startPlayerGame();
+
         }
-
-        openOffice();
-
-    });
-
-}
-
-
-/* =========================================
-   OFFICE
-========================================= */
-
-function openOffice() {
-
-    hide(nameScreen);
-
-    show(officeScreen);
-
-    state.sessionStarted = Date.now();
-
-    state.paperIndex = 0;
-
-    state.decision = null;
-
-    state.questionCount = 0;
-
-    state.chosenQuestions = [];
-
-    state.questionRound = 0;
-
-    resetOffice();
-
-    updateScorePanel();
-}
-
-
-function resetOffice() {
-
-    hide(paperDeck);
-
-    hide(candidateCharacter);
-
-    hide(cvEyeCard);
-
-    hide(acceptedStamp);
-
-    hide(rejectedStamp);
-
-    hide(chatButton);
-
-    hide(idButton);
-
-    hide(paperDecision);
-
-    paperDecision.textContent = "";
-
-    state.interview = null;
-
-    state.decision = null;
-
-    state.stamping = false;
-
-    nextBtn.textContent = "NEXT";
-
-    show(nextBtn);
-}
-
-
-/* =========================================
-   NEXT
-========================================= */
-
-if (nextBtn) {
-
-    nextBtn.addEventListener("click", () => {
-
-        startNextInterview();
-
-    });
-
-}
-
-
-function startNextInterview() {
-
-    const interviews = getInterviews();
-
-    if (!interviews.length) {
-
-        alert(
-            "Admin has not added any interviews yet."
-        );
-
-        return;
-    }
-
-    const results =
-        getResults()
-            .filter(
-                result =>
-                    result.playerId ===
-                    state.member?.id
-            );
-
-    const completedIds =
-        new Set(
-            results.map(
-                result =>
-                    result.interviewId
-            )
-        );
-
-    const next =
-        interviews.find(
-            interview =>
-                !completedIds.has(interview.id)
-        ) || interviews[0];
-
-    state.interview = next;
-
-    state.paperIndex = 0;
-
-    state.decision = null;
-
-    state.questionCount = 0;
-
-    state.chosenQuestions = [];
-
-    state.questionRound = 0;
-
-    state.currentQuestion = null;
-
-    hide(nextBtn);
-
-    hide(paperDecision);
-
-    hide(acceptedStamp);
-
-    hide(rejectedStamp);
-
-    hide(idButton);
-
-    show(chatButton);
-
-    fillPapers(next);
-
-    show(paperDeck);
-
-    show(candidateCharacter);
-
-    candidateCharacterImage.src =
-        next.photo;
-
-    paperDeck.classList.remove("fly-out");
-
-    void paperDeck.offsetWidth;
-    paperDeck.classList.add("fly-out");
-
-    setTimeout(() => {
-
-        show(cvEyeCard);
-
-    }, 450);
-}
-
-
-/* =========================================
-   PAPERS
-========================================= */
-
-function basePaper(title, body) {
-
-    return `
-        <h2>${esc(title)}</h2>
-        ${body}
-    `;
-}
-
-
-function fillPapers(interview) {
-
-    const cv =
-        interview.cv || {};
-
-    const id =
-        interview.idCard || {};
-
-    const committeeData =
-        interview.committeeData || {};
-
-
-    /* CV */
-
-    paper1.innerHTML =
-        basePaper(
-            "CURRICULUM VITAE",
-            `
-            <div class="cv-grid">
-
-                <div class="cv-field">
-                    <b>Name:</b>
-                    ${esc(cv.name || interview.name)}
-                </div>
-
-                <div class="cv-field">
-                    <b>Age:</b>
-                    ${esc(cv.age || interview.age)}
-                </div>
-
-                <div class="cv-field">
-                    <b>Address:</b>
-                    ${esc(cv.address || "")}
-                </div>
-
-                <div class="cv-field">
-                    <b>Phone:</b>
-                    ${esc(cv.phone || "")}
-                </div>
-
-            </div>
-
-            <div class="cv-summary">
-
-                <h3>About</h3>
-
-                <p>
-                    ${esc(cv.summary || "")}
-                </p>
-
-            </div>
-
-            <div class="skill-list">
-
-                <h3>Soft Skills</h3>
-
-                <p>
-                    ${esc(cv.softSkills || "")}
-                </p>
-
-                <h3>Technical Skills</h3>
-
-                <p>
-                    ${esc(cv.technicalSkills || "")}
-                </p>
-
-                <h3>Languages</h3>
-
-                <p>
-                    ${esc(cv.languages || "")}
-                </p>
-
-                <h3>Experience</h3>
-
-                <p>
-                    ${esc(cv.experience || "")}
-                </p>
-
-            </div>
-            `
-        );
-
-
-    /* PERSONAL ID */
-
-    paper2.innerHTML =
-        basePaper(
-            "PERSONAL ID",
-            `
-            <div class="cv-summary">
-
-                <p>
-                    <b>Name:</b>
-                    ${esc(id.name || interview.name)}
-                </p>
-
-                <p>
-                    <b>Address:</b>
-                    ${esc(id.address || "")}
-                </p>
-
-                <p>
-                    <b>Nationality:</b>
-                    ${esc(id.nationality || "")}
-                </p>
-
-                <p>
-                    <b>National ID:</b>
-                    ${esc(id.nationalId || "")}
-                </p>
-
-                <p>
-                    <b>Status:</b>
-                    ${esc(id.status || "")}
-                </p>
-
-            </div>
-            `
-        );
-
-
-    /* APPLICATION DATA */
-
-    paper3.innerHTML =
-        basePaper(
-            "APPLICATION DATA",
-            `
-            <div class="cv-summary">
-
-                <p>
-                    <b>Name:</b>
-                    ${esc(
-                committeeData.name ||
-                interview.name
-            )}
-                </p>
-
-                <p>
-                    <b>Gender:</b>
-                    ${esc(
-                committeeData.gender ||
-                ""
-            )}
-                </p>
-
-                <p>
-                    <b>Phone number:</b>
-                    ${esc(
-                committeeData.phone ||
-                ""
-            )}
-                </p>
-
-                <p>
-                    <b>Age:</b>
-                    ${esc(
-                committeeData.age ||
-                interview.age
-            )}
-                </p>
-
-                <p>
-                    <b>Community:</b>
-                    ${esc(
-                committeeData.community ||
-                ""
-            )}
-                </p>
-                <p>
-                    <b>Governorate:</b>
-                    ${esc(
-                committeeData.governorate ||
-                ""
-            )}
-                </p>
-
-                <p>
-                    <b>Committee:</b>
-                    ${esc(
-                committeeData.committee ||
-                interview.committee ||
-                "HR"
-            )}
-                </p>
-
-            </div>
-            `
-        );
-
-
-    [paper1, paper2, paper3]
-        .forEach((paper, index) => {
-
-            paper.classList
-                .remove("active-paper");
-
-            paper.style.zIndex =
-                String(3 - index);
-
-            paper.onclick = () =>
-                cyclePaper(index);
-
-        });
-
-
-    activatePaper(0);
-}
-
-
-/* =========================================
-   PAPER TURN
-========================================= */
-
-function activatePaper(index) {
-
-    state.paperIndex = index;
-
-    [paper1, paper2, paper3]
-        .forEach((paper, i) => {
-
-            paper.classList.toggle(
-                "active-paper",
-                i === index
-            );
-
-            paper.style.zIndex =
-                i === index
-                    ? 5
-                    : 3 - i;
-
-            paper.style.transform =
-                i === index
-                    ? "translate(0,0) rotate(-1deg)"
-                    : `translate(${(i - index) * 18}px, ${(i - index) * 18}px) rotate(${(i - index) * 3}deg)`;
-        });
-
-
-    if (index === 0) {
-
-        show(cvEyeCard);
-
-    } else {
-
-        hide(cvEyeCard);
-
-    }
-
-}
-
-
-function cyclePaper(index) {
-
-    if (index !== state.paperIndex) {
-        return;
-    }
-
-    activatePaper(
-        (state.paperIndex + 1) % 3
     );
 
 }
 
 
-/* =========================================
-   EYE / PHOTO
-========================================= */
+/* =========================================================
+   START PLAYER GAME
+========================================================= */
+
+function startPlayerGame() {
+
+    game.accepted = 0;
+    game.rejected = 0;
+    game.score = 0;
+
+    game.usedInterviewIds = [];
+
+    game.gameStartedAt = new Date().toISOString();
+
+    updateScore();
+
+    showScreen("officeScreen");
+
+    prepareOffice();
+
+}
+
+
+/* =========================================================
+   OFFICE
+========================================================= */
+
+function prepareOffice() {
+
+    hideElement("paperDeck");
+    hideElement("candidateCharacter");
+    hideElement("idButton");
+    hideElement("chatButton");
+
+    const nextButton = $("nextBtn");
+
+    if (nextButton) {
+        nextButton.classList.remove("hidden");
+        nextButton.disabled = false;
+    }
+
+
+    hideElement("paperDecision");
+}
+
+
+/* =========================================================
+   NEXT BUTTON
+========================================================= */
+
+const nextBtn = $("nextBtn");
+
+
+if (nextBtn) {
+
+    nextBtn.addEventListener(
+        "click",
+        startNextInterview
+    );
+
+}
+
+
+/* =========================================================
+   RANDOM INTERVIEW
+========================================================= */
+
+function getRandomInterview() {
+
+    if (interviews.length === 0) {
+        return null;
+    }
+
+
+    let available = interviews.filter(
+        interview =>
+            !game.usedInterviewIds.includes(interview.id)
+    );
+
+
+    /* If all interviews were used,
+       start randomizing them again. */
+
+    if (available.length === 0) {
+
+        game.usedInterviewIds = [];
+
+        available = [...interviews];
+
+    }
+
+
+    const randomIndex =
+        Math.floor(
+            Math.random() * available.length
+        );
+
+
+    return available[randomIndex];
+}
+
+
+/* =========================================================
+   START NEXT INTERVIEW
+========================================================= */
+
+function startNextInterview() {
+
+    const interview = getRandomInterview();
+
+
+    if (!interview) {
+
+        alert(
+            "There are no interviews available yet. Ask the administrator to add interviews."
+        );
+
+        return;
+    }
+
+
+    game.currentInterview = interview;
+
+    game.usedInterviewIds.push(interview.id);
+
+    game.selectedDecision = null;
+
+    game.selectedQuestions = [];
+    game.currentQuestionIndex = 0;
+
+
+    hideElement("nextBtn");
+
+    hideElement("paperDecision");
+
+    showElement("paperDeck");
+
+    renderInterview();
+
+    animateCandidateEntrance();
+
+}
+
+
+/* =========================================================
+   RENDER INTERVIEW
+========================================================= */
+
+function renderInterview() {
+
+    const interview = game.currentInterview;
+
+    if (!interview) {
+        return;
+    }
+
+
+    /* =========================
+       CV
+    ========================= */
+
+    const cvContent = $("cvContent");
+
+    if (cvContent) {
+
+        cvContent.innerHTML = `
+
+            <div class="candidate-photo-small">
+                <img
+                    src="${escapeHTML(interview.photo || "images/1.png")}"
+                    alt="Candidate"
+                >
+            </div>
+
+            <div class="cv-field">
+                <strong>Name:</strong>
+                <span>${escapeHTML(interview.name)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Address:</strong>
+                <span>${escapeHTML(interview.address)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Phone Number:</strong>
+                <span>${escapeHTML(interview.phone)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Age:</strong>
+                <span>${escapeHTML(interview.age)}</span>
+            </div>
+            <div class="cv-section">
+                <strong>Short Summary</strong>
+                <p>${escapeHTML(interview.summary)}</p>
+            </div>
+
+            <div class="cv-section">
+                <strong>Soft Skills</strong>
+                <p>${escapeHTML(interview.softSkills)}</p>
+            </div>
+
+            <div class="cv-section">
+                <strong>Technical Skills</strong>
+                <p>${escapeHTML(interview.technicalSkills)}</p>
+            </div>
+
+            <div class="cv-section">
+                <strong>Languages</strong>
+                <p>${escapeHTML(interview.languages)}</p>
+            </div>
+
+            <div class="cv-section">
+                <strong>Experience</strong>
+                <p>${escapeHTML(interview.experience)}</p>
+            </div>
+
+        ;
+    }
+
+
+    /* =========================
+       PERSONAL CARD
+    ========================= */
+
+    const personalCard =
+        $("personalCardContent");
+
+
+    if (personalCard) {
+
+        personalCard.innerHTML = 
+
+            <div class="candidate-photo-small">
+                <img
+                    src="${escapeHTML(interview.photo || "images/1.png")}"
+                    alt="Candidate"
+                >
+            </div>
+
+            <div class="cv-field">
+                <strong>Name:</strong>
+                <span>${escapeHTML(interview.name)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Address:</strong>
+                <span>${escapeHTML(interview.address)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Nationality:</strong>
+                <span>${escapeHTML(interview.nationality)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>National ID:</strong>
+                <span>${escapeHTML(interview.nationalId)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Status:</strong>
+                <span>${escapeHTML(interview.status)}</span>
+            </div>
+
+        ;
+    }
+
+
+    /* =========================
+       APPLICATION
+    ========================= */
+
+    const applicationContent =
+        $("applicationContent");
+
+
+    if (applicationContent) {
+
+        applicationContent.innerHTML = 
+
+            <div class="cv-field">
+                <strong>Name:</strong>
+                <span>${escapeHTML(interview.name)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Gender:</strong>
+                <span>${escapeHTML(
+                    interview.gender || "—"
+                )}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Phone Number:</strong>
+                <span>${escapeHTML(interview.phone)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Age:</strong>
+                <span>${escapeHTML(interview.age)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Community:</strong>
+                <span>${escapeHTML(interview.community)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Governorate:</strong>
+                <span>${escapeHTML(interview.governorate)}</span>
+            </div>
+
+            <div class="cv-field">
+                <strong>Committee:</strong>
+                <span>${escapeHTML(interview.committee || "HR")}</span>
+            </div>
+
+        `;
+    }
+
+
+    /* =========================
+       CHARACTER
+    ========================= */
+
+    const characterImage =
+        $("candidateCharacterImage");
+
+
+    if (characterImage) {
+
+        characterImage.src =
+            interview.photo ||
+            "images/1.png";
+
+    }
+
+}
+
+
+/* =========================================================
+   CHARACTER ENTRANCE
+========================================================= */
+
+function animateCandidateEntrance() {
+
+    const character =
+        $("candidateCharacter");
+
+
+    if (!character) {
+        return;
+    }
+    character.classList.remove("hidden");
+
+    character.style.opacity = "0";
+
+    character.style.transform =
+        "translateX(-25px)";
+
+
+    requestAnimationFrame(() => {
+
+        character.style.transition =
+            "opacity 0.8s ease, transform 0.8s ease";
+
+        character.style.opacity = "1";
+
+        character.style.transform =
+            "translateX(0)";
+
+    });
+
+}
+
+
+/* =========================================================
+   PAPER CLICK
+========================================================= */
+
+[
+    "paper1",
+    "paper2",
+    "paper3"
+].forEach(id => {
+
+    const paper = $(id);
+
+    if (!paper) {
+        return;
+    }
+
+
+    paper.addEventListener(
+        "click",
+        () => {
+
+            paper.classList.toggle("paper-active");
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   CANDIDATE PHOTO / EYE
+========================================================= */
+
+const cvEyeCard = $("cvEyeCard");
 
 if (cvEyeCard) {
 
     cvEyeCard.addEventListener(
         "click",
-        () => {
+        (event) => {
 
-            if (!state.interview) {
-                return;
-            }
+            event.stopPropagation();
 
-            $("candidatePhotoLarge").src =
-                state.interview.photo;
-
-            show(
-                $("candidatePhotoModal")
-            );
+            openCandidatePhoto();
 
         }
     );
@@ -767,9 +875,52 @@ if (cvEyeCard) {
 }
 
 
-/* =========================================
+document
+    .querySelectorAll(".personal-eye")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            (event) => {
+
+                event.stopPropagation();
+
+                openCandidatePhoto();
+
+            }
+        );
+
+    });
+
+
+function openCandidatePhoto() {
+
+    if (!game.currentInterview) {
+        return;
+    }
+
+
+    const image =
+        $("candidatePhotoLarge");
+
+
+    if (image) {
+
+        image.src =
+            game.currentInterview.photo ||
+            "images/1.png";
+
+    }
+
+
+    showElement("candidatePhotoModal");
+
+}
+
+
+/* =========================================================
    CLOSE MODALS
-========================================= */
+========================================================= */
 
 document
     .querySelectorAll("[data-close]")
@@ -779,9 +930,10 @@ document
             "click",
             () => {
 
-                hide(
-                    $(button.dataset.close)
-                );
+                const modalId =
+                    button.dataset.close;
+
+                hideElement(modalId);
 
             }
         );
@@ -789,332 +941,342 @@ document
     });
 
 
-/* =========================================
+document
+    .querySelectorAll(".modal-overlay")
+    .forEach(overlay => {
+
+        overlay.addEventListener(
+            "click",
+            () => {
+
+                const modal =
+                    overlay.closest(".modal");
+
+                if (modal) {
+                    modal.classList.add("hidden");
+                }
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
    STAMPS
-========================================= */
+========================================================= */
+
+const acceptedStamp =
+    $("acceptedStamp");
+
+const rejectedStamp =
+    $("rejectedStamp");
+
 
 if (acceptedStamp) {
 
     acceptedStamp.addEventListener(
         "click",
-        () => stampDecision("accepted")
+        () => makeDecision("accepted")
     );
 
 }
+
 
 if (rejectedStamp) {
 
     rejectedStamp.addEventListener(
         "click",
-        () => stampDecision("rejected")
+        () => makeDecision("rejected")
     );
 
 }
 
 
-function stampDecision(decision) {
+/* =========================================================
+   DECISION
+========================================================= */
 
-    if (
-        state.stamping ||
-        state.decision
-    ) {
+function makeDecision(decision) {
+
+    if (!game.currentInterview) {
         return;
     }
 
-    state.stamping = true;
 
-    state.decision = decision;
+    if (game.selectedDecision) {
+        return;
+    }
+
+
+    game.selectedDecision = decision;
+
+
+    /* =========================
+       ANIMATE STAMP
+    ========================= */
 
     const stamp =
         decision === "accepted"
             ? acceptedStamp
             : rejectedStamp;
 
-    const img =
-        stamp.querySelector("img");
 
-    const stampRect =
-        img.getBoundingClientRect();
-
-    const paper =
-        paperDeck.querySelector(
-            ".active-paper"
-        );
-
-    const paperRect =
-        paper.getBoundingClientRect();
+    animateStamp(stamp, decision);
 
 
-    const moving =
-        stamp.cloneNode(true);
-
-    moving.classList.remove("hidden");
-
-    moving.style.position = "fixed";
-
-    moving.style.left =
-        stampRect.left + "px";
-
-    moving.style.top =
-        stampRect.top + "px";
-
-    moving.style.width =
-        stampRect.width + "px";
-
-    moving.style.zIndex = "999";
-    moving.style.transition =
-        "left .65s cubic-bezier(.22,1,.36,1), top .65s cubic-bezier(.22,1,.36,1), transform .65s ease";
-
-    moving.style.transform =
-        "rotate(0) scale(1)";
-
-    document.body.appendChild(
-        moving
-    );
-
-
-    requestAnimationFrame(() => {
-
-        moving.style.left =
-            (
-                paperRect.left +
-                paperRect.width * 0.5 -
-                stampRect.width * 0.5
-            ) + "px";
-
-        moving.style.top =
-            (
-                paperRect.top +
-                paperRect.height * 0.56 -
-                stampRect.height * 0.5
-            ) + "px";
-
-        moving.style.transform =
-            "rotate(-8deg) scale(.72)";
-
-    });
-
-
-    setTimeout(() => {
-
-        moving.remove();
-
-        showDecision(decision);
-
-    }, 1150);
-
-}
-
-
-/* =========================================
-   DECISION
-========================================= */
-
-function showDecision(decision) {
-
-    paperDecision.textContent =
-        decision === "accepted"
-            ? "ACCEPTED"
-            : "REJECTED";
-
-
-    paperDecision.style.color =
-        decision === "accepted"
-            ? "#159447"
-            : "#d62828";
-
-
-    paperDecision.style.borderColor =
-        paperDecision.style.color;
-
-
-    show(paperDecision);
-
-    hide(acceptedStamp);
-
-    hide(rejectedStamp);
-
-
-    saveResult(decision);
-
-    updateScorePanel();
-
-
-    state.stamping = false;
-
-
-    show(nextBtn);
-
-    nextBtn.textContent =
-        "NEXT";
-
+    /* =========================
+       COUNT DECISION
+    ========================= */
 
     if (decision === "accepted") {
 
-        show(idButton);
+        game.accepted++;
+
+    } else {
+
+        game.rejected++;
 
     }
 
-}
 
-
-/* =========================================
-   RESULTS
-========================================= */
-
-function saveResult(decision) {
-
-    const results =
-        getResults();
+    /* =========================
+       SCORE
+    ========================= */
 
     const correct =
-        state.interview.correctDecision ===
-        decision;
-
-    const score =
-        correct
-            ? 10
-            : -10;
+        decision ===
+        game.currentInterview.decision;
 
 
-    results.push({
+    if (correct) {
 
-        id: uid("result"),
+        game.score += 10;
 
-        playerId:
-            state.member.id,
+    } else {
 
-        playerName:
-            state.member.name,
+        game.score -= 10;
 
-        gender:
-            state.gender,
+    }
 
-        interviewId:
-            state.interview.id,
 
-        interviewName:
-            state.interview.name,
+    updateScore();
 
+    /* =========================
+       SHOW DECISION
+    ========================= */
+
+    const decisionText =
+        $("paperDecision");
+
+
+    if (decisionText) {
+
+        decisionText.textContent =
+            decision === "accepted"
+                ? "ACCEPTED"
+                : "REJECTED";
+
+        decisionText.classList.remove("hidden");
+
+        decisionText.classList.add(
+            decision === "accepted"
+                ? "decision-accepted"
+                : "decision-rejected"
+        );
+
+    }
+
+
+    /* =========================
+       ID BUTTON
+       ONLY ACCEPTED
+    ========================= */
+
+    if (decision === "accepted") {
+
+        showElement("idButton");
+
+    } else {
+
+        hideElement("idButton");
+
+    }
+
+
+    /* =========================
+       CHAT BUTTON
+    ========================= */
+
+    showElement("chatButton");
+
+
+    /* =========================
+       SAVE RESULT
+    ========================= */
+
+    saveInterviewResult(
         decision,
-
-        correct,
-
-        score,
-
-        questionsAsked:
-            state.questionCount,
-
-        startedAt:
-            state.sessionStarted,
-
-        finishedAt:
-            Date.now()
-
-    });
-
-
-    write(
-        KEYS.results,
-        results
+        correct
     );
 
 }
 
 
-function updateScorePanel() {
+/* =========================================================
+   STAMP ANIMATION
+========================================================= */
 
-    if (!state.member) {
+function animateStamp(
+    stamp,
+    decision
+) {
 
-        acceptedCount.textContent = "0";
-
-        rejectedCount.textContent = "0";
-
-        scoreCount.textContent = "0";
-
+    if (!stamp) {
         return;
     }
 
 
-    const results =
-        getResults()
-            .filter(
-                result =>
-                    result.playerId ===
-                    state.member.id
-            );
+    stamp.classList.add("stamp-hit");
 
 
-    acceptedCount.textContent =
-        results.filter(
-            result =>
-                result.decision === "accepted"
-        ).length;
+    setTimeout(() => {
+
+        stamp.classList.remove("stamp-hit");
+
+    }, 700);
 
 
-    rejectedCount.textContent =
-        results.filter(
-            result =>
-                result.decision === "rejected"
-        ).length;
+    /* Add decision text visually to the paper */
+
+    const paperDecision =
+        $("paperDecision");
 
 
-    scoreCount.textContent =
-        results.reduce(
-            (total, result) =>
-                total + result.score,
-            0
-        );
+    if (paperDecision) {
+
+        paperDecision.textContent =
+            decision === "accepted"
+                ? "ACCEPTED"
+                : "REJECTED";
+
+        paperDecision.classList.remove("hidden");
+
+    }
 
 }
 
 
-/* =========================================
+/* =========================================================
+   SCORE
+========================================================= */
+
+function updateScore() {
+
+    if ($("acceptedCount")) {
+
+        $("acceptedCount").textContent =
+            game.accepted;
+
+    }
+
+
+    if ($("rejectedCount")) {
+
+        $("rejectedCount").textContent =
+            game.rejected;
+
+    }
+
+
+    if ($("scoreCount")) {
+
+        $("scoreCount").textContent =
+            game.score;
+
+    }
+
+}
+
+
+/* =========================================================
    ID CARD
-========================================= */
+========================================================= */
+
+const idButton = $("idButton");
+
 
 if (idButton) {
 
     idButton.addEventListener(
         "click",
-        () => {
-
-            const interview =
-                state.interview;
-
-            if (!interview) {
-                return;
-            }
-
-
-            $("generatedIdPhoto").src =
-                interview.photo;
-
-
-            $("generatedIdName")
-                .textContent =
-                interview.name;
-
-
-            $("generatedIdCommittee")
-                .textContent =
-                interview.committeeData?.committee ||
-                interview.committee ||
-                "HR";
-
-
-            show(
-                $("idModal")
-            );
-        }
+        openGeneratedId
     );
 
 }
 
 
-/* =========================================
-   QUESTIONS
-========================================= */
+function openGeneratedId() {
+
+    if (!game.currentInterview) {
+        return;
+    }
+
+
+    const interview =
+        game.currentInterview;
+
+
+    const photo =
+        $("generatedIdPhoto");
+
+
+    const name =
+        $("generatedIdName");
+
+
+    const committee =
+        $("generatedIdCommittee");
+
+
+    if (photo) {
+
+        photo.src =
+            interview.photo ||
+            "images/1.png";
+
+    }
+
+
+    if (name) {
+
+        name.textContent =
+            interview.name || "";
+
+    }
+
+
+    if (committee) {
+
+        committee.textContent =
+            interview.committee ||
+            "HR";
+
+    }
+
+
+    showElement("idModal");
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+const chatButton =
+    $("chatButton");
+
 
 if (chatButton) {
 
@@ -1126,329 +1288,402 @@ if (chatButton) {
 }
 
 
-function getInterviewQuestions() {
-
-    const bank =
-        getQuestions();
-
-    const answers =
-        state.interview?.answers || {};
-
-
-    return bank
-        .filter(
-            question =>
-                answers[question.id]?.trim()
-        )
-        .map(question => ({
-            ...question,
-            answer:
-                answers[question.id]
-        }));
-
-}
-
+/* =========================================================
+   QUESTION CHAT
+========================================================= */
 
 function openQuestionChat() {
 
-    if (
-        !state.interview ||
-        state.decision
-    ) {
+    if (!game.currentInterview) {
         return;
     }
 
 
-    state.questionRound = 0;
+    if (questions.length === 0) {
 
-    state.questionCount = 0;
+        alert(
+            "There are no interview questions yet."
+        );
 
-    state.chosenQuestions = [];
-
-    state.currentQuestion = null;
-
-
-    show(
-        $("questionModal")
-    );
+        return;
+    }
 
 
-    renderQuestionChoices();
+    /* Shuffle questions */
+
+    const shuffled =
+        [...questions].sort(
+            () => Math.random() - 0.5
+        );
+
+
+    /* Maximum 10 */
+
+    game.selectedQuestions =
+        shuffled.slice(
+            0,
+            Math.min(10, shuffled.length)
+        );
+
+
+    game.currentQuestionIndex = 0;
+
+
+    hideElement("questionAnswer");
+
+    hideElement("nextQuestionBtn");
+
+
+    showElement("questionModal");
+
+
+    renderCurrentQuestion();
 
 }
 
 
-function renderQuestionChoices() {
+/* =========================================================
+   RENDER CURRENT QUESTION
+========================================================= */
+
+function renderCurrentQuestion() {
 
     const choices =
         $("questionChoices");
 
-    const progress =
-        $("questionProgress");
-
     const answer =
         $("questionAnswer");
 
-    const nextQuestion =
-        $("nextQuestionBtn");
+    const progress =
+        $("questionProgress");
 
 
-    progress.textContent =
-        `Choose a question — ${state.questionRound} / 10`;
+    if (!choices) {
+        return;
+    }
 
 
     choices.innerHTML = "";
 
-    hide(answer);
+    hideElement("questionAnswer");
 
-    hide(nextQuestion);
+    hideElement("nextQuestionBtn");
 
 
-    if (
-        state.questionRound >= 10
-    ) {
+    const total =
+        game.selectedQuestions.length;
 
-        choices.innerHTML =
-            `
-                <div class="admin-note">
-                    You have completed the
-                    10-question interview.
-                </div>
-            `;
+
+    const index =
+        game.currentQuestionIndex;
+
+
+    if (progress) {
+
+        progress.textContent =
+            `Choose a question — ${index} / ${total}`;
+
+    }
+
+
+    if (index >= total) {
+
+        choices.innerHTML = 
+            <div class="question-finished">
+                Interview questions completed.
+            </div>
+        ;
+
+        if (progress) {
+
+            progress.textContent =
+                `Interview complete — ${total} / ${total}`;
+
+        }
 
         return;
     }
 
 
-    const available =
-        getInterviewQuestions()
-            .filter(
-                question =>
-                    !state.chosenQuestions
-                        .includes(question.id)
+    game.selectedQuestions.forEach(
+        (question, questionIndex) => {
+
+            const button =
+                document.createElement("button");
+
+
+            button.type = "button";
+
+            button.className =
+                "question-choice";
+
+
+            button.textContent =
+                question.text;
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    chooseInterviewQuestion(
+                        question
+                    );
+
+                }
             );
 
 
-    if (!available.length) {
+            choices.appendChild(button);
 
-        choices.innerHTML = `
-            <div class="admin-note">
-                There are not enough answered
-                questions for this character yet.
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CHOOSE QUESTION
+========================================================= */
+
+function chooseInterviewQuestion(question) {
+
+    const choices =
+        $("questionChoices");
+
+
+    if (choices) {
+
+        choices
+            .querySelectorAll("button")
+            .forEach(button => {
+
+                button.disabled = true;
+
+            });
+
+    }
+
+
+    const answer =
+        getInterviewAnswer(question.id);
+
+
+    const answerBox =
+        $("questionAnswer");
+
+
+    if (answerBox) {
+
+        answerBox.innerHTML = `
+            <div class="answer-label">
+                Candidate's Answer
+            </div>
+
+            <div class="answer-text">
+                ${escapeHTML(
+                    answer ||
+                    "No answer was provided for this question."
+                )}
             </div>
         `;
 
+        answerBox.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    const next =
+        $("nextQuestionBtn");
+
+
+    if (next) {
+
+        next.classList.remove(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   GET INTERVIEW ANSWER
+========================================================= */
+
+function getInterviewAnswer(
+    questionId
+) {
+
+    if (!game.currentInterview) {
+        return "";
+    }
+
+
+    const answers =
+        game.currentInterview.answers || {};
+
+
+    return answers[questionId] || "";
+
+}
+
+
+/* =========================================================
+   NEXT QUESTION
+========================================================= */
+
+const nextQuestionBtn =
+    $("nextQuestionBtn");
+
+
+if (nextQuestionBtn) {
+
+    nextQuestionBtn.addEventListener(
+        "click",
+        () => {
+
+            game.currentQuestionIndex++;
+
+            renderCurrentQuestion();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SAVE RESULT
+========================================================= */
+
+function saveInterviewResult(
+    decision,
+    correct
+) {
+
+    if (!game.currentInterview) {
         return;
     }
 
 
-    available.forEach(question => {
+    const result = {
 
-        const button =
-            document.createElement("button");
+        id: createId("result"),
 
-        button.className =
-            "question-choice";
+        player:
+            game.playerName,
 
-        button.textContent =
-            question.text;
+        interviewId:
+            game.currentInterview.id,
+
+            interview:
+            game.currentInterview.name,
+
+        decision:
+            decision,
+
+        correct:
+            correct,
+
+        score:
+            correct ? 10 : -10,
+
+        questions:
+            game.selectedQuestions.length,
+
+        finished:
+            new Date().toISOString()
+
+    };
 
 
-        button.onclick = () =>
-            askQuestion(question);
+    results.push(result);
 
-
-        choices.appendChild(button);
-
-    });
+    saveData(
+        STORAGE_KEYS.results,
+        results
+    );
 
 }
 
 
-function askQuestion(question) {
+/* =========================================================
+   ADMIN PANEL
+========================================================= */
 
-    state.currentQuestion =
-        question;
+function openAdminPanel() {
 
-    state.chosenQuestions.push(
-        question.id
-    );
+    showScreen("adminScreen");
 
-    state.questionRound++;
-
-    state.questionCount++;
-
-
-    $("questionProgress")
-        .textContent =
-        `Question ${ state.questionRound } / 10`;
-
-
-    $("questionChoices").innerHTML = `
-        <div
-            class="question-choice"
-            style="cursor:default"
-        >
-            <b>
-                ${esc(question.text)}
-            </b>
-        </div>
-    `;
-
-
-    $("questionAnswer").innerHTML = `
-        <b>
-            ${esc(state.interview.name)}:
-        </b>
-        <br>
-        ${esc(question.answer)}
-    `;
-
-
-    show(
-        $("questionAnswer")
-    );
-
-
-    if (
-        state.questionRound < 10
-    ) {
-
-        $("nextQuestionBtn")
-            .textContent =
-            "CHOOSE NEXT";
-
-        show(
-            $("nextQuestionBtn")
-        );
-
-    } else {
-
-        $("nextQuestionBtn")
-            .textContent =
-            "FINISH INTERVIEW";
-
-        show(
-            $("nextQuestionBtn")
-        );
-
-    }
-
-}
-
-
-if ($("nextQuestionBtn")) {
-
-    $("nextQuestionBtn")
-        .addEventListener(
-            "click",
-            () => {
-
-                if (
-                    state.questionRound >= 10
-                ) {
-
-                    hide(
-                        $("questionModal")
-                    );
-
-                    return;
-                }
-
-                renderQuestionChoices();
-
-            }
-        );
-
-}
-
-
-/* =========================================
-   ADMIN
-========================================= */
-
-function openAdmin() {
-
-    show(
-        $("adminScreen")
-    );
     renderAdmin();
 
 }
 
 
-function renderAdmin() {
-
-    renderOverview();
-
-    renderInterviewAdmin();
-
-    renderMemberAdmin();
-
-    renderQuestionAdmin();
-
-    renderResultsAdmin();
-
-}
-
-
-function renderOverview() {
-
-    $("statMembers").textContent =
-        getMembers().length;
-
-    $("statInterviews").textContent =
-        getInterviews().length;
-
-    $("statQuestions").textContent =
-        getQuestions().length;
-
-    $("statResults").textContent =
-        getResults().length;
-
-}
-
-
-/* =========================================
+/* =========================================================
    ADMIN TABS
-========================================= */
+========================================================= */
 
 document
     .querySelectorAll(".admin-tabs button")
-    .forEach(tab => {
+    .forEach(button => {
 
-        tab.addEventListener(
+        button.addEventListener(
             "click",
             () => {
+
+                const tab =
+                    button.dataset.tab;
+
 
                 document
                     .querySelectorAll(
                         ".admin-tabs button"
                     )
-                    .forEach(button =>
-                        button.classList
-                            .remove("active")
-                    );
+                    .forEach(btn => {
+
+                        btn.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                button.classList.add(
+                    "active"
+                );
 
 
                 document
                     .querySelectorAll(
                         ".admin-tab"
                     )
-                    .forEach(section =>
-                        section.classList
-                            .remove("active-tab")
+                    .forEach(section => {
+
+                        section.classList.remove(
+                            "active-tab"
+                        );
+
+                    });
+
+
+                const target =
+                    $(
+                        "tab-" + tab
                     );
 
 
-                tab.classList.add(
-                    "active"
-                );
+                if (target) {
 
+                    target.classList.add(
+                        "active-tab"
+                    );
 
-                $("tab-" + tab.dataset.tab)
-                    .classList
-                    .add("active-tab");
+                }
 
             }
         );
@@ -1456,103 +1691,108 @@ document
     });
 
 
-/* =========================================
-   ADMIN BUTTONS
-========================================= */
+/* =========================================================
+   ADMIN REFRESH
+========================================================= */
 
-if ($("adminRefreshBtn")) {
-
-    $("adminRefreshBtn")
-        .addEventListener(
-            "click",
-            renderAdmin
-        );
-
-}
+const adminRefreshBtn =
+    $("adminRefreshBtn");
 
 
-if ($("addInterviewBtn")) {
+if (adminRefreshBtn) {
 
-    $("addInterviewBtn")
-        .addEventListener(
-            "click",
-            () => openInterviewEditor()
-        );
+    adminRefreshBtn.addEventListener(
+        "click",
+        renderAdmin
+    );
 
 }
 
 
-if ($("addMemberBtn")) {
+/* =========================================================
+   ADMIN RENDER
+========================================================= */
 
-    $("addMemberBtn")
-        .addEventListener(
-            "click",
-            () => openMemberEditor()
-        );
+function renderAdmin() {
 
-}
+    renderStats();
 
+    renderInterviewList();
 
-if ($("addQuestionBtn")) {
+    renderMemberAdminList();
 
-    $("addQuestionBtn")
-        .addEventListener(
-            "click",
-            () => openQuestionEditor()
-        );
+    renderQuestionAdminList();
 
-}
+    renderResults();
 
-
-if ($("clearResultsBtn")) {
-
-    $("clearResultsBtn")
-        .addEventListener(
-            "click",
-            () => {
-
-                if (
-                    confirm(
-                        "Clear all results?"
-                    )
-                ) {
-
-                    write(
-                        KEYS.results,
-                        []
-                    );
-
-                    renderAdmin();
-
-                }
-
-            }
-        );
+    renderInterviewAnswerFields();
 
 }
 
 
-/* =========================================
-   INTERVIEW ADMIN
-========================================= */
+/* =========================================================
+   ADMIN STATS
+========================================================= */
 
-function renderInterviewAdmin() {
+function renderStats() {
+
+    if ($("statMembers")) {
+
+        $("statMembers").textContent =
+            members.length;
+
+    }
+
+
+    if ($("statInterviews")) {
+
+        $("statInterviews").textContent =
+            interviews.length;
+
+    }
+
+
+    if ($("statQuestions")) {
+
+        $("statQuestions").textContent =
+            questions.length;
+
+    }
+
+
+    if ($("statResults")) {
+
+        $("statResults").textContent =
+            results.length;
+
+    }
+
+}
+
+
+/* =========================================================
+   ADMIN INTERVIEW LIST
+========================================================= */
+
+function renderInterviewList() {
 
     const list =
         $("interviewList");
 
+
+    if (!list) {
+        return;
+    }
+
+
     list.innerHTML = "";
 
-    const items =
-        getInterviews();
 
-
-    if (!items.length) {
+    if (interviews.length === 0) {
 
         list.innerHTML = 
-            <div class="admin-note">
+            <div class="empty-message">
                 No interviews yet.
-                Add the first candidate.
             </div>
         ;
 
@@ -1560,132 +1800,620 @@ function renderInterviewAdmin() {
     }
 
 
-    items.forEach(interview => {
+    interviews.forEach(interview => {
 
-        const row =
+        const item =
             document.createElement("div");
 
-        row.className =
-            "admin-row";
+
+        item.className =
+            "admin-list-item";
 
 
-        row.innerHTML = `
+        item.innerHTML = `
 
-            <div class="admin-row-main">
+            <div class="admin-item-info">
 
-                <div class="admin-row-title">
-                    ${esc(interview.name)}
-                </div>
-
-                <div class="admin-row-sub">
-
-                    ${esc(
-                        interview.committee ||
-                        "HR"
+                <strong>
+                    ${escapeHTML(interview.name)}
+                </strong>
+                <span>
+                    Committee:
+                    ${escapeHTML(
+                        interview.committee || "HR"
                     )}
+                </span>
 
-                    · Correct decision:
-
-                    ${esc(
-                        interview.correctDecision
+                <span>
+                    Correct:
+                    ${escapeHTML(
+                        interview.decision
                     )}
-
-                    ·${
-                        Object
-                            .values(
-                                interview.answers || {}
-                            )
-                            .filter(Boolean)
-                            .length
-                    }
-
-                    answered questions
-
-                </div>
+                </span>
 
             </div>
 
 
-            <div class="admin-actions">
+            <div class="admin-item-actions">
 
                 <button
-                    class="action-btn edit"
+                    class="admin-edit-btn"
+                    type="button"
+                    data-edit-interview="${interview.id}"
                 >
-                    Edit
+                    EDIT
                 </button>
 
                 <button
-                    class="action-btn delete"
+                    class="admin-delete-btn"
+                    type="button"
+                    data-delete-interview="${interview.id}"
                 >
-                    Delete
+                    DELETE
                 </button>
 
+            </div>
+
+        `;
+
+
+        list.appendChild(item);
+
+    });
+
+
+    list
+        .querySelectorAll(
+            "[data-edit-interview]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    openInterviewEditor(
+                        button.dataset.editInterview
+                    );
+
+                }
+            );
+
+        });
+
+
+    list
+        .querySelectorAll(
+            "[data-delete-interview]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    deleteInterview(
+                        button.dataset.deleteInterview
+                    );
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   ADD INTERVIEW
+========================================================= */
+
+const addInterviewBtn =
+    $("addInterviewBtn");
+
+
+if (addInterviewBtn) {
+
+    addInterviewBtn.addEventListener(
+        "click",
+        () => openInterviewEditor()
+    );
+
+}
+
+
+/* =========================================================
+   INTERVIEW EDITOR
+========================================================= */
+
+function openInterviewEditor(
+    interviewId = null
+) {
+
+    const form =
+        $("interviewForm");
+
+
+    if (!form) {
+        return;
+    }
+
+
+    form.reset();
+
+
+    $("editInterviewId").value =
+        "";
+
+
+    $("fPhoto").value =
+        "images/1.png";
+
+
+    $("fCommittee").value =
+        "HR";
+
+
+    if (interviewId) {
+
+        const interview =
+            interviews.find(
+                item =>
+                    item.id === interviewId
+            );
+
+
+        if (!interview) {
+            return;
+        }
+
+
+        $("editorTitle").textContent =
+            "Edit Interview";
+
+
+        $("editInterviewId").value =
+            interview.id;
+
+
+        fillField(
+            "fPhoto",
+            interview.photo
+        );
+
+        fillField(
+            "fName",
+            interview.name
+        );
+
+        fillField(
+            "fAge",
+            interview.age
+        );
+
+        fillField(
+            "fAddress",
+            interview.address
+        );
+
+        fillField(
+            "fPhone",
+            interview.phone
+        );
+
+        fillField(
+            "fSummary",
+            interview.summary
+        );
+
+        fillField(
+            "fSoftSkills",
+            interview.softSkills
+        );
+
+        fillField(
+            "fTechnicalSkills",
+            interview.technicalSkills
+        );
+
+        fillField(
+            "fLanguages",
+            interview.languages
+        );
+
+        fillField(
+            "fExperience",
+            interview.experience
+        );
+
+        fillField(
+            "fNationality",
+            interview.nationality
+        );
+
+        fillField(
+            "fNationalId",
+            interview.nationalId
+        );
+
+        fillField(
+            "fStatus",
+            interview.status
+        );
+
+        fillField(
+            "fCommunity",
+            interview.community
+        );
+
+        fillField(
+            "fGovernorate",
+            interview.governorate
+        );
+
+        fillField(
+            "fCommittee",
+            interview.committee || "HR"
+        );
+
+
+        if ($("fDecision")) {
+
+            $("fDecision").value =
+                interview.decision ||
+                "accepted";
+
+        }
+
+    } else {
+
+        $("editorTitle").textContent =
+            "Add Interview";
+
+    }
+
+
+    renderInterviewAnswerFields(
+        interviewId
+    );
+
+
+    showElement("adminEditor");
+
+}
+
+
+/* =========================================================
+   FILL FIELD
+========================================================= */
+
+function fillField(
+    id,
+    value
+) {
+
+    const element = $(id);
+
+    if (element) {
+
+        element.value =
+            value || "";
+
+    }
+
+}
+
+
+/* =========================================================
+   INTERVIEW ANSWER FIELDS
+========================================================= */
+
+function renderInterviewAnswerFields(
+    interviewId = null
+) {
+
+    const container =
+        $("interviewAnswers");
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    let interview = null;
+
+
+    if (interviewId) {
+
+        interview =
+            interviews.find(
+                item =>
+                    item.id === interviewId
+            );
+
+    }
+
+
+    const answers =
+        interview?.answers || {};
+
+
+    if (questions.length === 0) {
+
+        container.innerHTML = 
+            <div class="empty-message">
+                Add questions first.
             </div>
         ;
 
-
-        row
-            .querySelector(".edit")
-            .onclick = () =>
-                openInterviewEditor(
-                    interview.id
-                );
+        return;
+    }
 
 
-        row
-            .querySelector(".delete")
-            .onclick = () => {
+    questions.forEach(question => {
 
-                if (
-                    confirm(
-                        "Delete this interview?"
-                    )
-                ) {
-
-                    write(
-                        KEYS.interviews,
-                        getInterviews()
-                            .filter(
-                                item =>
-                                    item.id !==
-                                    interview.id
-                            )
-                    );
-
-                    renderAdmin();
-
-                }
-
-            };
+        const wrapper =
+            document.createElement("div");
 
 
-        list.appendChild(row);
+        wrapper.className =
+            "answer-editor-row";
+
+
+        wrapper.innerHTML = `
+            <label>
+                ${escapeHTML(question.text)}
+            </label>
+
+            <textarea
+                data-answer-question="${question.id}"
+                placeholder="Candidate's answer..."
+            >${escapeHTML(
+                answers[question.id] || ""
+            )}</textarea>
+        `;
+
+
+        container.appendChild(
+            wrapper
+        );
 
     });
 
 }
 
 
-/* =========================================
-   MEMBERS ADMIN
-========================================= */
+/* =========================================================
+   SAVE INTERVIEW
+========================================================= */
 
-function renderMemberAdmin() {
+const interviewForm =
+    $("interviewForm");
+
+
+if (interviewForm) {
+
+    interviewForm.addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            const id =
+                $("editInterviewId").value ||
+                createId("interview");
+
+
+            const existing =
+                interviews.find(
+                    item =>
+                        item.id === id
+                );
+
+
+            const answers = {};
+
+
+            document
+                .querySelectorAll(
+                    "[data-answer-question]"
+                )
+                .forEach(textarea => {
+
+                    answers[
+                        textarea.dataset.answerQuestion
+                    ] =
+                        textarea.value.trim();
+
+                });
+
+
+            const interview = {
+
+                id,
+
+                photo:
+                    $("fPhoto").value.trim() ||
+                    "images/1.png",
+
+                name:
+                    $("fName").value.trim(),
+
+                age:
+                    $("fAge").value.trim(),
+
+                address:
+                    $("fAddress").value.trim(),
+
+                phone:
+                    $("fPhone").value.trim(),
+
+                summary:
+                    $("fSummary").value.trim(),
+
+                softSkills:
+                    $("fSoftSkills").value.trim(),
+
+                technicalSkills:
+                    $("fTechnicalSkills").value.trim(),
+
+                languages:
+                    $("fLanguages").value.trim(),
+
+                experience:
+                    $("fExperience").value.trim(),
+
+                nationality:
+                    $("fNationality").value.trim(),
+                    nationalId:
+                    $("fNationalId").value.trim(),
+
+                status:
+                    $("fStatus").value.trim(),
+
+                community:
+                    $("fCommunity").value.trim(),
+
+                governorate:
+                    $("fGovernorate").value.trim(),
+
+                committee:
+                    $("fCommittee").value.trim() ||
+                    "HR",
+
+                decision:
+                    $("fDecision").value,
+
+                answers
+
+            };
+
+
+            if (existing) {
+
+                interviews =
+                    interviews.map(
+                        item =>
+                            item.id === id
+                                ? interview
+                                : item
+                    );
+
+            } else {
+
+                interviews.push(
+                    interview
+                );
+
+            }
+
+
+            saveData(
+                STORAGE_KEYS.interviews,
+                interviews
+            );
+
+
+            hideElement(
+                "adminEditor"
+            );
+
+
+            renderAdmin();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DELETE INTERVIEW
+========================================================= */
+
+function deleteInterview(id) {
+
+    const interview =
+        interviews.find(
+            item => item.id === id
+        );
+
+
+    if (!interview) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Delete interview for ${interview.name}?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    interviews =
+        interviews.filter(
+            item => item.id !== id
+        );
+
+
+    saveData(
+        STORAGE_KEYS.interviews,
+        interviews
+    );
+
+
+    renderAdmin();
+
+}
+
+
+/* =========================================================
+   MEMBERS
+========================================================= */
+
+const addMemberBtn =
+    $("addMemberBtn");
+
+
+if (addMemberBtn) {
+
+    addMemberBtn.addEventListener(
+        "click",
+        () => openMemberEditor()
+    );
+
+}
+
+
+function renderMemberAdminList() {
 
     const list =
         $("memberAdminList");
 
+
+    if (!list) {
+        return;
+    }
+
+
     list.innerHTML = "";
 
-    const items =
-        getMembers();
 
-
-    if (!items.length) {
+    if (members.length === 0) {
 
         list.innerHTML = 
-            <div class="admin-note">
-                No members yet.
+            <div class="empty-message">
+                No members added yet.
             </div>
         ;
 
@@ -1693,75 +2421,888 @@ function renderMemberAdmin() {
     }
 
 
-    items.forEach(member => {
+    members.forEach(member => {
 
-        const row =
+        const item =
             document.createElement("div");
 
-        row.className =
-            "admin-row";
+
+        item.className =
+            "admin-list-item";
 
 
-        row.innerHTML = 
+        item.innerHTML = `
+            <div class="admin-item-info">
 
-            <div class="admin-row-main">
-
-                <div class="admin-row-title">
-                    ${esc(member.name)}
-                </div>
-
-                <div class="admin-row-sub">
-                    ${esc(member.id)}
-                </div>
+                <strong>
+                    ${escapeHTML(member.name)}
+                </strong>
 
             </div>
 
 
-            <div class="admin-actions">
+            <div class="admin-item-actions">
 
                 <button
-                    class="action-btn edit"
+                    class="admin-edit-btn"
+                    type="button"
+                    data-edit-member="${member.id}"
                 >
-                    Edit
+                    EDIT
                 </button>
 
                 <button
-                    class="action-btn delete"
+                    class="admin-delete-btn"
+                    type="button"
+                    data-delete-member="${member.id}"
                 >
-                    Delete
+                    DELETE
                 </button>
 
             </div>
         `;
 
 
-        row
-            .querySelector(".edit")
-            .onclick = () =>
-                openMemberEditor(
-                    member.id
+        list.appendChild(item);
+
+    });
+
+
+    list
+        .querySelectorAll(
+            "[data-edit-member]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    openMemberEditor(
+                        button.dataset.editMember
+                    );
+
+                }
+            );
+
+        });
+
+
+    list
+        .querySelectorAll(
+            "[data-delete-member]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    deleteMember(
+                        button.dataset.deleteMember
+                    );
+
+                }
+            );
+
+        });
+
+}
+/* =========================================================
+   MEMBER EDITOR
+========================================================= */
+
+function openMemberEditor(
+    memberId = null
+) {
+
+    const form =
+        $("memberForm");
+
+
+    if (!form) {
+        return;
+    }
+
+
+    form.reset();
+
+
+    $("editMemberId").value =
+        "";
+
+
+    if (memberId) {
+
+        const member =
+            members.find(
+                item =>
+                    item.id === memberId
+            );
+
+
+        if (!member) {
+            return;
+        }
+
+
+        $("editMemberId").value =
+            member.id;
+
+
+        $("memberName").value =
+            member.name;
+
+    }
+
+
+    showElement("memberEditor");
+
+}
+
+
+/* =========================================================
+   SAVE MEMBER
+========================================================= */
+
+const memberForm =
+    $("memberForm");
+
+
+if (memberForm) {
+
+    memberForm.addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            const name =
+                $("memberName").value.trim();
+
+
+            if (!name) {
+                return;
+            }
+
+
+            const id =
+                $("editMemberId").value ||
+                createId("member");
+
+
+            const member = {
+
+                id,
+
+                name
+
+            };
+
+
+            const existing =
+                members.some(
+                    item =>
+                        item.id === id
                 );
 
 
-        row
-            .querySelector(".delete")
-            .onclick = () => {
+            if (existing) {
 
-                if (
-                    confirm(
-                        "Delete this member?"
-                    )
-                ) {
-                    deleteMember(
-                        member.id
+                members =
+                    members.map(
+                        item =>
+                            item.id === id
+                                ? member
+                                : item
                     );
 
-                    renderMembers();
+            } else {
+
+                members.push(
+                    member
+                );
+
+            }
+
+
+            saveData(
+                STORAGE_KEYS.members,
+                members
+            );
+
+
+            hideElement(
+                "memberEditor"
+            );
+
+
+            renderAdmin();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DELETE MEMBER
+========================================================= */
+
+function deleteMember(id) {
+
+    const member =
+        members.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (!member) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            `Delete ${member.name}?`
+        )
+    ) {
+        return;
+    }
+
+
+    members =
+        members.filter(
+            item =>
+                item.id !== id
+        );
+
+
+    saveData(
+        STORAGE_KEYS.members,
+        members
+    );
+
+
+    renderAdmin();
+
+}
+
+
+/* =========================================================
+   QUESTIONS
+========================================================= */
+
+const addQuestionBtn =
+    $("addQuestionBtn");
+
+
+if (addQuestionBtn) {
+
+    addQuestionBtn.addEventListener(
+        "click",
+        () => openQuestionEditor()
+    );
+
+}
+
+
+function renderQuestionAdminList() {
+
+    const list =
+        $("questionAdminList");
+
+
+    if (!list) {
+        return;
+    }
+
+
+    list.innerHTML = "";
+
+
+    if (questions.length === 0) {
+
+        list.innerHTML = 
+            <div class="empty-message">
+                No questions yet.
+            </div>
+        ;
+
+        return;
+    }
+
+
+    questions.forEach(
+        (question, index) => {
+
+            const item =
+                document.createElement("div");
+
+
+            item.className =
+                "admin-list-item";
+
+
+            item.innerHTML = `
+
+                <div class="admin-item-info">
+
+                    <strong>
+                        Q${index + 1}
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(
+                            question.text
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="admin-item-actions">
+                <button
+                        class="admin-edit-btn"
+                        type="button"
+                        data-edit-question="${question.id}"
+                    >
+                        EDIT
+                    </button>
+
+                    <button
+                        class="admin-delete-btn"
+                        type="button"
+                        data-delete-question="${question.id}"
+                    >
+                        DELETE
+                    </button>
+
+                </div>
+
+            `;
+
+
+            list.appendChild(item);
+
+        }
+    );
+
+
+    list
+        .querySelectorAll(
+            "[data-edit-question]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    openQuestionEditor(
+                        button.dataset.editQuestion
+                    );
+
                 }
+            );
+
+        });
+
+
+    list
+        .querySelectorAll(
+            "[data-delete-question]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    deleteQuestion(
+                        button.dataset.deleteQuestion
+                    );
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   QUESTION EDITOR
+========================================================= */
+
+function openQuestionEditor(
+    questionId = null
+) {
+
+    const form =
+        $("questionForm");
+
+
+    if (!form) {
+        return;
+    }
+
+
+    form.reset();
+
+
+    $("editQuestionId").value =
+        "";
+
+
+    if (questionId) {
+
+        const question =
+            questions.find(
+                item =>
+                    item.id === questionId
+            );
+
+
+        if (!question) {
+            return;
+        }
+
+
+        $("editQuestionId").value =
+            question.id;
+
+
+        $("questionText").value =
+            question.text;
+
+    }
+
+
+    showElement(
+        "questionEditor"
+    );
+
+}
+
+
+/* =========================================================
+   SAVE QUESTION
+========================================================= */
+
+const questionForm =
+    $("questionForm");
+
+
+if (questionForm) {
+
+    questionForm.addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            const text =
+                $("questionText")
+                    .value
+                    .trim();
+
+
+            if (!text) {
+                return;
+            }
+
+
+            const id =
+                $("editQuestionId").value ||
+                createId("question");
+
+
+            const question = {
+
+                id,
+
+                text
+
             };
 
-        list.appendChild(row);
-    });
 
-    return;
+            const existing =
+                questions.some(
+                    item =>
+                        item.id === id
+                );
+
+
+            if (existing) {
+
+                questions =
+                    questions.map(
+                        item =>
+                            item.id === id
+                                ? question
+                                : item
+                    );
+
+            } else {
+
+                questions.push(
+                    question
+                );
+
+            }
+
+
+            saveData(
+                STORAGE_KEYS.questions,
+                questions
+            );
+
+
+            hideElement(
+                "questionEditor"
+            );
+
+
+            renderAdmin();
+
+        }
+    );
+
 }
+
+/* =========================================================
+   DELETE QUESTION
+========================================================= */
+
+function deleteQuestion(id) {
+
+    const question =
+        questions.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (!question) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Delete this question?"
+        )
+    ) {
+        return;
+    }
+
+
+    questions =
+        questions.filter(
+            item =>
+                item.id !== id
+        );
+
+
+    saveData(
+        STORAGE_KEYS.questions,
+        questions
+    );
+
+
+    renderAdmin();
+
+}
+
+
+/* =========================================================
+   RESULTS
+========================================================= */
+
+function renderResults() {
+
+    const body =
+        $("resultsBody");
+
+
+    if (!body) {
+        return;
+    }
+
+
+    body.innerHTML = "";
+
+
+    if (results.length === 0) {
+
+        body.innerHTML = 
+            <tr>
+                <td colspan="7">
+                    No results yet.
+                </td>
+            </tr>
+        ;
+
+        return;
+    }
+
+
+    [...results]
+        .reverse()
+        .forEach(result => {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+                <td>
+                    ${escapeHTML(
+                        result.player
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        result.interview
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        result.decision
+                    )}
+                </td>
+
+                <td>
+                    ${result.correct
+                        ? "YES"
+                        : "NO"}
+                </td>
+
+                <td>
+                    ${result.score}
+                </td>
+
+                <td>
+                    ${result.questions}
+                </td>
+
+                <td>
+                    ${formatDate(
+                        result.finished
+                    )}
+                </td>
+            `;
+
+
+            body.appendChild(row);
+
+        });
+
+}
+
+/* =========================================================
+   CLEAR RESULTS
+========================================================= */
+
+const clearResultsBtn =
+    $("clearResultsBtn");
+
+
+if (clearResultsBtn) {
+
+    clearResultsBtn.addEventListener(
+        "click",
+        () => {
+
+            if (
+                !confirm(
+                    "Are you sure you want to clear all results?"
+                )
+            ) {
+                return;
+            }
+
+
+            results = [];
+
+
+            saveData(
+                STORAGE_KEYS.results,
+                results
+            );
+
+
+            renderAdmin();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(date) {
+
+    if (!date) {
+        return "—";
+    }
+
+
+    try {
+
+        return new Date(date)
+            .toLocaleString();
+
+    } catch {
+
+        return date;
+
+    }
+
+}
+
+
+/* =========================================================
+   KEYBOARD ESCAPE
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key !== "Escape") {
+            return;
+        }
+
+
+        document
+            .querySelectorAll(".modal")
+            .forEach(modal => {
+
+                modal.classList.add(
+                    "hidden"
+                );
+
+            });
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+function initializeGame() {
+
+    /* Keep intro visible first */
+
+    showScreen("introScreen");
+
+
+    /* Make sure all modals are hidden */
+
+    document
+        .querySelectorAll(".modal")
+        .forEach(modal => {
+
+            modal.classList.add(
+                "hidden"
+            );
+
+        });
+
+
+    /* Reset score */
+
+    updateScore();
+
+
+    /* If browser blocks autoplay,
+       the video can still be played manually. */
+
+    if (introVideo) {
+
+        const playPromise =
+            introVideo.play();
+
+
+        if (
+            playPromise &&
+            typeof playPromise.catch === "function"
+        ) {
+
+            playPromise.catch(() => {
+
+                console.log(
+                    "Autoplay was blocked by the browser."
+                );
+
+            });
+
+        }
+
+    }
+
+}
+
+
+initializeGame();
+
+
+/* =========================================================
+   DEBUG HELP
+========================================================= */
+
+window.YDP_HR = {
+
+    game,
+
+    get interviews() {
+        return interviews;
+    },
+
+    get members() {
+        return members;
+    },
+
+    get questions() {
+        return questions;
+    },
+
+    get results() {
+        return results;
+    },
+
+    resetAllData() {
+
+        localStorage.removeItem(
+            STORAGE_KEYS.interviews
+        );
+
+        localStorage.removeItem(
+            STORAGE_KEYS.members
+        );
+
+        localStorage.removeItem(
+            STORAGE_KEYS.questions
+        );
+
+        localStorage.removeItem(
+            STORAGE_KEYS.results
+        );
+
+        location.reload();
+
+    }
+
+};
