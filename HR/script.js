@@ -659,14 +659,14 @@ function renderPlayerNames() {
 
     if (players.length === 0) {
 
-        membersList.innerHTML = 
-            <div class="empty-message">
-                No player names have been added yet.
-                Ask the administrator to add your name.
-            </div>
-        ;
+    membersList.innerHTML = `
+        <div class="empty-message">
+            No player names have been added yet.
+            Ask the administrator to add your name.
+        </div>
+    `;
 
-        return;
+    return;
     }
 
 
@@ -1340,9 +1340,9 @@ function renderInterview() {
                     )}
                 </span>
 
-            </div>
+                </div>
 
-        ;
+`;
 
     }
 
@@ -1357,7 +1357,7 @@ function renderInterview() {
 
     if (applicationContent) {
 
-        applicationContent.innerHTML = 
+        applicationContent.innerHTML =`
 
             <div class="cv-field">
 
@@ -2233,11 +2233,11 @@ function renderCurrentQuestion() {
         total
     ) {
 
-        choices.innerHTML = 
+        choices.innerHTML = `
             <div class="question-finished">
                 Interview questions completed.
             </div>
-        ;
+       `;
 
 
         if (progress) {
@@ -2703,11 +2703,11 @@ function renderInterviewList() {
 
     if (interviews.length === 0) {
 
-        list.innerHTML = 
+        list.innerHTML =` 
             <div class="empty-message">
                 No interviews yet.
             </div>
-        ;
+        `;
 
         return;
     }
@@ -3115,11 +3115,11 @@ function renderInterviewAnswerFields(
 
     if (questions.length === 0) {
 
-        container.innerHTML = 
+        container.innerHTML =` 
             <div class="empty-message">
                 Add questions first.
             </div>
-        ;
+        `;
 
         return;
     }
@@ -3495,11 +3495,11 @@ function renderPlayerAdminList() {
 
     if (players.length === 0) {
 
-        list.innerHTML = 
+        list.innerHTML = `
             <div class="empty-message">
                 No players added yet.
             </div>
-        ;
+        `;
 
         return;
     }
@@ -3859,11 +3859,11 @@ function renderQuestionAdminList() {
 
     if (questions.length === 0) {
 
-        list.innerHTML = 
+        list.innerHTML = `
             <div class="empty-message">
                 No questions yet.
             </div>
-        ;
+        `;
 
         return;
     }
@@ -4206,7 +4206,7 @@ function renderResults() {
 
     if (results.length === 0) {
 
-        body.innerHTML = 
+        body.innerHTML = `
 
             <tr>
 
@@ -4216,7 +4216,7 @@ function renderResults() {
 
             </tr>
 
-        ;
+        `;
 
         return;
     }
