@@ -1948,3 +1948,109 @@ button {
 ::-webkit-scrollbar-thumb:hover {
     background: #777;
 }
+/* =========================================================
+   HR OFFICE — REFERENCE DESIGN MATCH
+   The office scene is the supplied reference image.
+   Interactive controls remain functional as transparent hotspots.
+========================================================= */
+
+.office-screen {
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    background: #000;
+    overflow: hidden;
+}
+
+.office-background {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    z-index: 0;
+}
+
+/* The reference image already contains the desk, papers and stamps. */
+.office-screen .score-panel,
+.office-screen .candidate-character,
+.office-screen .paper-deck {
+    z-index: 20;
+}
+
+/* Hidden until the first interview starts; JS toggles it. */
+.office-screen .score-panel {
+    display: flex;
+}
+
+/* NEXT becomes a transparent hotspot over the paper stack. */
+.office-screen .next-button {
+    left: 50%;
+    bottom: 15%;
+    width: min(330px, 30vw);
+    height: min(260px, 25vh);
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 18px;
+    background: transparent;
+    color: transparent;
+    box-shadow: none;
+    opacity: 0;
+    transform: translateX(-50%);
+}
+
+.office-screen .next-button:hover,
+.office-screen .next-button:active {
+    background: transparent;
+    box-shadow: none;
+    transform: translateX(-50%);
+}
+
+/* Stamps are already visible inside the reference image.
+   Keep transparent clickable hotspots in their place. */
+.office-screen .stamp-area {
+    right: 9.5%;
+    top: 45%;
+    bottom: auto;
+    width: 18%;
+    height: 18%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    z-index: 40;
+}
+
+.office-screen .stamp-button {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    background: transparent;
+}
+
+.office-screen .stamp-button:hover,
+.office-screen .stamp-button:active {
+    transform: none;
+    filter: none;
+}
+
+/* Keep the interactive paper/character available after NEXT. */
+.office-screen .paper-deck {
+    z-index: 15;
+}
+
+@media (max-width: 650px) {
+    .office-screen .next-button {
+        width: 55vw;
+        height: 25vh;
+        bottom: 14%;
+    }
+
+    .office-screen .stamp-area {
+        right: 5%;
+        top: 43%;
+        width: 30%;
+        height: 18%;
+    }
+}

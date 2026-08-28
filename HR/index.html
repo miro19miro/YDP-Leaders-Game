@@ -159,7 +159,7 @@
 
     <!-- OFFICE BACKGROUND -->
 
-    <img src="images/Office 2.png" class="office-background" alt="HR Office">
+    <img src="images/HR Office Target.jpg" class="office-background" alt="HR Office">
 
 
     <!-- =================================================
@@ -224,144 +224,94 @@
 
     <div id="paperDeck" class="paper-deck hidden">
 
-    <!-- CV -->
-    <article id="paper1" class="game-paper cv-paper">
+      <!-- =============================================
+                 CV PAPER
+            ============================================== -->
+
+      <article id="paper1" class="game-paper cv-paper">
+
         <div class="paper-header">
-            <span>CURRICULUM VITAE</span>
 
-            <button
-                id="cvEyeCard"
-                class="paper-eye"
-                type="button"
-                aria-label="Open CV"
-            >
-                👁
-            </button>
+          <span>
+            CURRICULUM VITAE
+          </span>
+
+          <button id="cvEyeCard" class="paper-eye" type="button" aria-label="Open candidate card">
+            👁
+          </button>
+
         </div>
 
-        <div id="cvContent" class="paper-content"></div>
-    </article>
+
+        <div id="cvContent" class="paper-content">
+
+          <!-- Filled by JavaScript -->
+
+        </div>
+
+      </article>
 
 
-    <!-- PERSONAL CARD -->
-    <article id="paper2" class="game-paper personal-paper">
+      <!-- =============================================
+                 PERSONAL CARD
+            ============================================== -->
+
+      <article id="paper2" class="game-paper personal-paper">
+
         <div class="paper-header">
-            <span>PERSONAL CARD</span>
+
+          <span>
+            PERSONAL CARD
+          </span>
+          <button class="paper-eye personal-eye" type="button" aria-label="Open photo">
+            👁
+          </button>
+
         </div>
 
-        <div id="personalCardContent" class="paper-content"></div>
-    </article>
+
+        <div id="personalCardContent" class="paper-content">
+
+          <!-- Filled by JavaScript -->
+
+        </div>
+
+      </article>
 
 
-    <!-- APPLICATION DATA -->
-    <article id="paper3" class="game-paper application-paper">
+      <!-- =============================================
+                 APPLICATION DATA
+            ============================================== -->
+
+      <article id="paper3" class="game-paper application-paper">
+
         <div class="paper-header">
-            <span>APPLICATION DATA</span>
-        </div>
 
-        <div id="applicationContent" class="paper-content"></div>
-    </article>
-
-
-    <!-- DECISION -->
-    <div id="paperDecision" class="paper-decision hidden"></div>
-
-</div>
-
-
-    <!-- =====================================================
-     CV VIEWER
-====================================================== -->
-
-<div id="cvViewerModal" class="modal hidden">
-
-    <div class="modal-overlay"></div>
-
-    <div class="cv-viewer-card">
-
-        <button
-            class="modal-close"
-            type="button"
-            data-close="cvViewerModal"
-        >
-            ×
-        </button>
-
-
-        <div class="cv-viewer-header">
-
-            <h2 id="cvViewerTitle">
-                CURRICULUM VITAE
-            </h2>
-
-            <div class="cv-viewer-tabs">
-
-                <button
-                    id="cvTabBtn"
-                    class="cv-viewer-tab active"
-                    type="button"
-                    data-cv-page="cv"
-                >
-                    CV
-                </button>
-
-                <button
-                    id="personalTabBtn"
-                    class="cv-viewer-tab"
-                    type="button"
-                    data-cv-page="personal"
-                >
-                    PERSONAL CARD
-                </button>
-
-                <button
-                    id="applicationTabBtn"
-                    class="cv-viewer-tab"
-                    type="button"
-                    data-cv-page="application"
-                >
-                    APPLICATION DATA
-                </button>
-
-            </div>
+          <span>
+            APPLICATION DATA
+          </span>
 
         </div>
 
 
-        <div
-            id="cvViewerContent"
-            class="cv-viewer-content"
-        ></div>
+        <div id="applicationContent" class="paper-content">
 
-
-        <div class="cv-viewer-navigation">
-
-            <button
-                id="cvPreviousBtn"
-                class="cv-nav-btn"
-                type="button"
-            >
-                ← PREVIOUS
-            </button>
-
-            <span id="cvPageIndicator">
-                1 / 3
-            </span>
-
-            <button
-                id="cvNextBtn"
-                class="cv-nav-btn"
-                type="button"
-            >
-                NEXT →
-            </button>
+          <!-- Filled by JavaScript -->
 
         </div>
+
+      </article>
+
+
+      <!-- =============================================
+                 DECISION TEXT
+            ============================================== -->
+
+      <div id="paperDecision" class="paper-decision hidden"></div>
 
     </div>
 
-</div>
-    
+
     <!-- =================================================
              CHARACTER
         ================================================== -->
