@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>YDP HR Game</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- =====================================================
+         MAIN INTRO
+    ====================================================== -->
+
+  <section id="introScreen" class="screen intro-screen">
+
+    <video id="introVideo" class="intro-video" autoplay playsinline onended="
+        document.getElementById('introScreen').classList.add('hidden');
+        document.getElementById('codeScreen').classList.remove('hidden');
+    ">
+      <source src="Intro HR.mp4" type="video/mp4">
+    </video>
+  </section>
+
+
+  <!-- =====================================================
+         CODE SCREEN
+    ====================================================== -->
+
+  <section id="codeScreen" class="screen code-screen hidden">
+
+    <div class="code-card">
+
+      <img src="images/entity-logo.png" class="entity-logo" alt="YDP">
+
+      <h1>HR</h1>
+
+      <p class="code-title">
+        Enter your code
+      </p>
+
+      <input id="codeInput" class="code-input" type="text" placeholder="Enter code" autocomplete="off"
+        spellcheck="false">
+
+      <button id="enterCodeBtn" class="main-btn" type="button">
+        ENTER
+      </button>
+
+      <p id="codeError" class="error-message"></p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+         PLAYER / ADMIN CHOICE
+    ====================================================== -->
+
+  <section id="roleScreen" class="screen role-screen hidden">
+
+    <div class="role-card">
+
+      <img src="images/entity-logo.png" class="entity-logo" alt="YDP">
+
+      <h1>
+        Choose
+      </h1>
+
+      <div class="role-buttons">
+
+        <button id="playerRoleBtn" class="main-btn" type="button">
+          PLAYER
+        </button>
+
+        <button id="adminRoleBtn" class="main-btn" type="button">
+          ADMIN
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+         GENDER
+    ====================================================== -->
+
+  <section id="genderScreen" class="screen gender-screen hidden">
+
+    <div class="gender-background"></div>
+
+    <h1 class="gender-title">
+      Choose your gender
+    </h1>
+
+    <div class="gender-characters">
+
+      <button id="girlChoice" class="character-choice girl-choice" type="button" data-gender="female">
+
+        <img src="images/girl hr.png" alt="Girl">
+
+      </button>
+
+
+      <button id="boyChoice" class="character-choice boy-choice" type="button" data-gender="male">
+
+        <img src="images/boy hr.png" alt="Boy">
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+         PLAYER NAME
+    ====================================================== -->
+  <section id="nameScreen" class="screen name-screen hidden">
+
+    <div class="name-background"></div>
+
+    <div class="name-content">
+
+      <h1>
+        Choose your name
+      </h1>
+
+      <p>
+        Select your name to continue
+      </p>
+
+      <div id="membersList" class="members-list"></div>
+
+      <button id="nameContinueBtn" class="main-btn name-continue-btn" type="button" disabled>
+        CONTINUE
+      </button>
+
+      <p id="nameError" class="error-message"></p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+         HR OFFICE
+    ====================================================== -->
+
+  <section id="officeScreen" class="screen office-screen hidden">
+
+    <!-- OFFICE BACKGROUND -->
+
+    <img src="images/HR Office Target.jpg" class="office-background" alt="HR Office">
+
+
+    <!-- =================================================
+             SCORE
+        ================================================== -->
+
+    <div id="scorePanel" class="score-panel">
+
+      <div class="score-item">
+
+        <span>
+          Accepted
+        </span>
+
+        <strong id="acceptedCount">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="score-item">
+
+        <span>
+          Rejected
+        </span>
+
+        <strong id="rejectedCount">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="score-item">
+
+        <span>
+          Score
+        </span>
+
+        <strong id="scoreCount">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+             NEXT BUTTON
+        ================================================== -->
+
+    <button id="nextBtn" class="office-button next-button" type="button">
+      NEXT
+    </button>
+
+
+    <!-- =================================================
+             PAPER DECK
+        ================================================== -->
+
+    <div id="paperDeck" class="paper-deck hidden">
+
+      <!-- =============================================
+                 CV PAPER
+            ============================================== -->
+
+      <article id="paper1" class="game-paper cv-paper">
+
+        <div class="paper-header">
+
+          <span>
+            CURRICULUM VITAE
+          </span>
+
+          <button id="cvEyeCard" class="paper-eye" type="button" aria-label="Open candidate card">
+            👁
+          </button>
+
+        </div>
+
+
+        <div id="cvContent" class="paper-content">
+
+          <!-- Filled by JavaScript -->
+
+        </div>
+
+      </article>
+
+
+      <!-- =============================================
+                 PERSONAL CARD
+            ============================================== -->
+
+      <article id="paper2" class="game-paper personal-paper">
+
+        <div class="paper-header">
+
+          <span>
+            PERSONAL CARD
+          </span>
+          <button class="paper-eye personal-eye" type="button" aria-label="Open photo">
+            👁
+          </button>
+
+        </div>
+
+
+        <div id="personalCardContent" class="paper-content">
+
+          <!-- Filled by JavaScript -->
+
+        </div>
+
+      </article>
+
+
+      <!-- =============================================
+                 APPLICATION DATA
+            ============================================== -->
+
+      <article id="paper3" class="game-paper application-paper">
+
+        <div class="paper-header">
+
+          <span>
+            APPLICATION DATA
+          </span>
+
+        </div>
+
+
+        <div id="applicationContent" class="paper-content">
+
+          <!-- Filled by JavaScript -->
+
+        </div>
+
+      </article>
+
+
+      <!-- =============================================
+                 DECISION TEXT
+            ============================================== -->
+
+      <div id="paperDecision" class="paper-decision hidden"></div>
+
+    </div>
+
+
+    <!-- =================================================
+             CHARACTER
+        ================================================== -->
+
+    <div id="candidateCharacter" class="candidate-character hidden">
+
+      <img id="candidateCharacterImage" src="" alt="Candidate">
+
+    </div>
+
+
+    <!-- =================================================
+             STAMPS
+        ================================================== -->
+
+    <div id="stampArea" class="stamp-area">
+
+      <button id="acceptedStamp" class="stamp-button accepted-stamp" type="button" aria-label="Accept">
+
+        <img src="images/Accepted Stamp.png" alt="Accepted">
+
+      </button>
+
+
+      <button id="rejectedStamp" class="stamp-button rejected-stamp" type="button" aria-label="Reject">
+
+        <img src="images/Rejected Stamp.png" alt="Rejected">
+
+      </button>
+
+    </div>
+
+
+    <!-- =================================================
+             ID BUTTON
+        ================================================== -->
+
+    <button id="idButton" class="office-button id-button hidden" type="button">
+      ID
+    </button>
+
+
+    <!-- =================================================
+             INTERVIEW CHAT BUTTON
+        ================================================== -->
+
+    <button id="chatButton" class="chat-button hidden" type="button" aria-label="Interview questions">
+
+      <span>
+        💬
+      </span>
+
+    </button>
+
+  </section>
+
+
+  <!-- =====================================================
+         PHOTO MODAL
+    ====================================================== -->
+
+  <div id="candidatePhotoModal" class="modal hidden">
+
+    <div class="modal-overlay"></div>
+
+    <div class="photo-modal-card">
+
+      <button class="modal-close" type="button" data-close="candidatePhotoModal">
+        ×
+      </button>
+      <img id="candidatePhotoLarge" src="" alt="Candidate">
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+         ID CARD MODAL
+    ====================================================== -->
+
+  <div id="idModal" class="modal hidden">
+
+    <div class="modal-overlay"></div>
+
+    <div class="id-card-modal">
+
+      <button class="modal-close" type="button" data-close="idModal">
+        ×
+      </button>
+
+
+      <div class="generated-id-card">
+
+        <img src="images/entity-logo.png" class="generated-id-logo" alt="YDP">
+
+
+        <img id="generatedIdPhoto" class="generated-id-photo" src="" alt="Candidate">
+
+
+        <div class="generated-id-info">
+
+          <h2>
+            YDP
+          </h2>
+
+          <p>
+            <strong>
+              Name:
+            </strong>
+
+            <span id="generatedIdName">
+            </span>
+          </p>
+
+
+          <p>
+            <strong>
+              Committee:
+            </strong>
+
+            <span id="generatedIdCommittee">
+            </span>
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+         INTERVIEW CHAT MODAL
+    ====================================================== -->
+
+  <div id="questionModal" class="modal hidden">
+
+    <div class="modal-overlay"></div>
+
+    <div class="question-modal-card">
+
+      <button class="modal-close" type="button" data-close="questionModal">
+        ×
+      </button>
+
+
+      <div class="chat-header">
+
+        <h2>
+          INTERVIEW
+        </h2>
+
+        <p id="questionProgress">
+          Choose a question — 0 / 10
+        </p>
+
+      </div>
+
+
+      <div id="questionChoices" class="question-choices"></div>
+
+
+      <div id="questionAnswer" class="question-answer hidden"></div>
+
+
+      <button id="nextQuestionBtn" class="main-btn hidden" type="button">
+        CHOOSE NEXT
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+         ADMIN SCREEN
+    ====================================================== -->
+
+  <section id="adminScreen" class="screen admin-screen hidden">
+
+    <div class="admin-container">
+
+
+      <!-- ADMIN HEADER -->
+
+      <header class="admin-header">
+
+        <div class="admin-brand">
+
+          <img src="images/entity-logo.png" alt="YDP">
+
+          <div>
+
+            <h1>
+              HR CONTROL PANEL
+            </h1>
+
+            <p>
+              YDP Qualification Games
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <button id="adminRefreshBtn" class="admin-refresh" type="button">
+          REFRESH
+        </button>
+
+      </header>
+      <!-- =================================================
+                 ADMIN TABS
+            ================================================== -->
+
+      <nav class="admin-tabs">
+
+        <button class="active" data-tab="overview" type="button">
+          Overview
+        </button>
+
+
+        <button data-tab="interviews" type="button">
+          Interviews
+        </button>
+
+
+        <button data-tab="members" type="button">
+          Members
+        </button>
+
+
+        <button data-tab="questions" type="button">
+          Questions
+        </button>
+
+
+        <button data-tab="results" type="button">
+          Results
+        </button>
+
+      </nav>
+
+
+      <!-- =================================================
+                 OVERVIEW
+            ================================================== -->
+
+      <section id="tab-overview" class="admin-tab active-tab">
+
+        <div class="admin-section-title">
+
+          <h2>
+            Overview
+          </h2>
+
+        </div>
+
+
+        <div class="stats-grid">
+
+          <div class="admin-stat-card">
+
+            <span>
+              Members
+            </span>
+
+            <strong id="statMembers">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="admin-stat-card">
+
+            <span>
+              Interviews
+            </span>
+
+            <strong id="statInterviews">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="admin-stat-card">
+
+            <span>
+              Questions
+            </span>
+
+            <strong id="statQuestions">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="admin-stat-card">
+
+            <span>
+              Results
+            </span>
+
+            <strong id="statResults">
+              0
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+                 INTERVIEWS
+            ================================================== -->
+
+      <section id="tab-interviews" class="admin-tab">
+
+        <div class="admin-section-title">
+
+          <div>
+
+            <h2>
+              Interviews
+            </h2>
+
+            <p>
+              Create and manage candidate interviews.
+            </p>
+
+          </div>
+
+
+          <button id="addInterviewBtn" class="admin-primary-btn" type="button">
+            + ADD INTERVIEW
+          </button>
+
+        </div>
+
+
+        <div id="interviewList" class="admin-list"></div>
+
+      </section>
+
+
+      <!-- =================================================
+                 MEMBERS
+            ================================================== -->
+      <section id="tab-members" class="admin-tab">
+
+        <div class="admin-section-title">
+
+          <div>
+
+            <h2>
+              Players / Members
+            </h2>
+
+            <p>
+              Manage the names players can choose.
+            </p>
+
+          </div>
+
+
+          <button id="addMemberBtn" class="admin-primary-btn" type="button">
+            + ADD MEMBER
+          </button>
+
+        </div>
+
+
+        <div id="memberAdminList" class="admin-list"></div>
+
+      </section>
+
+
+      <!-- =================================================
+                 QUESTIONS
+            ================================================== -->
+
+      <section id="tab-questions" class="admin-tab">
+
+        <div class="admin-section-title">
+
+          <div>
+
+            <h2>
+              Question Bank
+            </h2>
+
+            <p>
+              Add the interview questions.
+            </p>
+
+          </div>
+
+
+          <button id="addQuestionBtn" class="admin-primary-btn" type="button">
+            + ADD QUESTION
+          </button>
+
+        </div>
+
+
+        <div id="questionAdminList" class="admin-list"></div>
+
+      </section>
+
+
+      <!-- =================================================
+                 RESULTS SHEET
+            ================================================== -->
+
+      <section id="tab-results" class="admin-tab">
+
+        <div class="admin-section-title">
+
+          <div>
+
+            <h2>
+              Results Sheet
+            </h2>
+
+            <p>
+              Track every player's performance.
+            </p>
+
+          </div>
+
+
+          <button id="clearResultsBtn" class="admin-danger-btn" type="button">
+            CLEAR RESULTS
+          </button>
+
+        </div>
+
+
+        <div class="results-table-wrapper">
+
+          <table class="results-table">
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Player
+                </th>
+
+                <th>
+                  Interview
+                </th>
+
+                <th>
+                  Decision
+                </th>
+
+                <th>
+                  Correct?
+                </th>
+
+                <th>
+                  Score
+                </th>
+
+                <th>
+                  Questions
+                </th>
+
+                <th>
+                  Finished
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody id="resultsBody">
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </section>
+  <!-- =====================================================
+         ADMIN MEMBER EDITOR
+    ====================================================== -->
+
+  <div id="memberEditor" class="modal hidden">
+
+    <div class="modal-overlay"></div>
+
+    <div class="admin-editor-card">
+
+      <button class="modal-close" type="button" data-close="memberEditor">
+        ×
+      </button>
+
+
+      <h2>
+        Add / Edit Member
+      </h2>
+
+
+      <form id="memberForm">
+
+        <input id="editMemberId" type="hidden">
+
+
+        <label>
+          Player Name
+        </label>
+
+        <input id="memberName" type="text" required autocomplete="off">
+
+
+        <button class="admin-primary-btn" type="submit">
+          SAVE MEMBER
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+         ADMIN QUESTION EDITOR
+    ====================================================== -->
+
+  <div id="questionEditor" class="modal hidden">
+
+    <div class="modal-overlay"></div>
+
+    <div class="admin-editor-card">
+
+      <button class="modal-close" type="button" data-close="questionEditor">
+        ×
+      </button>
+
+
+      <h2>
+        Add / Edit Question
+      </h2>
+
+
+      <form id="questionForm">
+
+        <input id="editQuestionId" type="hidden">
+
+
+        <label>
+          Question
+        </label>
+
+        <textarea id="questionText" required></textarea>
+
+
+        <button class="admin-primary-btn" type="submit">
+          SAVE QUESTION
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+         ADMIN INTERVIEW EDITOR
+    ====================================================== -->
+
+  <div id="adminEditor" class="modal hidden">
+
+    <div class="modal-overlay"></div>
+
+    <div class="admin-editor-card interview-editor">
+
+      <button class="modal-close" type="button" data-close="adminEditor">
+        ×
+      </button>
+
+
+      <h2 id="editorTitle">
+        Add Interview
+      </h2>
+
+
+      <form id="interviewForm">
+
+        <input id="editInterviewId" type="hidden">
+
+
+        <!-- PHOTO -->
+
+        <div class="form-section">
+
+          <h3>
+            Candidate
+          </h3>
+
+
+          <label>
+            Character PNG
+          </label>
+
+          <input id="fPhoto" type="text" placeholder="images/character.png" required>
+
+
+          <label>
+            Name
+          </label>
+
+          <input id="fName" type="text" required>
+
+
+          <label>
+            Age
+          </label>
+
+          <input id="fAge" type="text">
+
+        </div>
+        <!-- CV -->
+
+        <div class="form-section">
+
+          <h3>
+            CV
+          </h3>
+
+
+          <label>
+            Address
+          </label>
+
+          <input id="fAddress" type="text">
+
+
+          <label>
+            Phone Number
+          </label>
+
+          <input id="fPhone" type="text">
+
+
+          <label>
+            Short Summary
+          </label>
+
+          <textarea id="fSummary"></textarea>
+
+
+          <label>
+            Soft Skills
+          </label>
+
+          <textarea id="fSoftSkills"></textarea>
+
+
+          <label>
+            Technical Skills
+          </label>
+
+          <textarea id="fTechnicalSkills"></textarea>
+
+
+          <label>
+            Languages
+          </label>
+
+          <textarea id="fLanguages"></textarea>
+
+
+          <label>
+            Experience
+          </label>
+
+          <textarea id="fExperience"></textarea>
+
+        </div>
+
+
+        <!-- PERSONAL CARD -->
+
+        <div class="form-section">
+
+          <h3>
+            Personal Card
+          </h3>
+
+
+          <label>
+            Nationality
+          </label>
+
+          <input id="fNationality" type="text">
+
+
+          <label>
+            National ID
+          </label>
+
+          <input id="fNationalId" type="text">
+
+
+          <label>
+            Status
+          </label>
+
+          <input id="fStatus" type="text" placeholder="Single / Married / Student...">
+
+        </div>
+
+
+        <!-- APPLICATION DATA -->
+
+        <div class="form-section">
+
+          <h3>
+            Application Data
+          </h3>
+
+
+          <label>
+            Community
+          </label>
+
+          <input id="fCommunity" type="text">
+
+
+          <label>
+            Governorate
+          </label>
+
+          <input id="fGovernorate" type="text">
+
+
+          <label>
+            Committee
+          </label>
+
+          <input id="fCommittee" type="text" value="HR">
+
+        </div>
+
+
+        <!-- CORRECT DECISION -->
+
+        <div class="form-section">
+
+          <h3>
+            Correct Decision
+          </h3>
+
+
+          <select id="fDecision">
+
+            <option value="accepted">
+              ACCEPTED
+            </option>
+
+            <option value="rejected">
+              REJECTED
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- CHARACTER ANSWERS -->
+
+        <div class="form-section">
+          <h3>
+            Character Answers
+          </h3>
+
+          <p class="editor-help">
+            Write the answer this character
+            should give for every question.
+          </p>
+
+
+          <div id="interviewAnswers" class="interview-answers"></div>
+
+        </div>
+
+
+        <button class="admin-primary-btn save-interview-btn" type="submit">
+          ✓ SAVE INTERVIEW
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
